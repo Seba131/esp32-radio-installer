@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ESP32 Radio — Instalator</title>
+
+  <!-- ESP Web Tools -->
+  <script type="module"
+          src="https://unpkg.com/esp-web-tools@10/dist/web/install-button.js"></script>
+
+  <style>
+    :root { color-scheme: light dark; }
+    * { box-sizing: border-box; }
+    body {
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+      margin: 0;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: linear-gradient(135deg, #1a2980, #26d0ce);
+      color: #fff;
+      padding: 24px;
+    }
+    .card {
+      background: rgba(0, 0, 0, 0.35);
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      border-radius: 20px;
+      padding: 40px;
+      max-width: 480px;
+      width: 100%;
+      text-align: center;
+      box-shadow: 0 12px 40px rgba(0, 0, 0, 0.4);
+    }
+    h1 { margin: 0 0 8px; font-size: 2rem; }
+    .sub { opacity: 0.85; margin: 0 0 28px; font-size: 0.95rem; }
+    esp-web-install-button {
+      --esp-tools-button-color: #1a2980;
+      --esp-tools-button-text-color: #fff;
+    }
+    .btn-fallback {
+      display: inline-block;
+      background: #fff;
+      color: #1a2980;
+      font-weight: 600;
+      padding: 14px 28px;
+      border-radius: 12px;
+      text-decoration: none;
+    }
+    .steps {
+      text-align: left;
+      margin: 28px auto 0;
+      max-width: 360px;
+      line-height: 1.6;
+      font-size: 0.92rem;
+    }
+    .steps li { margin-bottom: 6px; }
+    .note {
+      margin-top: 24px;
+      font-size: 0.8rem;
+      opacity: 0.7;
+      line-height: 1.5;
+    }
+    a { color: #fff; }
+    .unsupported {
+      background: rgba(255, 80, 80, 0.25);
+      border: 1px solid rgba(255, 120, 120, 0.5);
+      border-radius: 10px;
+      padding: 12px;
+      margin-top: 16px;
+      font-size: 0.85rem;
+    }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <h1>📻 ESP32 Radio</h1>
+    <p class="sub">Wgraj firmware bezpośrednio z przeglądarki — bez instalowania żadnych programów.</p>
+
+    <esp-web-install-button manifest="manifest.json">
+      <button slot="activate" class="btn-fallback">⚡ Zainstaluj</button>
+      <span slot="unsupported" class="unsupported">
+        Twoja przeglądarka nie obsługuje Web Serial.<br>
+        Użyj <b>Google Chrome</b> lub <b>Microsoft Edge</b> na komputerze (nie na telefonie).
+      </span>
+      <span slot="not-allowed" class="unsupported">
+        Wgrywanie działa tylko przez połączenie HTTPS.
+      </span>
+    </esp-web-install-button>
+
+    <ol class="steps">
+      <li>Podłącz ESP32-S3 kablem USB do komputera.</li>
+      <li>Kliknij <b>Zainstaluj</b> i wybierz port szeregowy (COM).</li>
+      <li>Potwierdź wyczyszczenie pamięci i poczekaj na zakończenie.</li>
+      <li>Gotowe — urządzenie samo się zrestartuje. 🎉</li>
+    </ol>
+
+    <p class="note">
+      Wymagana przeglądarka <b>Chrome</b> lub <b>Edge</b> na komputerze (Web Serial API).<br>
+      Firefox i Safari oraz telefony nie są obsługiwane.
+    </p>
+  </div>
+</body>
+</html>
