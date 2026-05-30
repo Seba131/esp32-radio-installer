@@ -1,8 +1,7 @@
 {
-  "name": "ESP32-Radio (Sebastian Piwowarski)",
-  "version": "1.0.0",
-  "home_assistant_domain": "esp32_radio",
-  "funding_url": "https://github.com/",
+  "name": "ESP32 Radio",
+  "version": "1.0",
+  "new_install_prompt_erase": true,
   "builds": [
     {
       "chipFamily": "ESP32-S3",
