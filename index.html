@@ -83,6 +83,36 @@
       text-align: left;
     }
     .erase-tip b { color: #ffe05a; }
+
+    .ports-info {
+      background: rgba(64, 170, 255, 0.16);
+      border: 1px solid rgba(90, 180, 255, 0.5);
+      border-radius: 12px;
+      padding: 14px 16px;
+      margin: 0 0 24px;
+      text-align: left;
+      font-size: 0.88rem;
+    }
+    .ports-info > b { display: block; margin-bottom: 10px; font-size: 0.95rem; }
+    .ports-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+    @media (max-width: 460px) { .ports-grid { grid-template-columns: 1fr; } }
+    .port-card {
+      background: rgba(0,0,0,0.25);
+      border-radius: 10px;
+      padding: 10px 12px;
+      line-height: 1.5;
+    }
+    .port-card .tag {
+      display: inline-block;
+      font-weight: 700;
+      background: rgba(255,255,255,0.9);
+      color: #1a2980;
+      border-radius: 6px;
+      padding: 1px 8px;
+      margin-bottom: 4px;
+    }
+    .port-card small { opacity: 0.8; display: block; margin-bottom: 6px; }
+    .ports-info .hint { display: block; margin-top: 10px; opacity: 0.8; font-size: 0.8rem; }
     kbd {
       background: rgba(255,255,255,0.9);
       color: #1a2980;
@@ -180,6 +210,30 @@
     <h1>📻 ESP32 Radio</h1>
     <p class="sub">Wgraj firmware bezpośrednio z przeglądarki — bez instalowania żadnych programów.</p>
 
+    <div class="ports-info">
+      <b>📌 Uwaga: płytka ma DWA gniazda USB — to ważne, do którego podłączysz!</b>
+      <div class="ports-grid">
+        <div class="port-card">
+          <span class="tag">Port „UART"</span>
+          <small>gniazdo z mostkiem USB-UART</small>
+          ✅ Wgrywanie firmware<br>
+          ✅ Logi i komendy (terminal)<br>
+          <b>👉 Podłącz tutaj — działa do wszystkiego</b>
+        </div>
+        <div class="port-card">
+          <span class="tag">Port „USB"</span>
+          <small>natywny USB ESP32-S3</small>
+          ✅ Wgrywanie firmware<br>
+          ❌ <b>NIE</b> pokazuje logów ani nie przyjmuje komend
+        </div>
+      </div>
+      <span class="hint">
+        Gniazda są opisane małym drukiem na płytce (UART / USB), tuż obok siebie.
+        Jeśli chcesz tylko wgrać firmware — wystarczy którekolwiek. Do <b>terminala/logów
+        musisz użyć portu „UART"</b>.
+      </span>
+    </div>
+
     <esp-web-install-button manifest="manifest.json">
       <button slot="activate" class="btn-fallback">⚡ Zainstaluj</button>
       <span slot="unsupported" class="unsupported">
@@ -245,6 +299,11 @@
         Podgląd logów z urządzenia i wysyłanie komend. Przydatne, gdy coś nie działa —
         możesz <b>skopiować logi i wysłać je autorowi</b>.
       </p>
+      <div class="erase-tip" style="background:rgba(64,170,255,0.16);border-color:rgba(90,180,255,0.5)">
+        🔌 <b style="color:#9fd2ff">Podłącz kabel do portu „UART"!</b><br>
+        Logi i komendy działają <b>tylko</b> przez gniazdo „UART" (z mostkiem USB-UART).
+        Natywny port „USB" służy do wgrywania, ale tutaj nic nie pokaże.
+      </div>
 
       <div class="term-bar">
         <button class="term-btn" id="btnConnect">🔌 Połącz</button>
