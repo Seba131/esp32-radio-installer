@@ -34,7 +34,17 @@
       text-align: center;
       box-shadow: 0 12px 40px rgba(0, 0, 0, 0.4);
     }
-    h1 { margin: 0 0 8px; font-size: 2rem; }
+    h1 { margin: 0 0 6px; font-size: 2rem; }
+    .fw-ver {
+      display: inline-block;
+      background: rgba(255,255,255,0.18);
+      border: 1px solid rgba(255,255,255,0.3);
+      border-radius: 20px;
+      padding: 2px 12px;
+      font-size: 0.82rem;
+      letter-spacing: 0.03em;
+      margin-bottom: 20px;
+    }
     .sub { opacity: 0.85; margin: 0 0 28px; font-size: 0.95rem; }
     esp-web-install-button {
       --esp-tools-button-color: #1a2980;
@@ -207,7 +217,8 @@
 </head>
 <body>
   <div class="card">
-    <h1>📻 ESP32 Radio (Sebastian Piwowarski)</h1>
+    <h1>📻 ESP32 Radio</h1>
+    <p><span class="fw-ver" id="fw-version">wersja …</span></p>
     <p class="sub">Wgraj firmware bezpośrednio z przeglądarki — bez instalowania żadnych programów.</p>
 
     <div class="ports-info">
@@ -497,6 +508,15 @@
     }
     setInterval(() => deepPatch(document.body), 150);
   })();
+  </script>
+
+  <script>
+  fetch('manifest.json')
+    .then(r => r.json())
+    .then(m => {
+      const el = document.getElementById('fw-version');
+      if (el && m.version) el.textContent = 'wersja ' + m.version;
+    });
   </script>
 </body>
 </html>
