@@ -492,20 +492,51 @@
 
   <script>
   (function () {
+    const PL = {
+      'Confirm Installation'                        : 'Potwierdź instalację',
+      'All data on the device will be erased.'      : 'Wszystkie dane na urządzeniu zostaną skasowane.',
+      'Install'                                     : 'Zainstaluj',
+      'Back'                                        : 'Wstecz',
+      'Next'                                        : 'Dalej',
+      'Close'                                       : 'Zamknij',
+      'Logs & Console'                              : 'Logi i Konsola',
+      'Installation complete!'                      : 'Instalacja zakończona!',
+      'Connecting'                                  : 'Łączenie…',
+      'Preparing installation'                      : 'Przygotowanie instalacji…',
+    };
+
     function deepPatch(root) {
+      // --- tłumaczenie atrybutów label (np. ewt-page-message) ---
+      root.querySelectorAll('[label]').forEach(el => {
+        const v = el.getAttribute('label');
+        if (PL[v]) el.setAttribute('label', PL[v]);
+      });
+
+      // --- tłumaczenie elementów liści + "Do you want to install..." ---
+      root.querySelectorAll('*').forEach(el => {
+        if (el.shadowRoot || el.childElementCount > 0) return;
+        const t = (el.textContent || '').trim();
+        if (PL[t]) {
+          el.textContent = PL[t];
+        } else if (/^Do you want to install .+$/.test(t)) {
+          el.textContent = 'Czy chcesz zainstalować ' + t.replace('Do you want to install ', '');
+        }
+      });
+
+      // --- ukryj kafelek "Install [nazwa]" na dashboardzie ---
       root.querySelectorAll('div[slot="headline"]').forEach(el => {
-        const t = el.textContent.trim();
-        if (t === 'Logs & Console') {
-          el.textContent = 'Logi i Konsola';
-        } else if (t.startsWith('Install ')) {
+        if (el.textContent.trim().startsWith('Install ')) {
           const row = el.closest('ew-list-item') || el.parentElement;
           if (row) row.hidden = true;
         }
       });
+
+      // --- rekurencja w shadow rootach ---
       root.querySelectorAll('*').forEach(el => {
         if (el.shadowRoot) deepPatch(el.shadowRoot);
       });
     }
+
     setInterval(() => deepPatch(document.body), 150);
   })();
   </script>
