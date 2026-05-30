@@ -91,6 +91,25 @@
       font-weight: 700;
       font-size: 0.85em;
     }
+    details.help {
+      text-align: left;
+      margin-top: 22px;
+      background: rgba(255,255,255,0.08);
+      border: 1px solid rgba(255,255,255,0.15);
+      border-radius: 12px;
+      padding: 4px 16px;
+    }
+    details.help summary {
+      cursor: pointer;
+      font-weight: 600;
+      padding: 10px 0;
+      list-style: none;
+    }
+    details.help summary::-webkit-details-marker { display: none; }
+    details.help summary::before { content: "❓ "; }
+    details.help[open] summary::before { content: "✖ "; }
+    details.help h4 { margin: 14px 0 4px; font-size: 0.92rem; }
+    details.help p { margin: 0 0 12px; font-size: 0.86rem; line-height: 1.55; opacity: 0.92; }
   </style>
 </head>
 <body>
@@ -123,6 +142,38 @@
       (skasuj wszystkie dane). <b>Koniecznie ją zaznacz</b> — zapewnia to
       czystą instalację bez śladów po poprzednim oprogramowaniu.
     </div>
+
+    <details class="help">
+      <summary>Coś nie działa?</summary>
+
+      <h4>❌ „Failed to open serial port"</h4>
+      <p>
+        Port COM jest zajęty przez inny program. Zamknij <b>monitor szeregowy</b>
+        (Arduino IDE, PlatformIO, PuTTY) i wszelkie inne karty z instalatorem,
+        odepnij i wepnij kabel USB, odśwież stronę i spróbuj ponownie.
+      </p>
+
+      <h4>🔌 Nie widać urządzenia / brak portu</h4>
+      <p>
+        Użyj kabla USB <b>do przesyłu danych</b> (nie tylko do ładowania).
+        Sprawdź też inne gniazdo USB. Na niektórych płytkach trzeba wpiąć kabel
+        w port oznaczony <kbd>USB</kbd>, a nie <kbd>UART/COM</kbd>.
+      </p>
+
+      <h4>🛠️ Płytka nie wchodzi w tryb wgrywania</h4>
+      <p>
+        Ręcznie: przytrzymaj przycisk <kbd>BOOT</kbd>, krótko naciśnij
+        <kbd>RESET</kbd> (lub <kbd>EN</kbd>), puść <kbd>BOOT</kbd>. Potem znów
+        kliknij <b>Zainstaluj</b>.
+      </p>
+
+      <h4>🌐 Przycisk „Zainstaluj" nie reaguje</h4>
+      <p>
+        Użyj <b>Google Chrome</b> lub <b>Microsoft Edge</b> na komputerze.
+        Firefox, Safari oraz telefony i tablety nie obsługują wgrywania
+        (brak Web Serial API).
+      </p>
+    </details>
 
     <p class="note">
       Wymagana przeglądarka <b>Chrome</b> lub <b>Edge</b> na komputerze (Web Serial API).<br>
