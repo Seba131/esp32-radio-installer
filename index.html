@@ -481,7 +481,7 @@
 
   <script>
   (function () {
-    function patch(root) {
+    function deepPatch(root) {
       root.querySelectorAll('div[slot="headline"]').forEach(el => {
         const t = el.textContent.trim();
         if (t === 'Logs & Console') {
@@ -491,20 +491,11 @@
           if (row) row.hidden = true;
         }
       });
+      root.querySelectorAll('*').forEach(el => {
+        if (el.shadowRoot) deepPatch(el.shadowRoot);
+      });
     }
-    function watch(root) {
-      patch(root);
-      new MutationObserver(muts => {
-        patch(root);
-        muts.forEach(m => m.addedNodes.forEach(n => {
-          if (n.nodeType === 1 && n.shadowRoot) watch(n.shadowRoot);
-        }));
-      }).observe(root, { childList: true, subtree: true });
-    }
-    customElements.whenDefined('esp-web-install-button').then(() => {
-      const btn = document.querySelector('esp-web-install-button');
-      if (btn && btn.shadowRoot) watch(btn.shadowRoot);
-    });
+    setInterval(() => deepPatch(document.body), 150);
   })();
   </script>
 </body>
