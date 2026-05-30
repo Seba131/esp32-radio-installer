@@ -510,23 +510,26 @@
         if (PL[v]) el.setAttribute('label', PL[v]);
       });
 
-      // 2. Węzły tekstowe — TreeWalker omija shadow rooty dzieci,
-      //    dzięki czemu dosięga też tekst wewnątrz ew-text-button
+      // 2. TreeWalker — węzły tekstowe (dosięga tekst w ew-text-button itp.)
       const walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT);
       const nodes = [];
       let n;
       while ((n = walker.nextNode())) nodes.push(n);
       nodes.forEach(n => {
         const t = n.textContent.trim();
-        if (!t) return;
-        if (PL[t]) {
-          n.textContent = n.textContent.replace(t, PL[t]);
-        } else if (/^Do you want to install .+$/.test(t)) {
-          n.textContent = 'Czy chcesz zainstalować ' + t.replace('Do you want to install ', '');
-        }
+        if (t && PL[t]) n.textContent = n.textContent.replace(t, PL[t]);
       });
 
-      // 3. Ukryj kafelek "Install [nazwa]" na dashboardzie
+      // 3. "Do you want to install X?" — Lit dzieli to na kilka węzłów tekstowych,
+      //    więc sprawdzamy textContent całego elementu (bez wymogu braku dzieci)
+      root.querySelectorAll('p').forEach(el => {
+        if (el.shadowRoot) return;
+        const t = (el.textContent || '').trim();
+        if (/^Do you want to install .+$/.test(t))
+          el.textContent = 'Czy chcesz zainstalować ' + t.replace('Do you want to install ', '');
+      });
+
+      // 4. Ukryj kafelek "Install [nazwa]" na dashboardzie
       root.querySelectorAll('div[slot="headline"]').forEach(el => {
         if (el.textContent.trim().startsWith('Install ')) {
           const row = el.closest('ew-list-item') || el.parentElement;
@@ -534,7 +537,7 @@
         }
       });
 
-      // 4. Rekurencja w shadow rootach dzieci
+      // 5. Rekurencja w shadow rootach dzieci
       root.querySelectorAll('*').forEach(el => {
         if (el.shadowRoot) patchRoot(el.shadowRoot);
       });
