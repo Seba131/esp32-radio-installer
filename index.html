@@ -478,5 +478,34 @@
     window.addEventListener('beforeunload', () => { keepReading = false; });
   })();
   </script>
+
+  <script>
+  (function () {
+    function patch(root) {
+      root.querySelectorAll('div[slot="headline"]').forEach(el => {
+        const t = el.textContent.trim();
+        if (t === 'Logs & Console') {
+          el.textContent = 'Logi i Konsola';
+        } else if (t.startsWith('Install ')) {
+          const row = el.closest('ew-list-item') || el.parentElement;
+          if (row) row.hidden = true;
+        }
+      });
+    }
+    function watch(root) {
+      patch(root);
+      new MutationObserver(muts => {
+        patch(root);
+        muts.forEach(m => m.addedNodes.forEach(n => {
+          if (n.nodeType === 1 && n.shadowRoot) watch(n.shadowRoot);
+        }));
+      }).observe(root, { childList: true, subtree: true });
+    }
+    customElements.whenDefined('esp-web-install-button').then(() => {
+      const btn = document.querySelector('esp-web-install-button');
+      if (btn && btn.shadowRoot) watch(btn.shadowRoot);
+    });
+  })();
+  </script>
 </body>
 </html>
