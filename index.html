@@ -493,37 +493,40 @@
   <script>
   (function () {
     const PL = {
-      'Confirm Installation'                        : 'Potwierdź instalację',
-      'All data on the device will be erased.'      : 'Wszystkie dane na urządzeniu zostaną skasowane.',
-      'Install'                                     : 'Zainstaluj',
-      'Back'                                        : 'Wstecz',
-      'Next'                                        : 'Dalej',
-      'Close'                                       : 'Zamknij',
-      'Logs & Console'                              : 'Logi i Konsola',
-      'Installation complete!'                      : 'Instalacja zakończona!',
-      'Connecting'                                  : 'Łączenie…',
-      'Preparing installation'                      : 'Przygotowanie instalacji…',
+      'Confirm Installation'                   : 'Potwierdź instalację',
+      'All data on the device will be erased.' : 'Wszystkie dane na urządzeniu zostaną skasowane.',
+      'Install'                                : 'Zainstaluj',
+      'Back'                                   : 'Wstecz',
+      'Next'                                   : 'Dalej',
+      'Close'                                  : 'Zamknij',
+      'Logs & Console'                         : 'Logi i Konsola',
+      'Installation complete!'                 : 'Instalacja zakończona!',
     };
 
-    function deepPatch(root) {
-      // --- tłumaczenie atrybutów label (np. ewt-page-message) ---
+    function patchRoot(root) {
+      // 1. Atrybuty label (ewt-page-message itp.)
       root.querySelectorAll('[label]').forEach(el => {
         const v = el.getAttribute('label');
         if (PL[v]) el.setAttribute('label', PL[v]);
       });
 
-      // --- tłumaczenie elementów liści + "Do you want to install..." ---
-      root.querySelectorAll('*').forEach(el => {
-        if (el.shadowRoot || el.childElementCount > 0) return;
-        const t = (el.textContent || '').trim();
+      // 2. Węzły tekstowe — TreeWalker omija shadow rooty dzieci,
+      //    dzięki czemu dosięga też tekst wewnątrz ew-text-button
+      const walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT);
+      const nodes = [];
+      let n;
+      while ((n = walker.nextNode())) nodes.push(n);
+      nodes.forEach(n => {
+        const t = n.textContent.trim();
+        if (!t) return;
         if (PL[t]) {
-          el.textContent = PL[t];
+          n.textContent = n.textContent.replace(t, PL[t]);
         } else if (/^Do you want to install .+$/.test(t)) {
-          el.textContent = 'Czy chcesz zainstalować ' + t.replace('Do you want to install ', '');
+          n.textContent = 'Czy chcesz zainstalować ' + t.replace('Do you want to install ', '');
         }
       });
 
-      // --- ukryj kafelek "Install [nazwa]" na dashboardzie ---
+      // 3. Ukryj kafelek "Install [nazwa]" na dashboardzie
       root.querySelectorAll('div[slot="headline"]').forEach(el => {
         if (el.textContent.trim().startsWith('Install ')) {
           const row = el.closest('ew-list-item') || el.parentElement;
@@ -531,13 +534,13 @@
         }
       });
 
-      // --- rekurencja w shadow rootach ---
+      // 4. Rekurencja w shadow rootach dzieci
       root.querySelectorAll('*').forEach(el => {
-        if (el.shadowRoot) deepPatch(el.shadowRoot);
+        if (el.shadowRoot) patchRoot(el.shadowRoot);
       });
     }
 
-    setInterval(() => deepPatch(document.body), 150);
+    setInterval(() => patchRoot(document.body), 150);
   })();
   </script>
 
