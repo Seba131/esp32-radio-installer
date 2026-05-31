@@ -953,72 +953,8 @@
       return t;
     }
 
-    // ── Logika 1: auto-zamknij po kliknięciu "Wstecz" z ekranu błędu ─────────
-    // Problem: po Wstecz esp-web-tools wraca do "Łączenie..." bez żadnego
-    // przycisku zamknięcia. Lit zarządza stanem wewnętrznie — ustawienie
-    // open=false jest natychmiast przywracane przez renderer.
-    //
-    // Jedyne niezawodne rozwiązanie: wymień <esp-web-install-button> na
-    // świeżą kopię (removeChild + createElement) → pełny reset Lit + Web Serial.
+    // ── Logika 1: przeładuj stronę gdy "Wstecz" z ekranu błędu → "Łączenie..." ─
     var failed = false;
-    var resetting = false;
-
-    // Podmiana komponentu na świeżą instancję — kasuje cały stan Lit
-    function resetEspWebTools() {
-      if (resetting) return;
-      resetting = true;
-      var el = document.querySelector('esp-web-install-button');
-      if (!el || !el.parentNode) { resetting = false; return; }
-      var parent   = el.parentNode;
-      var next     = el.nextSibling;
-      var manifest = el.getAttribute('manifest');
-      var inner    = el.innerHTML;
-      parent.removeChild(el);
-      var fresh = document.createElement('esp-web-install-button');
-      fresh.setAttribute('manifest', manifest);
-      fresh.innerHTML = inner;
-      if (next) parent.insertBefore(fresh, next); else parent.appendChild(fresh);
-      setTimeout(function () { resetting = false; }, 800);
-    }
-
-    // Klik Cancel/Zamknij — best-effort, nie zawsze dostępny
-    function clickDismiss(root) {
-      root.querySelectorAll('*').forEach(function (el) {
-        var lbl = (typeof el.label === 'string' ? el.label : '') ||
-                  (el.getAttribute ? (el.getAttribute('label') || '') : '');
-        var txt = (el.childNodes.length === 1 && el.firstChild && el.firstChild.nodeType === 3)
-                  ? el.firstChild.textContent.trim() : el.textContent.trim();
-        if (txt === 'Zamknij' || txt === 'Close' ||
-            txt === 'Anuluj'  || txt === 'Cancel' ||
-            lbl === 'Zamknij' || lbl === 'Close'  ||
-            lbl === 'Anuluj'  || lbl === 'Cancel') {
-          el.click();
-        }
-        if (el.shadowRoot) clickDismiss(el.shadowRoot);
-      });
-    }
-
-    function patchWstecz(root) {
-      root.querySelectorAll('*').forEach(function (el) {
-        var lbl = (typeof el.label === 'string' ? el.label : '') ||
-                  (el.getAttribute ? (el.getAttribute('label') || '') : '');
-        var txt = el.textContent.trim();
-        if ((txt === 'Wstecz' || txt === 'Back' || lbl === 'Wstecz' || lbl === 'Back')
-            && !el._wsteczPatched) {
-          el._wsteczPatched = true;
-          el.addEventListener('click', function () {
-            // Najpierw próba przez Cancel (na wypadek że istnieje)
-            setTimeout(function () {
-              var e = document.querySelector('esp-web-install-button');
-              if (e && e.shadowRoot) clickDismiss(e.shadowRoot);
-            }, 200);
-            // Reset komponentu — niezawodny fallback gdy brak Cancel
-            setTimeout(resetEspWebTools, 500);
-          });
-        }
-        if (el.shadowRoot) patchWstecz(el.shadowRoot);
-      });
-    }
 
     // ── Logika 2: timer 90s — wykrywa zawieszenie wgrywania ──────────────────
     var STUCK_MS     = 90000;
@@ -1070,16 +1006,13 @@
       var isConnecting = t.indexOf('Łączenie z urządzeniem')      !== -1 ||
                          t.indexOf('Connecting')                   !== -1;
 
-      // Auto-zamknij
-      // WAŻNE: failed && isConnecting musi być PRZED isFailed — esp-web-tools
-      // podczas przejścia może mieć oba teksty w shadow DOM jednocześnie,
-      // więc priorytet dajemy wykryciu "był błąd → teraz łączy" → reset.
+      // Wstecz z ekranu błędu → komponent wraca do "Łączenie..." → reload strony.
+      // window.location.reload() jest jedynym w 100% niezawodnym sposobem —
+      // resetEspWebTools/shadow-DOM-patching były zawodne przez stan wewnętrzny Lit.
       if (failed && isConnecting) {
-        failed = false;
-        resetEspWebTools();
+        window.location.reload();
       } else if (isFailed) {
         failed = true;
-        patchWstecz(btnEl.shadowRoot);
       } else if (dialogEmpty) {
         failed = false;
       }
