@@ -278,6 +278,32 @@
 </head>
 <body>
   <script>
+  // ===== Tłumaczenie natywnych alertów (Web Serial API / esp-web-tools) =====
+  // esp-web-tools wywołuje window.alert() dla niektórych błędów portów —
+  // normalny system tłumaczeń shadow DOM tego nie łapie, więc nadpisujemy alert.
+  (function () {
+    var _origAlert = window.alert;
+    window.alert = function (msg) {
+      if (typeof msg === 'string') {
+        if (msg.indexOf('Failed to open serial port') !== -1) {
+          msg = 'Nie można otworzyć portu szeregowego.\n\n' +
+                'Możliwe przyczyny:\n' +
+                '• Port jest zajęty — zamknij monitor szeregowy\n  (Arduino IDE, PlatformIO, PuTTY)\n' +
+                '• Urządzenie odłączone — wepnij kabel USB ponownie\n' +
+                '• Inna karta przeglądarki używa tego portu\n\n' +
+                'Odśwież stronę i spróbuj ponownie.';
+        } else if (msg.indexOf('Failed to execute') !== -1 && msg.indexOf('SerialPort') !== -1) {
+          msg = msg
+            .replace("Failed to execute 'open' on 'SerialPort':", 'Błąd portu szeregowego:')
+            .replace('Failed to open serial port.', 'Nie można otworzyć portu szeregowego.');
+        }
+      }
+      _origAlert.call(window, msg);
+    };
+  })();
+  </script>
+
+  <script>
   // ===== ESP Web Tools: pełne tłumaczenie shadow DOM =====
   // Słownik i funkcje są globalne (window._espPL) — używane zarówno przez
   // MutationObserver (ten skrypt) jak i przez setInterval niżej.
@@ -935,11 +961,14 @@
     // Jedyne niezawodne rozwiązanie: wymień <esp-web-install-button> na
     // świeżą kopię (removeChild + createElement) → pełny reset Lit + Web Serial.
     var failed = false;
+    var resetting = false;
 
     // Podmiana komponentu na świeżą instancję — kasuje cały stan Lit
     function resetEspWebTools() {
+      if (resetting) return;
+      resetting = true;
       var el = document.querySelector('esp-web-install-button');
-      if (!el || !el.parentNode) return;
+      if (!el || !el.parentNode) { resetting = false; return; }
       var parent   = el.parentNode;
       var next     = el.nextSibling;
       var manifest = el.getAttribute('manifest');
@@ -949,6 +978,7 @@
       fresh.setAttribute('manifest', manifest);
       fresh.innerHTML = inner;
       if (next) parent.insertBefore(fresh, next); else parent.appendChild(fresh);
+      setTimeout(function () { resetting = false; }, 800);
     }
 
     // Klik Cancel/Zamknij — best-effort, nie zawsze dostępny
@@ -1041,13 +1071,15 @@
                          t.indexOf('Connecting')                   !== -1;
 
       // Auto-zamknij
-      if (isFailed) {
-        failed = true;
-        patchWstecz(btnEl.shadowRoot);   // podpina obsługę Wstecz → resetEspWebTools
-      } else if (failed && isConnecting) {
-        // Fallback: przejście failed→connecting bez kliknięcia Wstecz
+      // WAŻNE: failed && isConnecting musi być PRZED isFailed — esp-web-tools
+      // podczas przejścia może mieć oba teksty w shadow DOM jednocześnie,
+      // więc priorytet dajemy wykryciu "był błąd → teraz łączy" → reset.
+      if (failed && isConnecting) {
         failed = false;
-        setTimeout(resetEspWebTools, 300);
+        resetEspWebTools();
+      } else if (isFailed) {
+        failed = true;
+        patchWstecz(btnEl.shadowRoot);
       } else if (dialogEmpty) {
         failed = false;
       }
