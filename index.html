@@ -929,19 +929,48 @@
 
     // ── Logika 1: auto-zamknij po kliknięciu "Wstecz" z ekranu błędu ─────────
     // Po kliknięciu Wstecz esp-web-tools wraca do "Łączenie..." nieskończenie.
-    // Wykrywamy failed→Connecting i klikamy Zamknij zamiast czekać.
+    // Strategia dwuwarstwowa:
+    //   1. Gdy widoczny ekran błędu → patch przycisku "Wstecz" żeby po kliknięciu
+    //      wywołał clickDismiss z opóźnieniem (gdy stan zmieni się na "Connecting")
+    //   2. Fallback polling: gdy failed=true && isConnecting → clickDismiss
+    // clickDismiss obsługuje WSZYSTKIE przyciski zamykające dialog:
+    //   Zamknij / Close / Anuluj / Cancel
     var failed = false;
 
-    function clickClose(root) {
+    function clickDismiss(root) {
       root.querySelectorAll('*').forEach(function (el) {
         var lbl = (typeof el.label === 'string' ? el.label : '') ||
                   (el.getAttribute ? (el.getAttribute('label') || '') : '');
         var txt = (el.childNodes.length === 1 && el.firstChild && el.firstChild.nodeType === 3)
                   ? el.firstChild.textContent.trim() : el.textContent.trim();
-        if (txt === 'Zamknij' || txt === 'Close' || lbl === 'Zamknij' || lbl === 'Close') {
+        if (txt === 'Zamknij' || txt === 'Close' ||
+            txt === 'Anuluj'  || txt === 'Cancel' ||
+            lbl === 'Zamknij' || lbl === 'Close'  ||
+            lbl === 'Anuluj'  || lbl === 'Cancel') {
           el.click();
         }
-        if (el.shadowRoot) clickClose(el.shadowRoot);
+        if (el.shadowRoot) clickDismiss(el.shadowRoot);
+      });
+    }
+
+    // Patch przycisku "Wstecz" na ekranie błędu: po kliknięciu wywołuje
+    // clickDismiss z kilkoma próbami (100/400/900 ms) — raz ze stanem Anuluj,
+    // raz gdy dialog może być już w innym stanie.
+    function patchWstecz(root, btnEl) {
+      root.querySelectorAll('*').forEach(function (el) {
+        var lbl = (typeof el.label === 'string' ? el.label : '') ||
+                  (el.getAttribute ? (el.getAttribute('label') || '') : '');
+        var txt = el.textContent.trim();
+        if ((txt === 'Wstecz' || txt === 'Back' || lbl === 'Wstecz' || lbl === 'Back')
+            && !el._wsteczPatched) {
+          el._wsteczPatched = true;
+          el.addEventListener('click', function () {
+            setTimeout(function () { clickDismiss(btnEl.shadowRoot); }, 100);
+            setTimeout(function () { clickDismiss(btnEl.shadowRoot); }, 400);
+            setTimeout(function () { clickDismiss(btnEl.shadowRoot); }, 900);
+          });
+        }
+        if (el.shadowRoot) patchWstecz(el.shadowRoot, btnEl);
       });
     }
 
@@ -998,13 +1027,13 @@
       // Auto-zamknij
       if (isFailed) {
         failed = true;
+        patchWstecz(btnEl.shadowRoot, btnEl);   // warstwa 1: patch przycisku Wstecz
       } else if (failed && isConnecting) {
         failed = false;
-        clickClose(btnEl.shadowRoot);
+        clickDismiss(btnEl.shadowRoot);          // warstwa 2: fallback polling → Anuluj/Cancel
       } else if (dialogEmpty) {
         // Dialog zamknięty całkowicie — reset.
         // NIE resetujemy na stanach przejściowych (Wgrywanie, Kasowanie itp.)
-        // bo to właśnie powodowało brak auto-close po kliknięciu Wstecz.
         failed = false;
       }
 
