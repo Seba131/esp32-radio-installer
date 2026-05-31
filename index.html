@@ -953,8 +953,22 @@
       return t;
     }
 
-    // ── Logika 1: przeładuj stronę gdy "Wstecz" z ekranu błędu → "Łączenie..." ─
+    // ── Logika 1: reload gdy klik "Wstecz" z ekranu błędu ─────────────────────
+    // Klik wewnątrz shadow DOM ma composed:true i bąbelkuje na element hosta
+    // w normalnym DOM. Słuchamy TAM — żadnych interwałów, żadnych race condition.
     var failed = false;
+    var registeredHost = null;
+
+    function registerClickReload(el) {
+      if (el === registeredHost) return;
+      registeredHost = el;
+      el.addEventListener('click', function () {
+        if (failed) {
+          // Jakikolwiek klik gdy aktywny ekran błędu = klik Wstecz → reload
+          window.location.reload();
+        }
+      });
+    }
 
     // ── Logika 2: timer 90s — wykrywa zawieszenie wgrywania ──────────────────
     var STUCK_MS     = 90000;
@@ -999,6 +1013,9 @@
         return;
       }
 
+      // Rejestruj listener kliku na hoście (robi to tylko raz)
+      registerClickReload(btnEl);
+
       var t            = scanShadow(btnEl.shadowRoot);
       var dialogEmpty  = !t.trim();
       var isFailed     = t.indexOf('Instalacja nie powiodła się') !== -1 ||
@@ -1006,9 +1023,7 @@
       var isConnecting = t.indexOf('Łączenie z urządzeniem')      !== -1 ||
                          t.indexOf('Connecting')                   !== -1;
 
-      // Wstecz z ekranu błędu → komponent wraca do "Łączenie..." → reload strony.
-      // window.location.reload() jest jedynym w 100% niezawodnym sposobem —
-      // resetEspWebTools/shadow-DOM-patching były zawodne przez stan wewnętrzny Lit.
+      // Fallback: jeśli interwał zdąży złapać przejście failed→Connecting
       if (failed && isConnecting) {
         window.location.reload();
       } else if (isFailed) {
