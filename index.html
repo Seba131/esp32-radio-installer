@@ -4,6 +4,10 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>ESP32 Radio — Instalator</title>
+  <!-- wymuszamy brak cache przeglądarki -->
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+  <meta http-equiv="Pragma" content="no-cache">
+  <meta http-equiv="Expires" content="0">
 
   <!-- ESP Web Tools -->
   <script type="module"
@@ -502,10 +506,13 @@
     };
 
     // MutationObserver na każdym nowym shadow root
+    // Zapisujemy też referencje do shadow rootów — potrzebne do detekcji błędu instalacji
+    window._espShadowRoots = window._espShadowRoots || [];
     let busy = false;
     const orig = Element.prototype.attachShadow;
     Element.prototype.attachShadow = function (init) {
       const shadow = orig.call(this, init);
+      window._espShadowRoots.push(shadow);   // zachowaj referencję (nawet dla closed)
       new MutationObserver(function () {
         if (busy || window.currentLang !== 'pl') return;
         busy = true;
@@ -953,21 +960,55 @@
       return t;
     }
 
-    // ── Logika 1: reload gdy klik "Wstecz" z ekranu błędu ─────────────────────
-    // Klik wewnątrz shadow DOM ma composed:true i bąbelkuje na element hosta
-    // w normalnym DOM. Słuchamy TAM — żadnych interwałów, żadnych race condition.
+    // ── Logika 1: wykryj "Installation failed" i pokaż nasz przycisk ──────────
     var failed = false;
-    var registeredHost = null;
+    var failDlg = null;   // element <dialog> z przyciskiem "Zamknij"
 
-    function registerClickReload(el) {
-      if (el === registeredHost) return;
-      registeredHost = el;
-      el.addEventListener('click', function () {
-        if (failed) {
-          // Jakikolwiek klik gdy aktywny ekran błędu = klik Wstecz → reload
-          window.location.reload();
-        }
+    // Skanuje WSZYSTKIE zapisane shadow rooty (w tym closed), nie tylko te dostępne
+    // przez el.shadowRoot. Dzięki temu działa nawet gdy esp-web-tools używa
+    // nested shadow DOM lub closed shadow roots.
+    function scanAllShadowRoots() {
+      var t = '';
+      (window._espShadowRoots || []).forEach(function (sr) {
+        try { t += sr.textContent || ''; } catch (e) {}
       });
+      return t;
+    }
+
+    function showFailDialog() {
+      if (failDlg) return;
+      // Styl backdrop i pozycja
+      if (!document.getElementById('_fds')) {
+        var ss = document.createElement('style');
+        ss.id = '_fds';
+        ss.textContent = '#_fd{background:transparent;border:none;padding:0;' +
+          'position:fixed;bottom:28px;top:auto;left:50%;' +
+          'transform:translateX(-50%);margin:0}' +
+          '#_fd::backdrop{background:transparent}';
+        document.head.appendChild(ss);
+      }
+      failDlg = document.createElement('dialog');
+      failDlg.id = '_fd';
+      var btn = document.createElement('button');
+      btn.style.cssText = 'background:#c62828;color:#fff;border:none;' +
+        'border-radius:14px;padding:14px 32px;font-size:1rem;font-weight:700;' +
+        'cursor:pointer;box-shadow:0 6px 28px rgba(0,0,0,.6);' +
+        'font-family:system-ui,sans-serif;';
+      btn.onclick = function () { window.location.reload(); };
+      btn.textContent = (window.currentLang === 'en')
+        ? '🔄 Close and try again'
+        : '🔄 Zamknij i spróbuj ponownie';
+      failDlg.addEventListener('cancel', function (e) { e.preventDefault(); });
+      failDlg.appendChild(btn);
+      document.body.appendChild(failDlg);
+      try { failDlg.showModal(); } catch (e) { failDlg.style.display = 'block'; }
+    }
+
+    function hideFailDialog() {
+      if (!failDlg) return;
+      try { failDlg.close(); } catch (e) {}
+      try { document.body.removeChild(failDlg); } catch (e) {}
+      failDlg = null;
     }
 
     // ── Logika 2: timer 90s — wykrywa zawieszenie wgrywania ──────────────────
@@ -1013,34 +1054,22 @@
         return;
       }
 
-      // Rejestruj listener kliku na hoście (robi to tylko raz)
-      registerClickReload(btnEl);
-
-      var t            = scanShadow(btnEl.shadowRoot);
+      // Skanuj WSZYSTKIE shadow rooty (zapisane przez monkey-patch attachShadow)
+      var t            = scanAllShadowRoots() || scanShadow(btnEl.shadowRoot);
       var dialogEmpty  = !t.trim();
-      var isFailed     = t.indexOf('Instalacja nie powiodła się') !== -1 ||
-                         t.indexOf('Installation failed')         !== -1;
-      var isConnecting = t.indexOf('Łączenie z urządzeniem')      !== -1 ||
-                         t.indexOf('Connecting')                   !== -1;
+      var isFailed     = t.indexOf('Installation failed')         !== -1 ||
+                         t.indexOf('Instalacja nie powiodła się') !== -1;
+      var isConnecting = t.indexOf('Connecting')                   !== -1 ||
+                         t.indexOf('Łączenie z urządzeniem')      !== -1;
 
-      // Pokaż/ukryj nasz własny przycisk w normalnym DOM (niezależny od shadow DOM)
-      var failBtn = document.getElementById('fail-retry-btn');
+      // Pokaż/ukryj <dialog> z przyciskiem (showModal → top layer, zawsze nad dialogiem esp-web-tools)
       if (isFailed) {
         failed = true;
-        if (failBtn) {
-          failBtn.removeAttribute('hidden');
-          var b = failBtn.querySelector('button');
-          if (b) b.textContent = (window.currentLang === 'en')
-            ? '🔄 Close and try again'
-            : '🔄 Zamknij i spróbuj ponownie';
-        }
+        showFailDialog();
       } else {
-        if (failBtn) failBtn.setAttribute('hidden', '');
-        if (dialogEmpty) failed = false;
+        hideFailDialog();
+        if (dialogEmpty || isConnecting) failed = false;
       }
-
-      // Dodatkowy fallback przez interwał
-      if (failed && isConnecting) window.location.reload();
 
       // Flash-warn (co ~1000 ms = 10 ticków × 100 ms)
       if (++flashTick >= 10) {
@@ -1056,18 +1085,8 @@
   })();
   </script>
 
-  <!-- Przycisk "Zamknij i spróbuj ponownie" — pojawia się gdy instalacja nie powiodła się.
-       Jest w normalnym DOM z position:fixed, NIE w shadow DOM — zawsze działa. -->
-  <div id="fail-retry-btn" hidden
-       style="position:fixed;bottom:28px;left:50%;transform:translateX(-50%);
-              z-index:99999;text-align:center;">
-    <button onclick="window.location.reload()"
-            style="background:#c62828;color:#fff;border:none;border-radius:14px;
-                   padding:14px 32px;font-size:1rem;font-weight:700;cursor:pointer;
-                   box-shadow:0 6px 28px rgba(0,0,0,0.55);letter-spacing:0.02em;
-                   font-family:system-ui,sans-serif;">
-      🔄 Zamknij i spróbuj ponownie
-    </button>
-  </div>
+  <!-- Numer builda — widoczny przy błędzie żeby potwierdzić wersję kodu -->
+  <div id="_build" style="position:fixed;bottom:4px;right:8px;font-size:10px;
+       opacity:.4;color:#fff;pointer-events:none;z-index:1">build #9</div>
 </body>
 </html>
