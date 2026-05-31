@@ -239,6 +239,33 @@
       border-color: rgba(255,255,255,0.65);
     }
     .lang-btn:hover:not(.active) { background: rgba(255,255,255,0.22); }
+
+    /* ===== Notatka przeglądarki na górze ===== */
+    .note-top {
+      font-size: 0.78rem;
+      opacity: 0.72;
+      line-height: 1.4;
+      margin: -4px 0 22px;
+    }
+
+    /* ===== Ostrzeżenie timeout wgrywania ===== */
+    .flash-warn {
+      background: rgba(255, 100, 0, 0.2);
+      border: 2px solid rgba(255, 150, 0, 0.7);
+      border-radius: 12px;
+      padding: 14px 18px;
+      margin: 16px 0 4px;
+      font-size: 0.88rem;
+      line-height: 1.6;
+      text-align: left;
+      animation: flash-pulse 2s ease-in-out infinite;
+    }
+    .flash-warn ul { margin: 8px 0 0; padding-left: 20px; }
+    .flash-warn li { margin-bottom: 5px; }
+    @keyframes flash-pulse {
+      0%,100% { border-color: rgba(255,150,0,0.7); }
+      50%      { border-color: rgba(255,220,0,1.0); }
+    }
   </style>
 </head>
 <body>
@@ -439,6 +466,10 @@
 
     <h1>📻 ESP32 Radio (Sebastian Piwowarski)</h1>
     <p><span class="fw-ver" id="fw-version">wersja …</span></p>
+    <p class="note-top" data-i18n-html="note">
+      Wymagana przeglądarka <b>Chrome</b> lub <b>Edge</b> na komputerze (Web Serial API).<br>
+      Firefox i Safari oraz telefony nie są obsługiwane.
+    </p>
     <p class="sub" data-i18n="subtitle">Wgraj firmware bezpośrednio z przeglądarki — bez instalowania żadnych programów.</p>
 
     <div class="ports-info">
@@ -584,10 +615,16 @@
       </p>
     </details>
 
-    <p class="note" data-i18n-html="note">
-      Wymagana przeglądarka <b>Chrome</b> lub <b>Edge</b> na komputerze (Web Serial API).<br>
-      Firefox i Safari oraz telefony nie są obsługiwane.
-    </p>
+    <div id="flash-warning" class="flash-warn" hidden data-i18n-html="flash-warn">
+      ⚠️ <b>Wgrywanie trwa już ponad 90 sekund — coś może być nie tak.</b><br>
+      Sprawdź poniższe i odśwież stronę:
+      <ul>
+        <li>Użyj portu <b>UART</b> (nie natywnego USB) — tylko ten działa stabilnie</li>
+        <li>Sprawdź czy kabel USB przesyła dane (nie tylko ładuje)</li>
+        <li>Podłącz bezpośrednio do komputera — bez hubów USB</li>
+        <li>Wejdź ręcznie w tryb wgrywania: przytrzymaj <kbd>BOOT</kbd>, naciśnij <kbd>RST</kbd>, puść <kbd>BOOT</kbd> — potem odśwież stronę i spróbuj ponownie</li>
+      </ul>
+    </div>
   </div>
 
   <script>
@@ -745,6 +782,7 @@
       'btn-send':         'Wyślij',
       'term-note':        'Działa tylko w <b>Chrome/Edge</b> na komputerze. Terminal i instalator nie mogą być połączone naraz — jeśli przed chwilą wgrywałeś firmware, odśwież stronę.',
       'note':             'Wymagana przeglądarka <b>Chrome</b> lub <b>Edge</b> na komputerze (Web Serial API).<br>Firefox i Safari oraz telefony nie są obsługiwane.',
+      'flash-warn':       '⚠️ <b>Wgrywanie trwa już ponad 90 sekund — coś może być nie tak.</b><br>Sprawdź poniższe i odśwież stronę:<ul><li>Użyj portu <b>UART</b> (nie natywnego USB) — tylko ten działa stabilnie</li><li>Sprawdź czy kabel USB przesyła dane (nie tylko ładuje)</li><li>Podłącz bezpośrednio do komputera — bez hubów USB</li><li>Wejdź ręcznie w tryb wgrywania: przytrzymaj <kbd>BOOT</kbd>, naciśnij <kbd>RST</kbd>, puść <kbd>BOOT</kbd> — potem odśwież stronę i spróbuj ponownie</li></ul>',
     },
     en: {
       'page-title':       'ESP32 Radio — Installer',
@@ -772,6 +810,7 @@
       'btn-send':         'Send',
       'term-note':        'Works only in <b>Chrome/Edge</b> on desktop. The terminal and installer cannot be connected at the same time — if you just flashed firmware, refresh the page.',
       'note':             '<b>Chrome</b> or <b>Edge</b> browser required on desktop (Web Serial API).<br>Firefox, Safari, and mobile devices are not supported.',
+      'flash-warn':       '⚠️ <b>Flashing has been running for over 90 seconds — something may be wrong.</b><br>Check the following and refresh the page:<ul><li>Use the <b>UART</b> port (not native USB) — only UART works reliably</li><li>Make sure your USB cable supports data transfer (not charge-only)</li><li>Connect directly to your computer — avoid USB hubs</li><li>Enter flash mode manually: hold <kbd>BOOT</kbd>, press <kbd>RST</kbd>, release <kbd>BOOT</kbd> — then refresh and try again</li></ul>',
     }
   };
 
@@ -853,6 +892,54 @@
         el.textContent = prefix + ' ' + m.version;
       }
     });
+  </script>
+
+  <script>
+  // ===== Timer 90s: wykrywa zawieszenie wgrywania =====
+  (function () {
+    var STUCK_MS = 90000;
+    var FLASH_STATES_PL = ['Kasowanie danych', 'Instalowanie', 'Wgrywanie'];
+    var FLASH_STATES_EN = ['Erasing', 'Installing', 'Writing'];
+
+    var startTime = null;
+    var warned = false;
+
+    function shadowText(root) {
+      var t = root.textContent || '';
+      root.querySelectorAll('*').forEach(function (el) {
+        if (el.shadowRoot) t += shadowText(el.shadowRoot);
+      });
+      return t;
+    }
+
+    function isFlashing() {
+      var t = shadowText(document.body);
+      var states = (window.currentLang === 'en') ? FLASH_STATES_EN : FLASH_STATES_PL;
+      return states.some(function (s) { return t.indexOf(s) !== -1; });
+    }
+
+    function showWarning() {
+      var el = document.getElementById('flash-warning');
+      if (el) el.hidden = false;
+      warned = true;
+    }
+
+    function hideWarning() {
+      var el = document.getElementById('flash-warning');
+      if (el) el.hidden = true;
+      startTime = null;
+      warned = false;
+    }
+
+    setInterval(function () {
+      if (isFlashing()) {
+        if (!startTime) startTime = Date.now();
+        if (!warned && (Date.now() - startTime) >= STUCK_MS) showWarning();
+      } else {
+        if (startTime) hideWarning();
+      }
+    }, 1000);
+  })();
   </script>
 </body>
 </html>
