@@ -1023,14 +1023,24 @@
       var isConnecting = t.indexOf('Łączenie z urządzeniem')      !== -1 ||
                          t.indexOf('Connecting')                   !== -1;
 
-      // Fallback: jeśli interwał zdąży złapać przejście failed→Connecting
-      if (failed && isConnecting) {
-        window.location.reload();
-      } else if (isFailed) {
+      // Pokaż/ukryj nasz własny przycisk w normalnym DOM (niezależny od shadow DOM)
+      var failBtn = document.getElementById('fail-retry-btn');
+      if (isFailed) {
         failed = true;
-      } else if (dialogEmpty) {
-        failed = false;
+        if (failBtn) {
+          failBtn.removeAttribute('hidden');
+          var b = failBtn.querySelector('button');
+          if (b) b.textContent = (window.currentLang === 'en')
+            ? '🔄 Close and try again'
+            : '🔄 Zamknij i spróbuj ponownie';
+        }
+      } else {
+        if (failBtn) failBtn.setAttribute('hidden', '');
+        if (dialogEmpty) failed = false;
       }
+
+      // Dodatkowy fallback przez interwał
+      if (failed && isConnecting) window.location.reload();
 
       // Flash-warn (co ~1000 ms = 10 ticków × 100 ms)
       if (++flashTick >= 10) {
@@ -1045,5 +1055,19 @@
     }, 100);
   })();
   </script>
+
+  <!-- Przycisk "Zamknij i spróbuj ponownie" — pojawia się gdy instalacja nie powiodła się.
+       Jest w normalnym DOM z position:fixed, NIE w shadow DOM — zawsze działa. -->
+  <div id="fail-retry-btn" hidden
+       style="position:fixed;bottom:28px;left:50%;transform:translateX(-50%);
+              z-index:99999;text-align:center;">
+    <button onclick="window.location.reload()"
+            style="background:#c62828;color:#fff;border:none;border-radius:14px;
+                   padding:14px 32px;font-size:1rem;font-weight:700;cursor:pointer;
+                   box-shadow:0 6px 28px rgba(0,0,0,0.55);letter-spacing:0.02em;
+                   font-family:system-ui,sans-serif;">
+      🔄 Zamknij i spróbuj ponownie
+    </button>
+  </div>
 </body>
 </html>
