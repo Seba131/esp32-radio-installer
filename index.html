@@ -928,14 +928,30 @@
     }
 
     // ── Logika 1: auto-zamknij po kliknięciu "Wstecz" z ekranu błędu ─────────
-    // Problem: po Wstecz esp-web-tools wraca do "Łączenie..." bez przycisku zamknięcia.
-    // Rozwiązanie dwutorowe przez ~4 sekundy po kliknięciu Wstecz:
-    //   A) clickDismiss — klika Cancel/Anuluj/Zamknij/Close jeśli jest widoczny
-    //   B) forceCloseDialog — bezpośrednio ustawia open=false na ewt-dialog/<dialog>
-    // Obie metody wywoływane co 100 ms przez polling (nie przez jednorazowe timeouty).
-    var failed      = false;
-    var dismissUntil = 0;   // zamykaj aktywnie do tego timestampu
+    // Problem: po Wstecz esp-web-tools wraca do "Łączenie..." bez żadnego
+    // przycisku zamknięcia. Lit zarządza stanem wewnętrznie — ustawienie
+    // open=false jest natychmiast przywracane przez renderer.
+    //
+    // Jedyne niezawodne rozwiązanie: wymień <esp-web-install-button> na
+    // świeżą kopię (removeChild + createElement) → pełny reset Lit + Web Serial.
+    var failed = false;
 
+    // Podmiana komponentu na świeżą instancję — kasuje cały stan Lit
+    function resetEspWebTools() {
+      var el = document.querySelector('esp-web-install-button');
+      if (!el || !el.parentNode) return;
+      var parent   = el.parentNode;
+      var next     = el.nextSibling;
+      var manifest = el.getAttribute('manifest');
+      var inner    = el.innerHTML;
+      parent.removeChild(el);
+      var fresh = document.createElement('esp-web-install-button');
+      fresh.setAttribute('manifest', manifest);
+      fresh.innerHTML = inner;
+      if (next) parent.insertBefore(fresh, next); else parent.appendChild(fresh);
+    }
+
+    // Klik Cancel/Zamknij — best-effort, nie zawsze dostępny
     function clickDismiss(root) {
       root.querySelectorAll('*').forEach(function (el) {
         var lbl = (typeof el.label === 'string' ? el.label : '') ||
@@ -952,28 +968,7 @@
       });
     }
 
-    // Bezpośrednie zamknięcie dialogu — działa nawet gdy brak przycisku Cancel
-    function forceCloseDialog(root) {
-      root.querySelectorAll('*').forEach(function (el) {
-        var tag = el.tagName ? el.tagName.toLowerCase() : '';
-        if (tag === 'dialog' && el.open) {
-          try { el.close(); } catch (_) {}
-        }
-        if ((tag === 'ewt-dialog' || tag === 'mwc-dialog') && el.open) {
-          el.open = false;
-        }
-        if (el.shadowRoot) forceCloseDialog(el.shadowRoot);
-      });
-    }
-
-    function tryDismiss(btnEl) {
-      if (!btnEl || !btnEl.shadowRoot) return;
-      clickDismiss(btnEl.shadowRoot);
-      forceCloseDialog(btnEl.shadowRoot);
-    }
-
-    // Zamiast jednorazowych timeoutów: ustawiamy okno czasowe — polling robi resztę
-    function patchWstecz(root, btnEl) {
+    function patchWstecz(root) {
       root.querySelectorAll('*').forEach(function (el) {
         var lbl = (typeof el.label === 'string' ? el.label : '') ||
                   (el.getAttribute ? (el.getAttribute('label') || '') : '');
@@ -982,10 +977,16 @@
             && !el._wsteczPatched) {
           el._wsteczPatched = true;
           el.addEventListener('click', function () {
-            dismissUntil = Date.now() + 4000;   // próbuj zamknąć przez 4 s po kliknięciu
+            // Najpierw próba przez Cancel (na wypadek że istnieje)
+            setTimeout(function () {
+              var e = document.querySelector('esp-web-install-button');
+              if (e && e.shadowRoot) clickDismiss(e.shadowRoot);
+            }, 200);
+            // Reset komponentu — niezawodny fallback gdy brak Cancel
+            setTimeout(resetEspWebTools, 500);
           });
         }
-        if (el.shadowRoot) patchWstecz(el.shadowRoot, btnEl);
+        if (el.shadowRoot) patchWstecz(el.shadowRoot);
       });
     }
 
@@ -1042,20 +1043,13 @@
       // Auto-zamknij
       if (isFailed) {
         failed = true;
-        patchWstecz(btnEl.shadowRoot, btnEl);   // rejestruje klik Wstecz → ustawia dismissUntil
+        patchWstecz(btnEl.shadowRoot);   // podpina obsługę Wstecz → resetEspWebTools
       } else if (failed && isConnecting) {
-        // Fallback: wykryto przejście failed→connecting bez kliknięcia Wstecz
+        // Fallback: przejście failed→connecting bez kliknięcia Wstecz
         failed = false;
-        dismissUntil = Math.max(dismissUntil, Date.now() + 3000);
+        setTimeout(resetEspWebTools, 300);
       } else if (dialogEmpty) {
-        // Dialog zamknięty całkowicie — reset.
         failed = false;
-        dismissUntil = 0;
-      }
-
-      // Aktywne zamykanie: co 100 ms przez całe okno dismissUntil
-      if (dismissUntil > Date.now()) {
-        tryDismiss(btnEl);
       }
 
       // Flash-warn (co ~1000 ms = 10 ticków × 100 ms)
