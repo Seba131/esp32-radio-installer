@@ -374,6 +374,15 @@
           'Upewnij się, że kabel USB służy do przesyłu danych (nie tylko do ładowania).',
         'Make sure you have the right drivers installed. Below are the drivers for common chips used in ESP devices:':
           'Upewnij się, że masz zainstalowane właściwe sterowniki. Poniżej znajdziesz sterowniki dla popularnych układów ESP:',
+        'CP2102 drivers:'              : 'Sterowniki CP2102:',
+        'CH342, CH343, CH9102 drivers:': 'Sterowniki CH342, CH343, CH9102:',
+        'CH340, CH341 drivers:'        : 'Sterowniki CH340, CH341:',
+        '(download via blue button with': '(pobierz przez niebieski przycisk z',
+        'icon)'                        : 'ikoną)',
+        'If you are using a Linux flavor, make sure that your user is part of the dialout group so it has permission to access the device.':
+          'Jeśli używasz Linuksa, upewnij się, że Twój użytkownik należy do grupy dialout.',
+        'You may need to log out & back in or reboot to activate the new group access.':
+          'Może być konieczne wylogowanie i ponowne zalogowanie lub restart.',
         'Windows & Mac': 'Windows i Mac',
       },
 
@@ -412,6 +421,21 @@
             }
 
           // ── Zdania częściowo statyczne z ${name} na końcu ──────────────
+          } else if (t.startsWith('If you didn\'t select a port')) {
+            nd.textContent = 'Jeśli nie widziałeś urządzenia na liście portów, spróbuj poniższych kroków:';
+          } else if (t.startsWith('Make sure that the device is connected')) {
+            nd.textContent = 'Upewnij się, że urządzenie jest podłączone do tego komputera (na którym działa przeglądarka).';
+          } else if (t.startsWith('Most devices have a tiny light')) {
+            nd.textContent = 'Większość urządzeń ma diodę LED gdy jest zasilana. Upewnij się, że świeci.';
+          } else if (t.startsWith('Make sure that the USB cable')) {
+            nd.textContent = 'Upewnij się, że kabel USB służy do przesyłu danych (nie tylko do ładowania).';
+          } else if (t.startsWith('Make sure you have the right drivers')) {
+            nd.textContent = 'Upewnij się, że masz zainstalowane właściwe sterowniki. Poniżej znajdziesz sterowniki dla popularnych układów ESP:';
+          } else if (t.startsWith('If you are using a Linux')) {
+            nd.textContent = 'Jeśli używasz Linuksa, upewnij się, że Twój użytkownik należy do grupy dialout.';
+          } else if (t.startsWith('You may need to log out')) {
+            nd.textContent = 'Może być konieczne wylogowanie i ponowne zalogowanie lub restart.';
+
           } else if (t.startsWith('Do you want to erase the device before installing')) {
             nd.textContent = nd.textContent.replace(
               'Do you want to erase the device before installing',
