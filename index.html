@@ -242,6 +242,46 @@
   </style>
 </head>
 <body>
+  <script>
+  // Przechwytuje attachShadow ZANIM esp-web-tools (moduł ES) się wykona.
+  // Dzięki temu MutationObserver widzi każdą zmianę tekstu w shadow DOM
+  // natychmiast — zanim przeglądarka w ogóle wyrenderuje piksel.
+  (function () {
+    const NEEDLE = 'Do you want to install';
+    const REPLACE = 'Czy chcesz zainstalować';
+
+    function patchTextNode(n) {
+      if (window.currentLang !== 'pl') return;
+      if (n.textContent.includes(NEEDLE))
+        n.textContent = n.textContent.replace(NEEDLE, REPLACE);
+    }
+
+    function walkTexts(root) {
+      const walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT);
+      let n;
+      while ((n = walker.nextNode())) patchTextNode(n);
+    }
+
+    const orig = Element.prototype.attachShadow;
+    Element.prototype.attachShadow = function (init) {
+      const shadow = orig.call(this, init);
+      new MutationObserver(mutations => {
+        for (const m of mutations) {
+          if (m.type === 'characterData') {
+            patchTextNode(m.target);
+          } else {
+            m.addedNodes.forEach(node => {
+              if (node.nodeType === Node.TEXT_NODE) patchTextNode(node);
+              else if (node.nodeType === Node.ELEMENT_NODE) walkTexts(node);
+            });
+          }
+        }
+      }).observe(shadow, { childList: true, subtree: true, characterData: true });
+      return shadow;
+    };
+  })();
+  </script>
+
   <div class="card">
     <div class="lang-bar">
       <button class="lang-btn active" data-lang="pl">🇵🇱 PL</button>
@@ -672,12 +712,18 @@
         }
       });
 
-      // 3. Paragraf "Do you want to install X?" gdy Lit scala tekst w jeden węzeł
-      root.querySelectorAll('p, div').forEach(el => {
-        if (el.shadowRoot || el.children.length) return;
-        const t = (el.textContent || '').trim();
-        if (/^Do you want to install .+/.test(t)) {
-          el.textContent = el.textContent.replace('Do you want to install ', 'Czy chcesz zainstalować ');
+      // 3. Backup: szuka <p> zawierającego "Do you want to install" i patcha
+      //    węzeł tekstowy wewnątrz (nie niszczy ewentualnych tagów <b> etc.)
+      root.querySelectorAll('p').forEach(el => {
+        if (el.shadowRoot) return;
+        if (!/Do you want to install/.test(el.textContent)) return;
+        const tw = document.createTreeWalker(el, NodeFilter.SHOW_TEXT);
+        let tn;
+        while ((tn = tw.nextNode())) {
+          if (tn.textContent.includes('Do you want to install')) {
+            tn.textContent = tn.textContent.replace('Do you want to install', 'Czy chcesz zainstalować');
+            break;
+          }
         }
       });
 
