@@ -928,14 +928,13 @@
     }
 
     // ── Logika 1: auto-zamknij po kliknięciu "Wstecz" z ekranu błędu ─────────
-    // Po kliknięciu Wstecz esp-web-tools wraca do "Łączenie..." nieskończenie.
-    // Strategia dwuwarstwowa:
-    //   1. Gdy widoczny ekran błędu → patch przycisku "Wstecz" żeby po kliknięciu
-    //      wywołał clickDismiss z opóźnieniem (gdy stan zmieni się na "Connecting")
-    //   2. Fallback polling: gdy failed=true && isConnecting → clickDismiss
-    // clickDismiss obsługuje WSZYSTKIE przyciski zamykające dialog:
-    //   Zamknij / Close / Anuluj / Cancel
-    var failed = false;
+    // Problem: po Wstecz esp-web-tools wraca do "Łączenie..." bez przycisku zamknięcia.
+    // Rozwiązanie dwutorowe przez ~4 sekundy po kliknięciu Wstecz:
+    //   A) clickDismiss — klika Cancel/Anuluj/Zamknij/Close jeśli jest widoczny
+    //   B) forceCloseDialog — bezpośrednio ustawia open=false na ewt-dialog/<dialog>
+    // Obie metody wywoływane co 100 ms przez polling (nie przez jednorazowe timeouty).
+    var failed      = false;
+    var dismissUntil = 0;   // zamykaj aktywnie do tego timestampu
 
     function clickDismiss(root) {
       root.querySelectorAll('*').forEach(function (el) {
@@ -953,9 +952,27 @@
       });
     }
 
-    // Patch przycisku "Wstecz" na ekranie błędu: po kliknięciu wywołuje
-    // clickDismiss z kilkoma próbami (100/400/900 ms) — raz ze stanem Anuluj,
-    // raz gdy dialog może być już w innym stanie.
+    // Bezpośrednie zamknięcie dialogu — działa nawet gdy brak przycisku Cancel
+    function forceCloseDialog(root) {
+      root.querySelectorAll('*').forEach(function (el) {
+        var tag = el.tagName ? el.tagName.toLowerCase() : '';
+        if (tag === 'dialog' && el.open) {
+          try { el.close(); } catch (_) {}
+        }
+        if ((tag === 'ewt-dialog' || tag === 'mwc-dialog') && el.open) {
+          el.open = false;
+        }
+        if (el.shadowRoot) forceCloseDialog(el.shadowRoot);
+      });
+    }
+
+    function tryDismiss(btnEl) {
+      if (!btnEl || !btnEl.shadowRoot) return;
+      clickDismiss(btnEl.shadowRoot);
+      forceCloseDialog(btnEl.shadowRoot);
+    }
+
+    // Zamiast jednorazowych timeoutów: ustawiamy okno czasowe — polling robi resztę
     function patchWstecz(root, btnEl) {
       root.querySelectorAll('*').forEach(function (el) {
         var lbl = (typeof el.label === 'string' ? el.label : '') ||
@@ -965,9 +982,7 @@
             && !el._wsteczPatched) {
           el._wsteczPatched = true;
           el.addEventListener('click', function () {
-            setTimeout(function () { clickDismiss(btnEl.shadowRoot); }, 100);
-            setTimeout(function () { clickDismiss(btnEl.shadowRoot); }, 400);
-            setTimeout(function () { clickDismiss(btnEl.shadowRoot); }, 900);
+            dismissUntil = Date.now() + 4000;   // próbuj zamknąć przez 4 s po kliknięciu
           });
         }
         if (el.shadowRoot) patchWstecz(el.shadowRoot, btnEl);
@@ -1027,14 +1042,20 @@
       // Auto-zamknij
       if (isFailed) {
         failed = true;
-        patchWstecz(btnEl.shadowRoot, btnEl);   // warstwa 1: patch przycisku Wstecz
+        patchWstecz(btnEl.shadowRoot, btnEl);   // rejestruje klik Wstecz → ustawia dismissUntil
       } else if (failed && isConnecting) {
+        // Fallback: wykryto przejście failed→connecting bez kliknięcia Wstecz
         failed = false;
-        clickDismiss(btnEl.shadowRoot);          // warstwa 2: fallback polling → Anuluj/Cancel
+        dismissUntil = Math.max(dismissUntil, Date.now() + 3000);
       } else if (dialogEmpty) {
         // Dialog zamknięty całkowicie — reset.
-        // NIE resetujemy na stanach przejściowych (Wgrywanie, Kasowanie itp.)
         failed = false;
+        dismissUntil = 0;
+      }
+
+      // Aktywne zamykanie: co 100 ms przez całe okno dismissUntil
+      if (dismissUntil > Date.now()) {
+        tryDismiss(btnEl);
       }
 
       // Flash-warn (co ~1000 ms = 10 ticków × 100 ms)
