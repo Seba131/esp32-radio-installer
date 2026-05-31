@@ -363,6 +363,17 @@
               break;
             }
 
+          // ── "This will take ${duration}." — duration to osobny węzeł ───
+          } else if (t === 'This will take') {
+            nd.textContent = nd.textContent.replace('This will take', 'To zajmie');
+            for (let j = i + 1; j < Math.min(i + 4, nodes.length); j++) {
+              const nt = nodes[j].textContent.trim();
+              if (!nt) continue;
+              if (nt === '2 minutes') nodes[j].textContent = nodes[j].textContent.replace('2 minutes', '2 minuty');
+              if (nt === 'a minute')  nodes[j].textContent = nodes[j].textContent.replace('a minute',  'minutę');
+              break;
+            }
+
           // ── Zdania częściowo statyczne z ${name} na końcu ──────────────
           } else if (t.startsWith('Do you want to erase the device before installing')) {
             nd.textContent = nd.textContent.replace(
