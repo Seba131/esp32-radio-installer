@@ -244,39 +244,65 @@
 <body>
   <script>
   // Przechwytuje attachShadow ZANIM esp-web-tools (moduł ES) się wykona.
-  // Dzięki temu MutationObserver widzi każdą zmianę tekstu w shadow DOM
-  // natychmiast — zanim przeglądarka w ogóle wyrenderuje piksel.
+  // KLUCZOWE: Lit renderuje "Do you want to ${action} ${name}?" jako OSOBNE
+  // węzły tekstowe: ["Do you want to "] + ["install"] + [name] + ["?"]
+  // Dlatego poprzedni kod szukający "Do you want to install" w jednym węźle
+  // nigdy nie znajdował dopasowania — takie zdanie nie istnieje w jednym węźle!
   (function () {
-    const NEEDLE = 'Do you want to install';
-    const REPLACE = 'Czy chcesz zainstalować';
+    const EXACT_PL = {
+      'Confirm Installation':                   'Potwierdź instalację',
+      'All data on the device will be erased.': 'Wszystkie dane na urządzeniu zostaną skasowane.',
+      'Install':           'Zainstaluj',
+      'Back':              'Wstecz',
+      'Next':              'Dalej',
+      'Close':             'Zamknij',
+      'Logs & Console':    'Logi i Konsola',
+      'Installation complete!': 'Instalacja zakończona!',
+      'Connecting':        'Łączenie z urządzeniem...',
+      'Connecting...':     'Łączenie z urządzeniem...',
+      'Erasing':           'Kasowanie danych...',
+      'Writing':           'Wgrywanie...',
+      'Preparing':         'Przygotowanie...',
+      'Done!':             'Gotowe!',
+    };
 
-    function patchTextNode(n) {
-      if (window.currentLang !== 'pl') return;
-      if (n.textContent.includes(NEEDLE))
-        n.textContent = n.textContent.replace(NEEDLE, REPLACE);
-    }
+    let busy = false;
 
-    function walkTexts(root) {
-      const walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT);
-      let n;
-      while ((n = walker.nextNode())) patchTextNode(n);
+    function patchShadow(root) {
+      if (busy || window.currentLang !== 'pl') return;
+      busy = true;
+      try {
+        const walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT);
+        const nodes = [];
+        let nd;
+        while ((nd = walker.nextNode())) nodes.push(nd);
+        nodes.forEach((nd, i) => {
+          const t = nd.textContent.trim();
+          if (!t) return;
+          if (EXACT_PL[t]) {
+            nd.textContent = nd.textContent.replace(t, EXACT_PL[t]);
+          } else if (t === 'Do you want to') {
+            // Patchuj ten węzeł, potem szukaj "install"/"update to" w kolejnych
+            nd.textContent = nd.textContent.replace('Do you want to', 'Czy chcesz');
+            for (let j = i + 1; j < Math.min(i + 6, nodes.length); j++) {
+              const nt = nodes[j].textContent.trim();
+              if (!nt) continue;
+              if (nt === 'install')   nodes[j].textContent = nodes[j].textContent.replace('install', 'zainstalować');
+              if (nt === 'update to') nodes[j].textContent = nodes[j].textContent.replace('update to', 'zaktualizować do');
+              break;
+            }
+          }
+        });
+      } finally {
+        busy = false;
+      }
     }
 
     const orig = Element.prototype.attachShadow;
     Element.prototype.attachShadow = function (init) {
       const shadow = orig.call(this, init);
-      new MutationObserver(mutations => {
-        for (const m of mutations) {
-          if (m.type === 'characterData') {
-            patchTextNode(m.target);
-          } else {
-            m.addedNodes.forEach(node => {
-              if (node.nodeType === Node.TEXT_NODE) patchTextNode(node);
-              else if (node.nodeType === Node.ELEMENT_NODE) walkTexts(node);
-            });
-          }
-        }
-      }).observe(shadow, { childList: true, subtree: true, characterData: true });
+      new MutationObserver(() => patchShadow(shadow))
+        .observe(shadow, { childList: true, subtree: true, characterData: true });
       return shadow;
     };
   })();
@@ -675,59 +701,59 @@
   </script>
 
   <script>
-  // ===== Tłumaczenie okna dialogowego ESP Web Tools =====
+  // ===== setInterval backup: łapie shadow roots które pojawiły się po starcie =====
   (function () {
-    const DIALOG_PL = {
-      'Confirm Installation'                   : 'Potwierdź instalację',
-      'All data on the device will be erased.' : 'Wszystkie dane na urządzeniu zostaną skasowane.',
-      'Install'                                : 'Zainstaluj',
-      'Back'                                   : 'Wstecz',
-      'Next'                                   : 'Dalej',
-      'Close'                                  : 'Zamknij',
-      'Logs & Console'                         : 'Logi i Konsola',
-      'Installation complete!'                 : 'Instalacja zakończona!',
+    const EXACT_PL = {
+      'Confirm Installation':                   'Potwierdź instalację',
+      'All data on the device will be erased.': 'Wszystkie dane na urządzeniu zostaną skasowane.',
+      'Install':           'Zainstaluj',
+      'Back':              'Wstecz',
+      'Next':              'Dalej',
+      'Close':             'Zamknij',
+      'Logs & Console':    'Logi i Konsola',
+      'Installation complete!': 'Instalacja zakończona!',
+      'Connecting':        'Łączenie z urządzeniem...',
+      'Connecting...':     'Łączenie z urządzeniem...',
+      'Erasing':           'Kasowanie danych...',
+      'Writing':           'Wgrywanie...',
+      'Preparing':         'Przygotowanie...',
+      'Done!':             'Gotowe!',
     };
 
     function patchRoot(root) {
       if (window.currentLang !== 'pl') return;
 
-      // 1. Atrybuty label
-      root.querySelectorAll('[label]').forEach(el => {
-        const v = el.getAttribute('label');
-        if (DIALOG_PL[v]) el.setAttribute('label', DIALOG_PL[v]);
+      // 1. Atrybuty label + właściwość .label (Lit używa .label=${val})
+      root.querySelectorAll('*').forEach(el => {
+        const attr = el.getAttribute('label');
+        if (attr && EXACT_PL[attr]) el.setAttribute('label', EXACT_PL[attr]);
+        if (typeof el.label === 'string' && EXACT_PL[el.label]) el.label = EXACT_PL[el.label];
       });
 
-      // 2. TreeWalker — węzły tekstowe (obejmuje też "Do you want to install")
+      // 2. TreeWalker — wszystkie węzły tekstowe z obsługą podzielonego zdania
       const walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT);
       const nodes = [];
       let n;
       while ((n = walker.nextNode())) nodes.push(n);
-      nodes.forEach(n => {
+      nodes.forEach((n, i) => {
         const t = n.textContent.trim();
         if (!t) return;
-        if (DIALOG_PL[t]) {
-          n.textContent = n.textContent.replace(t, DIALOG_PL[t]);
-        } else if (/^Do you want to install/.test(t)) {
-          n.textContent = n.textContent.replace('Do you want to install', 'Czy chcesz zainstalować');
-        }
-      });
-
-      // 3. Backup: szuka <p> zawierającego "Do you want to install" i patcha
-      //    węzeł tekstowy wewnątrz (nie niszczy ewentualnych tagów <b> etc.)
-      root.querySelectorAll('p').forEach(el => {
-        if (el.shadowRoot) return;
-        if (!/Do you want to install/.test(el.textContent)) return;
-        const tw = document.createTreeWalker(el, NodeFilter.SHOW_TEXT);
-        let tn;
-        while ((tn = tw.nextNode())) {
-          if (tn.textContent.includes('Do you want to install')) {
-            tn.textContent = tn.textContent.replace('Do you want to install', 'Czy chcesz zainstalować');
+        if (EXACT_PL[t]) {
+          n.textContent = n.textContent.replace(t, EXACT_PL[t]);
+        } else if (t === 'Do you want to') {
+          // "Do you want to" i "install"/"update to" to OSOBNE węzły w Lit!
+          n.textContent = n.textContent.replace('Do you want to', 'Czy chcesz');
+          for (let j = i + 1; j < Math.min(i + 6, nodes.length); j++) {
+            const nt = nodes[j].textContent.trim();
+            if (!nt) continue;
+            if (nt === 'install')   nodes[j].textContent = nodes[j].textContent.replace('install', 'zainstalować');
+            if (nt === 'update to') nodes[j].textContent = nodes[j].textContent.replace('update to', 'zaktualizować do');
             break;
           }
         }
       });
 
-      // 4. Ukryj kafelek "Install [nazwa]" na dashboardzie
+      // 3. Ukryj kafelek "Install [nazwa]" na dashboardzie
       root.querySelectorAll('div[slot="headline"]').forEach(el => {
         if (el.textContent.trim().startsWith('Install ')) {
           const row = el.closest('ew-list-item') || el.parentElement;
@@ -735,7 +761,7 @@
         }
       });
 
-      // 5. Rekurencja w shadow rootach dzieci
+      // 4. Rekurencja w shadow rootach dzieci
       root.querySelectorAll('*').forEach(el => {
         if (el.shadowRoot) patchRoot(el.shadowRoot);
       });
