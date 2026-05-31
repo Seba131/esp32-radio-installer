@@ -243,70 +243,178 @@
 </head>
 <body>
   <script>
-  // Przechwytuje attachShadow ZANIM esp-web-tools (moduł ES) się wykona.
-  // KLUCZOWE: Lit renderuje "Do you want to ${action} ${name}?" jako OSOBNE
-  // węzły tekstowe: ["Do you want to "] + ["install"] + [name] + ["?"]
-  // Dlatego poprzedni kod szukający "Do you want to install" w jednym węźle
-  // nigdy nie znajdował dopasowania — takie zdanie nie istnieje w jednym węźle!
+  // ===== ESP Web Tools: pełne tłumaczenie shadow DOM =====
+  // Słownik i funkcje są globalne (window._espPL) — używane zarówno przez
+  // MutationObserver (ten skrypt) jak i przez setInterval niżej.
+  // Skrypt musi być zwykłym <script> (nie module) — uruchamia się PRZED
+  // esp-web-tools, który jest modułem ES (defer).
   (function () {
-    const EXACT_PL = {
-      'Confirm Installation':                   'Potwierdź instalację',
-      'All data on the device will be erased.': 'Wszystkie dane na urządzeniu zostaną skasowane.',
-      'Install':           'Zainstaluj',
-      'Back':              'Wstecz',
-      'Next':              'Dalej',
-      'Close':             'Zamknij',
-      'Logs & Console':    'Logi i Konsola',
-      'Installation complete!': 'Instalacja zakończona!',
-      'Connecting':        'Łączenie z urządzeniem...',
-      'Connecting...':     'Łączenie z urządzeniem...',
-      'Erasing':           'Kasowanie danych...',
-      'Writing':           'Wgrywanie...',
-      'Preparing':         'Przygotowanie...',
-      'Installing':        'Instalowanie',
-      'Done!':             'Gotowe!',
-      'This will take 2 minutes.':                            'To zajmie około 2 minuty.',
-      'Keep this page visible to prevent slow down':          'Trzymaj tę stronę widoczną — unikniesz spowolnienia',
-      'Keep this page visible to prevent slowdown':           'Trzymaj tę stronę widoczną — unikniesz spowolnienia',
-    };
+    window._espPL = {
 
-    let busy = false;
+      EXACT: {
+        // ── Przyciski ──────────────────────────────────────────────────────
+        'Connect':          'Połącz',
+        'Close':            'Zamknij',
+        'Back':             'Wstecz',
+        'Next':             'Dalej',
+        'Install':          'Zainstaluj',
+        'Skip':             'Pomiń',
+        'Continue':         'Kontynuuj',
+        'Try Again':        'Spróbuj ponownie',
+        'Cancel':           'Anuluj',
+        'Reset Device':     'Zresetuj urządzenie',
+        'Download Logs':    'Pobierz logi',
+        'Erase User Data':  'Wymaż dane użytkownika',
+        'Fund Development': 'Wspomóż projekt',
+        // ── Menu ──────────────────────────────────────────────────────────
+        'Visit Device':          'Odwiedź urządzenie',
+        'Change Wi-Fi':          'Zmień Wi-Fi',
+        'Connect to Wi-Fi':      'Połącz z Wi-Fi',
+        'Logs & Console':        'Logi i konsola',
+        'Add to Home Assistant': 'Dodaj do Home Assistant',
+        // ── Nagłówki dialogów ─────────────────────────────────────────────
+        'Error':                 'Błąd',
+        'Confirm Installation':  'Potwierdź instalację',
+        'Erase device':          'Wymaż urządzenie',
+        'Installing':            'Instalowanie',
+        'Installation failed':   'Instalacja nie powiodła się',
+        'Configure Wi-Fi':       'Konfiguracja Wi-Fi',
+        'Logs':                  'Logi',
+        'No port selected':      'Nie wybrano portu',
+        // ── Postęp / statusy ──────────────────────────────────────────────
+        'Connecting':            'Łączenie z urządzeniem...',
+        'Connecting...':         'Łączenie z urządzeniem...',
+        'Scanning for networks': 'Wyszukiwanie sieci...',
+        'Trying to connect':     'Próba połączenia...',
+        'Preparing installation':'Przygotowanie instalacji...',
+        'Erasing':               'Kasowanie danych...',
+        'Erasing device...':     'Kasowanie urządzenia...',
+        'Device erased':         'Urządzenie skasowane',
+        'Wrapping up':           'Kończenie...',
+        'Writing':               'Wgrywanie...',
+        'Writing complete':      'Zapisywanie zakończone',
+        'Writing progress:':     'Postęp wgrywania:',
+        'Initializing...':       'Inicjalizacja...',
+        'Installation prepared': 'Instalacja przygotowana',
+        'Preparing':             'Przygotowanie...',
+        'Installation complete!':'Instalacja zakończona!',
+        'All done!':             'Wszystko gotowe!',
+        'Done!':                 'Gotowe!',
+        // ── Błędy ─────────────────────────────────────────────────────────
+        'Unable to connect':     'Nie można nawiązać połączenia',
+        'Timeout':               'Przekroczenie czasu oczekiwania',
+        'Failed to initialize. Try resetting your device or holding the BOOT button while clicking INSTALL.':
+          'Nie udało się zainicjalizować. Spróbuj zresetować urządzenie lub przytrzymaj BOOT podczas klikania ZAINSTALUJ.',
+        'board is not supported.': 'płytka nie jest obsługiwana.',
+        'failed:':               'nie powiodło się:',
+        // ── Wi-Fi ─────────────────────────────────────────────────────────
+        'Network':               'Sieć',
+        'Network Name':          'Nazwa sieci',
+        'Password':              'Hasło',
+        'Join other…':      'Połącz z inną…',
+        // ── Teksty informacyjne ───────────────────────────────────────────
+        'All data on the device will be erased.': 'Wszystkie dane na urządzeniu zostaną skasowane.',
+        'All data on the device will be lost.':   'Wszystkie dane na urządzeniu zostaną utracone.',
+        '? All data on the device will be lost.': '? Wszystkie dane na urządzeniu zostaną utracone.',
+        'Device connected to the network!':       'Urządzenie połączone z siecią!',
+        'Connect your device to the network to start using it.':
+          'Połącz urządzenie z siecią, aby zacząć z niego korzystać.',
+        'This will take a minute.':  'To zajmie około minuty.',
+        'This will take a minute':   'To zajmie około minuty.',
+        'This will take 2 minutes.': 'To zajmie około 2 minuty.',
+        'This will take 2 minutes':  'To zajmie około 2 minuty.',
+        'Keep this page visible to prevent slow down':  'Trzymaj tę stronę widoczną — unikniesz spowolnienia',
+        'Keep this page visible to prevent slow down.': 'Trzymaj tę stronę widoczną — unikniesz spowolnienia.',
+        'Keep this page visible to prevent slowdown':   'Trzymaj tę stronę widoczną — unikniesz spowolnienia',
+        // ── Okno "brak portu" ─────────────────────────────────────────────
+        'If you didn\'t select a port because you didn\'t see your device listed, try the following steps:':
+          'Jeśli nie wybrałeś portu bo nie widziałeś urządzenia na liście, spróbuj poniższych kroków:',
+        'Make sure that the device is connected to this computer (the one that runs the browser that shows this website)':
+          'Upewnij się, że urządzenie jest podłączone do tego komputera (na którym działa przeglądarka)',
+        'Most devices have a tiny light when it is powered on. If yours has one, make sure it is on.':
+          'Większość urządzeń ma diodę LED gdy jest zasilana. Upewnij się, że świeci.',
+        'Make sure that the USB cable you use can be used for data and is not a power-only cable.':
+          'Upewnij się, że kabel USB służy do przesyłu danych (nie tylko do ładowania).',
+        'Make sure you have the right drivers installed. Below are the drivers for common chips used in ESP devices:':
+          'Upewnij się, że masz zainstalowane właściwe sterowniki. Poniżej znajdziesz sterowniki dla popularnych układów ESP:',
+        'Windows & Mac': 'Windows i Mac',
+      },
 
-    function patchShadow(root) {
-      if (busy || window.currentLang !== 'pl') return;
-      busy = true;
-      try {
-        const walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT);
-        const nodes = [];
-        let nd;
-        while ((nd = walker.nextNode())) nodes.push(nd);
-        nodes.forEach((nd, i) => {
+      // Patchwanie tablicy węzłów tekstowych z obsługą zdań dynamicznych
+      patchNodes: function (nodes) {
+        if (window.currentLang !== 'pl') return;
+        const E = window._espPL.EXACT;
+        nodes.forEach(function (nd, i) {
           const t = nd.textContent.trim();
           if (!t) return;
-          if (EXACT_PL[t]) {
-            nd.textContent = nd.textContent.replace(t, EXACT_PL[t]);
+
+          if (E[t]) {
+            nd.textContent = nd.textContent.replace(t, E[t]);
+
+          // ── Zdania z dynamicznym ${action} rozbite na kilka węzłów ─────
           } else if (t === 'Do you want to') {
-            // Patchuj ten węzeł, potem szukaj "install"/"update to" w kolejnych
             nd.textContent = nd.textContent.replace('Do you want to', 'Czy chcesz');
             for (let j = i + 1; j < Math.min(i + 6, nodes.length); j++) {
               const nt = nodes[j].textContent.trim();
               if (!nt) continue;
-              if (nt === 'install')   nodes[j].textContent = nodes[j].textContent.replace('install', 'zainstalować');
+              if (nt === 'install')   nodes[j].textContent = nodes[j].textContent.replace('install',   'zainstalować');
               if (nt === 'update to') nodes[j].textContent = nodes[j].textContent.replace('update to', 'zaktualizować do');
+              if (nt === 'erase')     nodes[j].textContent = nodes[j].textContent.replace('erase',     'wymazać');
               break;
             }
+
+          // ── Zdania częściowo statyczne z ${name} na końcu ──────────────
+          } else if (t.startsWith('Do you want to erase the device before installing')) {
+            nd.textContent = nd.textContent.replace(
+              'Do you want to erase the device before installing',
+              'Czy chcesz wymazać urządzenie przed instalacją');
+          } else if (t.startsWith('Connected to')) {
+            nd.textContent = nd.textContent.replace('Connected to', 'Połączono z');
+          } else if (t.startsWith('Your device is running')) {
+            nd.textContent = nd.textContent.replace('Your device is running', 'Twoje urządzenie działa na');
+          } else if (t.startsWith('Initialized. Found')) {
+            nd.textContent = nd.textContent.replace('Initialized. Found', 'Zainicjalizowano. Wykryto');
+          } else if (t.endsWith('board is not supported.') && t !== 'board is not supported.') {
+            nd.textContent = nd.textContent.replace('board is not supported.', 'płytka nie jest obsługiwana.');
+          } else if (t.startsWith('Downloading firmware')) {
+            nd.textContent = nd.textContent.replace('Downloading firmware', 'Pobieranie firmware');
           }
         });
-      } finally {
-        busy = false;
-      }
-    }
+      },
 
+      // Walker: zbiera węzły tekstowe z danego roota i patchwaje je
+      patchShadow: function (root) {
+        const walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT);
+        const nodes = [];
+        let nd;
+        while ((nd = walker.nextNode())) nodes.push(nd);
+        window._espPL.patchNodes(nodes);
+      },
+
+      // Atrybuty label + właściwość .label (Lit ustawia przez .label=${val})
+      patchLabels: function (root) {
+        if (window.currentLang !== 'pl') return;
+        const E = window._espPL.EXACT;
+        root.querySelectorAll('*').forEach(function (el) {
+          const attr = el.getAttribute('label');
+          if (attr && E[attr]) el.setAttribute('label', E[attr]);
+          if (typeof el.label === 'string' && E[el.label]) el.label = E[el.label];
+        });
+      }
+    };
+
+    // MutationObserver na każdym nowym shadow root
+    let busy = false;
     const orig = Element.prototype.attachShadow;
     Element.prototype.attachShadow = function (init) {
       const shadow = orig.call(this, init);
-      new MutationObserver(() => patchShadow(shadow))
-        .observe(shadow, { childList: true, subtree: true, characterData: true });
+      new MutationObserver(function () {
+        if (busy || window.currentLang !== 'pl') return;
+        busy = true;
+        window._espPL.patchLabels(shadow);
+        window._espPL.patchShadow(shadow);
+        busy = false;
+      }).observe(shadow, { childList: true, subtree: true, characterData: true });
       return shadow;
     };
   })();
@@ -705,77 +813,18 @@
   </script>
 
   <script>
-  // ===== setInterval backup: łapie shadow roots które pojawiły się po starcie =====
+  // ===== setInterval backup — rekurencja przez shadow DOM co 150 ms =====
+  // Używa window._espPL zdefiniowanego w pierwszym skrypcie.
   (function () {
-    const EXACT_PL = {
-      'Confirm Installation':                   'Potwierdź instalację',
-      'All data on the device will be erased.': 'Wszystkie dane na urządzeniu zostaną skasowane.',
-      'Install':           'Zainstaluj',
-      'Back':              'Wstecz',
-      'Next':              'Dalej',
-      'Close':             'Zamknij',
-      'Logs & Console':    'Logi i Konsola',
-      'Installation complete!': 'Instalacja zakończona!',
-      'Connecting':        'Łączenie z urządzeniem...',
-      'Connecting...':     'Łączenie z urządzeniem...',
-      'Erasing':           'Kasowanie danych...',
-      'Writing':           'Wgrywanie...',
-      'Preparing':         'Przygotowanie...',
-      'Installing':        'Instalowanie',
-      'Done!':             'Gotowe!',
-      'This will take 2 minutes.':                            'To zajmie około 2 minuty.',
-      'Keep this page visible to prevent slow down':          'Trzymaj tę stronę widoczną — unikniesz spowolnienia',
-      'Keep this page visible to prevent slowdown':           'Trzymaj tę stronę widoczną — unikniesz spowolnienia',
-    };
-
     function patchRoot(root) {
-      if (window.currentLang !== 'pl') return;
-
-      // 1. Atrybuty label + właściwość .label (Lit używa .label=${val})
-      root.querySelectorAll('*').forEach(el => {
-        const attr = el.getAttribute('label');
-        if (attr && EXACT_PL[attr]) el.setAttribute('label', EXACT_PL[attr]);
-        if (typeof el.label === 'string' && EXACT_PL[el.label]) el.label = EXACT_PL[el.label];
-      });
-
-      // 2. TreeWalker — wszystkie węzły tekstowe z obsługą podzielonego zdania
-      const walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT);
-      const nodes = [];
-      let n;
-      while ((n = walker.nextNode())) nodes.push(n);
-      nodes.forEach((n, i) => {
-        const t = n.textContent.trim();
-        if (!t) return;
-        if (EXACT_PL[t]) {
-          n.textContent = n.textContent.replace(t, EXACT_PL[t]);
-        } else if (t === 'Do you want to') {
-          // "Do you want to" i "install"/"update to" to OSOBNE węzły w Lit!
-          n.textContent = n.textContent.replace('Do you want to', 'Czy chcesz');
-          for (let j = i + 1; j < Math.min(i + 6, nodes.length); j++) {
-            const nt = nodes[j].textContent.trim();
-            if (!nt) continue;
-            if (nt === 'install')   nodes[j].textContent = nodes[j].textContent.replace('install', 'zainstalować');
-            if (nt === 'update to') nodes[j].textContent = nodes[j].textContent.replace('update to', 'zaktualizować do');
-            break;
-          }
-        }
-      });
-
-      // 3. Ukryj kafelek "Install [nazwa]" na dashboardzie
-      root.querySelectorAll('div[slot="headline"]').forEach(el => {
-        if (el.textContent.trim().startsWith('Install ')) {
-          const row = el.closest('ew-list-item') || el.parentElement;
-          if (row) row.hidden = true;
-        }
-      });
-
-      // 4. Rekurencja w shadow rootach dzieci
-      root.querySelectorAll('*').forEach(el => {
+      if (!window._espPL || window.currentLang !== 'pl') return;
+      window._espPL.patchLabels(root);
+      window._espPL.patchShadow(root);
+      root.querySelectorAll('*').forEach(function (el) {
         if (el.shadowRoot) patchRoot(el.shadowRoot);
       });
     }
-
-    setInterval(() => patchRoot(document.body), 150);
+    setInterval(function () { patchRoot(document.body); }, 150);
   })();
   </script>
 
