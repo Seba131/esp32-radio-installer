@@ -975,8 +975,10 @@
 
     function isFlashing() {
       var t = shadowText(document.body);
-      var states = (window.currentLang === 'en') ? FLASH_STATES_EN : FLASH_STATES_PL;
-      return states.some(function (s) { return t.indexOf(s) !== -1; });
+      // Sprawdzamy OBA zestawy stringów — MutationObserver mógł już przetłumaczyć
+      // DOM na polski niezależnie od currentLang, więc English strings nigdy nie pasują
+      // po zmianie języka. Łączna lista eliminuje reset timera przy przełączniku języka.
+      return FLASH_STATES_PL.concat(FLASH_STATES_EN).some(function (s) { return t.indexOf(s) !== -1; });
     }
 
     function showWarning() {
