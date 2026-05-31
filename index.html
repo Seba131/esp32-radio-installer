@@ -340,6 +340,8 @@
         'Timeout':               'Przekroczenie czasu oczekiwania',
         'Failed to initialize. Try resetting your device or holding the BOOT button while clicking INSTALL.':
           'Nie udało się zainicjalizować. Spróbuj zresetować urządzenie lub przytrzymaj BOOT podczas klikania ZAINSTALUJ.',
+        'The device has been lost.':   'Urządzenie zostało utracone.',
+        'Lost connection to the device.': 'Utracono połączenie z urządzeniem.',
         'board is not supported.': 'płytka nie jest obsługiwana.',
         'failed:':               'nie powiodło się:',
         // ── Wi-Fi ─────────────────────────────────────────────────────────
@@ -882,7 +884,7 @@
   <script>
   // ===== Timer 90s: wykrywa zawieszenie wgrywania =====
   (function () {
-    var STUCK_MS = 90000;
+    var STUCK_MS = 50000;
     var FLASH_STATES_PL = ['Kasowanie danych', 'Instalowanie', 'Wgrywanie'];
     var FLASH_STATES_EN = ['Erasing', 'Installing', 'Writing'];
 
