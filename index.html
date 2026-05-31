@@ -906,6 +906,56 @@
   </script>
 
   <script>
+  // ===== Auto-zamknij dialog po nieudanej instalacji =====
+  // ESP Web Tools po kliknięciu "Wstecz" z ekranu błędu wraca do
+  // "Łączenie..." zamiast zamknąć okno. Wykrywamy to przejście
+  // i automatycznie klikamy "Zamknij".
+  (function () {
+    var failed = false;
+
+    function getText(root) {
+      var t = root.textContent || '';
+      root.querySelectorAll('*').forEach(function (el) {
+        if (el.shadowRoot) t += getText(el.shadowRoot);
+      });
+      return t;
+    }
+
+    function clickClose(root) {
+      root.querySelectorAll('*').forEach(function (el) {
+        var lbl = (typeof el.label === 'string' ? el.label : '') ||
+                  (el.getAttribute ? (el.getAttribute('label') || '') : '');
+        var txt = (el.childNodes.length === 1 && el.firstChild && el.firstChild.nodeType === 3)
+                  ? el.firstChild.textContent.trim() : el.textContent.trim();
+        if (txt === 'Zamknij' || txt === 'Close' || lbl === 'Zamknij' || lbl === 'Close') {
+          el.click();
+        }
+        if (el.shadowRoot) clickClose(el.shadowRoot);
+      });
+    }
+
+    setInterval(function () {
+      var btn = document.querySelector('esp-web-install-button');
+      if (!btn || !btn.shadowRoot) return;
+      var t = getText(btn.shadowRoot);
+      var isFailed     = t.indexOf('Instalacja nie powiodła się') !== -1 ||
+                         t.indexOf('Installation failed')         !== -1;
+      var isConnecting = t.indexOf('Łączenie z urządzeniem')      !== -1 ||
+                         t.indexOf('Connecting')                   !== -1;
+
+      if (isFailed) {
+        failed = true;
+      } else if (failed && isConnecting) {
+        failed = false;
+        clickClose(btn.shadowRoot);
+      } else if (!isFailed && !isConnecting) {
+        failed = false;
+      }
+    }, 100);
+  })();
+  </script>
+
+  <script>
   // ===== Timer 90s: wykrywa zawieszenie wgrywania =====
   (function () {
     var STUCK_MS = 90000;
