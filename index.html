@@ -681,11 +681,13 @@
       try {
         port = await navigator.serial.requestPort();
         await port.open({ baudRate: 115200 });
+        writer = port.writable.getWriter();  // musi być w tym samym try — port.writable może być null
       } catch (e) {
         sys('Nie udało się otworzyć portu: ' + e.message);
+        if (port) { try { await port.close(); } catch (_) {} port = null; }
+        writer = null;
         return;
       }
-      writer = port.writable.getWriter();
       setConnected(true);
       sys('Połączono (115200). Logi z urządzenia poniżej.');
       keepReading = true;
@@ -762,7 +764,14 @@
       }
     });
 
-    window.addEventListener('beforeunload', () => { keepReading = false; });
+    window.addEventListener('beforeunload', function () {
+      // Pełny cleanup przy odświeżeniu / zamknięciu karty — inaczej Chrome
+      // może trzymać blokadę portu i następny connect() rzuci "Port is already open".
+      keepReading = false;
+      try { if (reader)  reader.cancel();      } catch (_) {}
+      try { if (writer)  writer.releaseLock(); } catch (_) {}
+      try { if (port)    port.close();         } catch (_) {}
+    });
   })();
   </script>
 
@@ -906,20 +915,22 @@
   </script>
 
   <script>
-  // ===== Auto-zamknij dialog po nieudanej instalacji =====
-  // ESP Web Tools po kliknięciu "Wstecz" z ekranu błędu wraca do
-  // "Łączenie..." zamiast zamknąć okno. Wykrywamy to przejście
-  // i automatycznie klikamy "Zamknij".
+  // ===== Auto-zamknij dialog + timer 90s (połączone) =====
   (function () {
-    var failed = false;
 
-    function getText(root) {
+    // Wspólna rekurencja shadow DOM — jedna definicja dla obu logik
+    function scanShadow(root) {
       var t = root.textContent || '';
       root.querySelectorAll('*').forEach(function (el) {
-        if (el.shadowRoot) t += getText(el.shadowRoot);
+        if (el.shadowRoot) t += scanShadow(el.shadowRoot);
       });
       return t;
     }
+
+    // ── Logika 1: auto-zamknij po kliknięciu "Wstecz" z ekranu błędu ─────────
+    // Po kliknięciu Wstecz esp-web-tools wraca do "Łączenie..." nieskończenie.
+    // Wykrywamy failed→Connecting i klikamy Zamknij zamiast czekać.
+    var failed = false;
 
     function clickClose(root) {
       root.querySelectorAll('*').forEach(function (el) {
@@ -934,51 +945,22 @@
       });
     }
 
-    setInterval(function () {
-      var btn = document.querySelector('esp-web-install-button');
-      if (!btn || !btn.shadowRoot) return;
-      var t = getText(btn.shadowRoot);
-      var isFailed     = t.indexOf('Instalacja nie powiodła się') !== -1 ||
-                         t.indexOf('Installation failed')         !== -1;
-      var isConnecting = t.indexOf('Łączenie z urządzeniem')      !== -1 ||
-                         t.indexOf('Connecting')                   !== -1;
-
-      if (isFailed) {
-        failed = true;
-      } else if (failed && isConnecting) {
-        failed = false;
-        clickClose(btn.shadowRoot);
-      } else if (!isFailed && !isConnecting) {
-        failed = false;
-      }
-    }, 100);
-  })();
-  </script>
-
-  <script>
-  // ===== Timer 90s: wykrywa zawieszenie wgrywania =====
-  (function () {
-    var STUCK_MS = 90000;
-    var FLASH_STATES_PL = ['Kasowanie danych', 'Instalowanie', 'Wgrywanie'];
-    var FLASH_STATES_EN = ['Erasing', 'Installing', 'Writing'];
-
+    // ── Logika 2: timer 90s — wykrywa zawieszenie wgrywania ──────────────────
+    var STUCK_MS     = 90000;
+    var FLASH_STATES = ['Kasowanie danych', 'Instalowanie', 'Wgrywanie',
+                        'Erasing', 'Installing', 'Writing'];
     var startTime = null;
-    var warned = false;
+    var warned    = false;
 
-    function shadowText(root) {
-      var t = root.textContent || '';
-      root.querySelectorAll('*').forEach(function (el) {
-        if (el.shadowRoot) t += shadowText(el.shadowRoot);
-      });
-      return t;
-    }
-
-    function isFlashing() {
-      var t = shadowText(document.body);
-      // Sprawdzamy OBA zestawy stringów — MutationObserver mógł już przetłumaczyć
-      // DOM na polski niezależnie od currentLang, więc English strings nigdy nie pasują
-      // po zmianie języka. Łączna lista eliminuje reset timera przy przełączniku języka.
-      return FLASH_STATES_PL.concat(FLASH_STATES_EN).some(function (s) { return t.indexOf(s) !== -1; });
+    function isFlashing(btnEl) {
+      // Skanujemy TYLKO shadow DOM przycisku — NIE document.body.
+      // Div #flash-warning zawiera tekst "Wgrywanie" w swoim HTML,
+      // więc skanowanie document.body tworzyłoby pętlę: ostrzeżenie pokazane
+      // → isFlashing()=true → startTime utrzymany → ostrzeżenie pojawia się
+      // ponownie 90s po ukryciu.
+      if (!btnEl || !btnEl.shadowRoot) return false;
+      var t = scanShadow(btnEl.shadowRoot);
+      return FLASH_STATES.some(function (s) { return t.indexOf(s) !== -1; });
     }
 
     function showWarning() {
@@ -991,17 +973,52 @@
       var el = document.getElementById('flash-warning');
       if (el) el.hidden = true;
       startTime = null;
-      warned = false;
+      warned    = false;
     }
 
+    // Jeden interwał obsługuje obie logiki (auto-close: każdy tick; flash-warn: co 10 ticków)
+    var flashTick = 0;
     setInterval(function () {
-      if (isFlashing()) {
-        if (!startTime) startTime = Date.now();
-        if (!warned && (Date.now() - startTime) >= STUCK_MS) showWarning();
-      } else {
+      var btnEl = document.querySelector('esp-web-install-button');
+
+      if (!btnEl || !btnEl.shadowRoot) {
+        // Komponent zniknął lub jeszcze nie załadowany
+        failed = false;
         if (startTime) hideWarning();
+        return;
       }
-    }, 1000);
+
+      var t            = scanShadow(btnEl.shadowRoot);
+      var dialogEmpty  = !t.trim();
+      var isFailed     = t.indexOf('Instalacja nie powiodła się') !== -1 ||
+                         t.indexOf('Installation failed')         !== -1;
+      var isConnecting = t.indexOf('Łączenie z urządzeniem')      !== -1 ||
+                         t.indexOf('Connecting')                   !== -1;
+
+      // Auto-zamknij
+      if (isFailed) {
+        failed = true;
+      } else if (failed && isConnecting) {
+        failed = false;
+        clickClose(btnEl.shadowRoot);
+      } else if (dialogEmpty) {
+        // Dialog zamknięty całkowicie — reset.
+        // NIE resetujemy na stanach przejściowych (Wgrywanie, Kasowanie itp.)
+        // bo to właśnie powodowało brak auto-close po kliknięciu Wstecz.
+        failed = false;
+      }
+
+      // Flash-warn (co ~1000 ms = 10 ticków × 100 ms)
+      if (++flashTick >= 10) {
+        flashTick = 0;
+        if (isFlashing(btnEl)) {
+          if (!startTime) startTime = Date.now();
+          if (!warned && (Date.now() - startTime) >= STUCK_MS) showWarning();
+        } else {
+          if (startTime) hideWarning();
+        }
+      }
+    }, 100);
   })();
   </script>
 </body>
