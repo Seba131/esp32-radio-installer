@@ -522,23 +522,6 @@
       sama wchodzi w tryb wgrywania), ale ratuje, gdy pojawiają się błędy.
     </div>
 
-    <details class="help" id="faq-en-details">
-      <summary data-i18n="faq-en-title">🇵🇱 Okno instalacji jest po angielsku — co oznaczają przyciski?</summary>
-      <div data-i18n-html="faq-en-body">
-        <p style="margin-top:10px">
-          Samo okienko wgrywania pochodzi z gotowego narzędzia i jest po angielsku.
-          Oto tłumaczenie tego, co zobaczysz:
-        </p>
-        <table style="width:100%; font-size:0.85rem; border-collapse:collapse; text-align:left">
-          <tr><td style="padding:4px 8px; opacity:0.85"><b>Connect</b></td><td style="padding:4px 8px">Połącz (wybierz port COM)</td></tr>
-          <tr><td style="padding:4px 8px; opacity:0.85"><b>Install / Next</b></td><td style="padding:4px 8px">Zainstaluj / Dalej</td></tr>
-          <tr><td style="padding:4px 8px; opacity:0.85"><b>Installing…</b></td><td style="padding:4px 8px">Trwa wgrywanie — czekaj, nie odłączaj</td></tr>
-          <tr><td style="padding:4px 8px; opacity:0.85"><b>Installation complete!</b></td><td style="padding:4px 8px">Gotowe! Zainstalowano</td></tr>
-          <tr><td style="padding:4px 8px; opacity:0.85"><b>Back / Close</b></td><td style="padding:4px 8px">Wstecz / Zamknij</td></tr>
-        </table>
-      </div>
-    </details>
-
     <details class="help">
       <summary data-i18n="faq-issues-title">Coś nie działa?</summary>
       <div data-i18n-html="faq-issues-body">
@@ -767,8 +750,6 @@
       'not-allowed':      'Wgrywanie działa tylko przez połączenie HTTPS.',
       'steps':            '<li>Podłącz ESP32-S3 kablem USB do komputera.</li><li>Kliknij <b>Zainstaluj</b> i wybierz port szeregowy (COM).</li><li>Potwierdź i poczekaj na zakończenie wgrywania.</li><li>Gotowe — urządzenie samo się zrestartuje. 🎉</li>',
       'erase-tip':        '🔘 <b style="color:#9fd2ff">Jeśli wgrywanie nie startuje lub przerywa się</b><br>Wprowadź płytkę w tryb wgrywania ręcznie: <b>przytrzymaj <kbd>BOOT</kbd></b>, krótko naciśnij <kbd>RST</kbd> (lub <kbd>EN</kbd>), <b>puść <kbd>BOOT</kbd></b> — i dopiero wtedy kliknij „Zainstaluj”. Zwykle nie jest to potrzebne (płytka sama wchodzi w tryb wgrywania), ale ratuje, gdy pojawiają się błędy.',
-      'faq-en-title':     '🇵🇱 Okno instalacji jest po angielsku — co oznaczają przyciski?',
-      'faq-en-body':      '<p style="margin-top:10px">Samo okienko wgrywania pochodzi z gotowego narzędzia i jest po angielsku. Oto tłumaczenie tego, co zobaczysz:</p><table style="width:100%;font-size:0.85rem;border-collapse:collapse;text-align:left"><tr><td style="padding:4px 8px;opacity:0.85"><b>Connect</b></td><td style="padding:4px 8px">Połącz (wybierz port COM)</td></tr><tr><td style="padding:4px 8px;opacity:0.85"><b>Install / Next</b></td><td style="padding:4px 8px">Zainstaluj / Dalej</td></tr><tr><td style="padding:4px 8px;opacity:0.85"><b>Installing…</b></td><td style="padding:4px 8px">Trwa wgrywanie — czekaj, nie odłączaj</td></tr><tr><td style="padding:4px 8px;opacity:0.85"><b>Installation complete!</b></td><td style="padding:4px 8px">Gotowe! Zainstalowano</td></tr><tr><td style="padding:4px 8px;opacity:0.85"><b>Back / Close</b></td><td style="padding:4px 8px">Wstecz / Zamknij</td></tr></table>',
       'faq-issues-title': 'Coś nie działa?',
       'faq-issues-body':  '<h4>❌ „Failed to open serial port”</h4><p>Port COM jest zajęty przez inny program. Zamknij <b>monitor szeregowy</b> (Arduino IDE, PlatformIO, PuTTY) i wszelkie inne karty z instalatorem, odepnij i wepnij kabel USB, odśwież stronę i spróbuj ponownie.</p><h4>🔌 Nie widać urządzenia / brak portu</h4><p>Użyj kabla USB <b>do przesyłu danych</b> (nie tylko do ładowania). Sprawdź też inne gniazdo USB. Na niektórych płytkach trzeba wpiąć kabel w port oznaczony <kbd>USB</kbd>, a nie <kbd>UART/COM</kbd>.</p><h4>🛠️ Płytka nie wchodzi w tryb wgrywania</h4><p>Ręcznie: przytrzymaj przycisk <kbd>BOOT</kbd>, krótko naciśnij <kbd>RESET</kbd> (lub <kbd>EN</kbd>), puść <kbd>BOOT</kbd>. Potem znów kliknij <b>Zainstaluj</b>.</p><h4>🌐 Przycisk „Zainstaluj” nie reaguje</h4><p>Użyj <b>Google Chrome</b> lub <b>Microsoft Edge</b> na komputerze. Firefox, Safari oraz telefony i tablety nie obsługują wgrywania (brak Web Serial API).</p>',
       'term-title':       '🖥️ Terminal / Konsola — logi i komendy',
@@ -843,10 +824,6 @@
     if (fwEl && window._fwVersion) {
       fwEl.textContent = (window.LANG[lang]['fw-prefix'] || 'version') + ' ' + window._fwVersion;
     }
-
-    // ukryj sekcję FAQ o angielskim oknie, gdy strona już jest po angielsku
-    const faqEn = document.getElementById('faq-en-details');
-    if (faqEn) faqEn.hidden = (lang === 'en');
 
     try { localStorage.setItem('lang', lang); } catch(e) {}
   }
