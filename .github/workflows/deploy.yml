@@ -2,18 +2,18 @@ name: Deploy do GitHub Pages
 
 # Publikuje strone instalatora przy kazdym pushu do main.
 # Wymaga: Settings -> Pages -> Source = "GitHub Actions".
+# Firmware NIE jest budowany tutaj — pliki .bin musza pochodzic z build-full-bin.ps1 (repo glowne).
 
 on:
   push:
     branches: [main]
-  workflow_dispatch:        # pozwala uruchomic recznie z zakladki Actions
+  workflow_dispatch:
 
 permissions:
   contents: read
   pages: write
   id-token: write
 
-# Tylko jeden deploy naraz; nowszy anuluje trwajacy.
 concurrency:
   group: pages
   cancel-in-progress: true
@@ -27,6 +27,50 @@ jobs:
     steps:
       - name: Pobierz repo
         uses: actions/checkout@v4
+
+      - name: Weryfikacja plikow firmware
+        run: |
+          set -e
+          REQUIRED=(
+            bootloader.bin
+            partitions.bin
+            boot_app0.bin
+            firmware.bin
+            littlefs.bin
+            manifest.json
+            index.html
+          )
+          MISSING=0
+          for f in "${REQUIRED[@]}"; do
+            if [ ! -f "$f" ]; then
+              echo "::error::Brak pliku: $f"
+              MISSING=1
+            fi
+          done
+          if [ "$MISSING" -ne 0 ]; then
+            echo ""
+            echo "Uruchom w repo glownym esp32-radio: .\\build-full-bin.ps1"
+            echo "Nastepnie commit + push wszystkich .bin do tego repozytorium (installer)."
+            exit 1
+          fi
+
+          # littlefs.bin musi pasowac do partycji (0x370000 B) z partitions.csv
+          LITTLEFS_MAX=3604480
+          LITTLEFS_SIZE=$(stat -c%s littlefs.bin)
+          if [ "$LITTLEFS_SIZE" -gt "$LITTLEFS_MAX" ]; then
+            echo "::error::littlefs.bin ma ${LITTLEFS_SIZE} B, max ${LITTLEFS_MAX} B (partycja spiffs)"
+            exit 1
+          fi
+
+          FIRMWARE_MIN=100000
+          FIRMWARE_SIZE=$(stat -c%s firmware.bin)
+          if [ "$FIRMWARE_SIZE" -lt "$FIRMWARE_MIN" ]; then
+            echo "::error::firmware.bin podejrzanie maly (${FIRMWARE_SIZE} B)"
+            exit 1
+          fi
+
+          echo "Pliki firmware OK:"
+          ls -lh *.bin manifest.json
 
       - name: Konfiguracja Pages
         uses: actions/configure-pages@v5
