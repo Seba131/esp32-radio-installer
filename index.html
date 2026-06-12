@@ -899,7 +899,8 @@
 
     const fwEl = document.getElementById('fw-version');
     if (fwEl && window._fwVersion) {
-      fwEl.textContent = (window.LANG[lang]['fw-prefix'] || 'version') + ' ' + window._fwVersion;
+      const datePart = window._buildDate ? ' · ' + window._buildDate : '';
+      fwEl.textContent = (window.LANG[lang]['fw-prefix'] || 'version') + ' ' + window._fwVersion + datePart;
     }
 
     try { localStorage.setItem('lang', lang); } catch(e) {}
@@ -938,12 +939,14 @@
     .then(m => {
       if (!m.version) return;
       window._fwVersion = m.version;
+      window._buildDate = m.build_date || '';
       const el = document.getElementById('fw-version');
       if (el) {
         const prefix = (window.LANG && window.LANG[window.currentLang])
           ? window.LANG[window.currentLang]['fw-prefix']
           : 'wersja';
-        el.textContent = prefix + ' ' + m.version;
+        const datePart = m.build_date ? ' · ' + m.build_date : '';
+        el.textContent = prefix + ' ' + m.version + datePart;
       }
     });
   </script>

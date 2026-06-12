@@ -1,6 +1,7 @@
 {
   "name": "ESP32 Radio",
   "version": "1.0.0",
+  "build_date": "12.06.2026",
   "builds": [
     {
       "chipFamily": "ESP32-S3",
