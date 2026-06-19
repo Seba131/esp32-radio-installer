@@ -590,6 +590,39 @@
       sama wchodzi w tryb wgrywania), ale ratuje, gdy pojawiają się błędy.
     </div>
 
+    <details class="help" id="changelogPanel">
+      <summary data-i18n="changelog-title">📋 Historia zmian (Changelog)</summary>
+      <div data-i18n-html="changelog-body">
+
+        <div style="margin-top:14px">
+          <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px">
+            <span style="background:rgba(100,220,120,0.25);border:1px solid rgba(100,220,120,0.6);border-radius:20px;padding:2px 12px;font-size:0.82rem;font-weight:700;color:#7dffaa">v1.0.1</span>
+            <span style="font-size:0.82rem;opacity:0.6">2025-06</span>
+          </div>
+          <div style="padding-left:8px;border-left:2px solid rgba(100,220,120,0.4);font-size:0.88rem;line-height:1.7">
+            <div>🖥️ <b>Obsługa wyświetlacza ILI9341 3.2" (320×240)</b> — sterownik wybierany z panelu WWW bez rekompilacji</div>
+            <div>🔁 <b>IR NEXT/PREV</b> — opóźnienie 600 ms przed powtarzaniem przy przytrzymaniu przycisku</div>
+          </div>
+        </div>
+
+        <div style="margin-top:18px">
+          <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px">
+            <span style="background:rgba(90,180,255,0.2);border:1px solid rgba(90,180,255,0.5);border-radius:20px;padding:2px 12px;font-size:0.82rem;font-weight:700;color:#7dd3fc">v1.0.0</span>
+            <span style="font-size:0.82rem;opacity:0.6">2025-05</span>
+          </div>
+          <div style="padding-left:8px;border-left:2px solid rgba(90,180,255,0.35);font-size:0.88rem;line-height:1.7">
+            <div>🎵 Streaming audio przez WiFi (stacje internetowe, lista stacji)</div>
+            <div>🖥️ Wyświetlacze: SSD1306 / SSD1309 / SH1106 OLED, ST7789 TFT SPI</div>
+            <div>🕹️ Enkoder obrotowy, pilot IR (protokół NEC)</div>
+            <div>🌐 Panel WWW — zarządzanie stacjami, konfiguracja, analizator widma</div>
+            <div>💡 Dioda RGB (efekty, tryby kolorów)</div>
+            <div>⚡ Instalator webowy (ESP Web Tools) — wgrywanie z przeglądarki</div>
+          </div>
+        </div>
+
+      </div>
+    </details>
+
     <details class="help">
       <summary data-i18n="faq-issues-title">Coś nie działa?</summary>
       <div data-i18n-html="faq-issues-body">
@@ -827,6 +860,8 @@
       'not-allowed':      'Wgrywanie działa tylko przez połączenie HTTPS.',
       'steps':            '<li>Podłącz ESP32-S3 N16R8 kablem USB do komputera.</li><li>Kliknij <b>Zainstaluj</b> i wybierz port szeregowy (COM).</li><li>Potwierdź i poczekaj na zakończenie wgrywania.</li><li>Gotowe — urządzenie samo się zrestartuje. 🎉</li>',
       'erase-tip':        '🔘 <b style="color:#9fd2ff">Jeśli wgrywanie nie startuje lub przerywa się</b><br>Wprowadź płytkę w tryb wgrywania ręcznie: <b>przytrzymaj <kbd>BOOT</kbd></b>, krótko naciśnij <kbd>RST</kbd> (lub <kbd>EN</kbd>), <b>puść <kbd>BOOT</kbd></b> — i dopiero wtedy kliknij „Zainstaluj”. Zwykle nie jest to potrzebne (płytka sama wchodzi w tryb wgrywania), ale ratuje, gdy pojawiają się błędy.',
+      'changelog-title':  '📋 Historia zmian (Changelog)',
+      'changelog-body':   '<div style="margin-top:14px"><div style="display:flex;align-items:center;gap:10px;margin-bottom:10px"><span style="background:rgba(100,220,120,0.25);border:1px solid rgba(100,220,120,0.6);border-radius:20px;padding:2px 12px;font-size:0.82rem;font-weight:700;color:#7dffaa">v1.0.1</span><span style="font-size:0.82rem;opacity:0.6">2025-06</span></div><div style="padding-left:8px;border-left:2px solid rgba(100,220,120,0.4);font-size:0.88rem;line-height:1.7"><div>🖥️ <b>Obsługa wyświetlacza ILI9341 3.2" (320×240)</b> — sterownik wybierany z panelu WWW bez rekompilacji</div><div>🔁 <b>IR NEXT/PREV</b> — opóźnienie 600 ms przed powtarzaniem przy przytrzymaniu przycisku</div></div></div><div style="margin-top:18px"><div style="display:flex;align-items:center;gap:10px;margin-bottom:10px"><span style="background:rgba(90,180,255,0.2);border:1px solid rgba(90,180,255,0.5);border-radius:20px;padding:2px 12px;font-size:0.82rem;font-weight:700;color:#7dd3fc">v1.0.0</span><span style="font-size:0.82rem;opacity:0.6">2025-05</span></div><div style="padding-left:8px;border-left:2px solid rgba(90,180,255,0.35);font-size:0.88rem;line-height:1.7"><div>🎵 Streaming audio przez WiFi (stacje internetowe, lista stacji)</div><div>🖥️ Wyświetlacze: SSD1306 / SSD1309 / SH1106 OLED, ST7789 TFT SPI</div><div>🕹️ Enkoder obrotowy, pilot IR (protokół NEC)</div><div>🌐 Panel WWW — zarządzanie stacjami, konfiguracja, analizator widma</div><div>💡 Dioda RGB (efekty, tryby kolorów)</div><div>⚡ Instalator webowy (ESP Web Tools) — wgrywanie z przeglądarki</div></div></div>',
       'faq-issues-title': 'Coś nie działa?',
       'faq-issues-body':  '<h4>❌ „Failed to open serial port”</h4><p>Port COM jest zajęty przez inny program. Zamknij <b>monitor szeregowy</b> (Arduino IDE, PlatformIO, PuTTY) i wszelkie inne karty z instalatorem, odepnij i wepnij kabel USB, odśwież stronę i spróbuj ponownie.</p><h4>🔌 Nie widać urządzenia / brak portu</h4><p>Użyj kabla USB <b>do przesyłu danych</b> (nie tylko do ładowania). Sprawdź też inne gniazdo USB. Na niektórych płytkach trzeba wpiąć kabel w port oznaczony <kbd>USB</kbd>, a nie <kbd>UART/COM</kbd>.</p><h4>🛠️ Płytka nie wchodzi w tryb wgrywania</h4><p>Ręcznie: przytrzymaj przycisk <kbd>BOOT</kbd>, krótko naciśnij <kbd>RESET</kbd> (lub <kbd>EN</kbd>), puść <kbd>BOOT</kbd>. Potem znów kliknij <b>Zainstaluj</b>.</p><h4>🌐 Przycisk „Zainstaluj” nie reaguje</h4><p>Użyj <b>Google Chrome</b> lub <b>Microsoft Edge</b> na komputerze. Firefox, Safari oraz telefony i tablety nie obsługują wgrywania (brak Web Serial API).</p>',
       'term-title':       '🖥️ Terminal / Konsola — logi i komendy',
@@ -855,6 +890,8 @@
       'not-allowed':      'Flashing only works over an HTTPS connection.',
       'steps':            '<li>Connect the ESP32-S3 N16R8 to your computer with a USB cable.</li><li>Click <b>Install</b> and select the serial port (COM).</li><li>Confirm and wait for flashing to complete.</li><li>Done — the device will restart automatically. 🎉</li>',
       'erase-tip':        '🔘 <b style="color:#9fd2ff">If flashing doesn\'t start or keeps failing</b><br>Put the board into flash mode manually: <b>hold <kbd>BOOT</kbd></b>, briefly press <kbd>RST</kbd> (or <kbd>EN</kbd>), <b>release <kbd>BOOT</kbd></b> — then click "Install". Usually not needed (the board enters flash mode automatically), but helps when errors appear.',
+      'changelog-title':  '📋 Changelog',
+      'changelog-body':   '<div style="margin-top:14px"><div style="display:flex;align-items:center;gap:10px;margin-bottom:10px"><span style="background:rgba(100,220,120,0.25);border:1px solid rgba(100,220,120,0.6);border-radius:20px;padding:2px 12px;font-size:0.82rem;font-weight:700;color:#7dffaa">v1.0.1</span><span style="font-size:0.82rem;opacity:0.6">2025-06</span></div><div style="padding-left:8px;border-left:2px solid rgba(100,220,120,0.4);font-size:0.88rem;line-height:1.7"><div>🖥️ <b>ILI9341 3.2" display support (320×240)</b> — driver selectable from the web panel without recompilation</div><div>🔁 <b>IR NEXT/PREV</b> — 600 ms delay before repeat when holding the button</div></div></div><div style="margin-top:18px"><div style="display:flex;align-items:center;gap:10px;margin-bottom:10px"><span style="background:rgba(90,180,255,0.2);border:1px solid rgba(90,180,255,0.5);border-radius:20px;padding:2px 12px;font-size:0.82rem;font-weight:700;color:#7dd3fc">v1.0.0</span><span style="font-size:0.82rem;opacity:0.6">2025-05</span></div><div style="padding-left:8px;border-left:2px solid rgba(90,180,255,0.35);font-size:0.88rem;line-height:1.7"><div>🎵 Audio streaming over WiFi (internet radio stations)</div><div>🖥️ Display support: SSD1306 / SSD1309 / SH1106 OLED, ST7789 TFT SPI</div><div>🕹️ Rotary encoder, IR remote control (NEC protocol)</div><div>🌐 Web panel — station management, configuration, spectrum analyzer</div><div>💡 RGB LED (effects, color modes)</div><div>⚡ Web installer (ESP Web Tools) — flash from browser</div></div></div>',
       'faq-issues-title': 'Something not working?',
       'faq-issues-body':  '<h4>❌ "Failed to open serial port"</h4><p>The COM port is busy. Close any <b>serial monitor</b> (Arduino IDE, PlatformIO, PuTTY) and any other installer tabs, unplug and replug the USB cable, refresh the page, and try again.</p><h4>🔌 Device not visible / no port shown</h4><p>Use a <b>data USB cable</b> (not a charge-only one). Try a different USB port. On some boards the cable must go into the port labeled <kbd>USB</kbd>, not <kbd>UART/COM</kbd>.</p><h4>🛠️ Board won\'t enter flash mode</h4><p>Manually: hold <kbd>BOOT</kbd>, briefly press <kbd>RESET</kbd> (or <kbd>EN</kbd>), release <kbd>BOOT</kbd>. Then click <b>Install</b> again.</p><h4>🌐 "Install" button doesn\'t respond</h4><p>Use <b>Google Chrome</b> or <b>Microsoft Edge</b> on a desktop. Firefox, Safari, and mobile devices are not supported (no Web Serial API).</p>',
       'term-title':       '🖥️ Terminal / Console — logs and commands',
