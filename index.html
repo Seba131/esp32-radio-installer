@@ -225,6 +225,8 @@
       right: 20px;
       display: flex;
       gap: 4px;
+      flex-wrap: wrap;
+      justify-content: flex-end;
     }
     .lang-btn {
       background: rgba(255,255,255,0.12);
@@ -298,6 +300,13 @@
                   '• Appareil déconnecté — rebranchez le câble USB\n' +
                   '• Un autre onglet du navigateur utilise ce port\n\n' +
                   'Actualisez la page et réessayez.';
+          } else if (lang === 'uk') {
+            msg = 'Не вдалося відкрити послідовний порт.\n\n' +
+                  'Можливі причини:\n' +
+                  '• Порт зайнятий — закрийте монітор порту\n  (Arduino IDE, PlatformIO, PuTTY)\n' +
+                  '• Пристрій відключено — під’єднайте USB-кабель знову\n' +
+                  '• Інша вкладка браузера використовує цей порт\n\n' +
+                  'Оновіть сторінку і спробуйте ще раз.';
           } else if (lang !== 'en') {
             msg = 'Nie można otworzyć portu szeregowego.\n\n' +
                   'Możliwe przyczyny:\n' +
@@ -311,6 +320,10 @@
             msg = msg
               .replace("Failed to execute 'open' on 'SerialPort':", 'Erreur du port série :')
               .replace('Failed to open serial port.', 'Impossible d\'ouvrir le port série.');
+          } else if (lang === 'uk') {
+            msg = msg
+              .replace("Failed to execute 'open' on 'SerialPort':", 'Помилка послідовного порту:')
+              .replace('Failed to open serial port.', 'Не вдалося відкрити послідовний порт.');
           } else if (lang !== 'en') {
             msg = msg
               .replace("Failed to execute 'open' on 'SerialPort':", 'Błąd portu szeregowego:')
@@ -432,6 +445,108 @@
       }
     };
 
+    window._espUK = {
+      EXACT: {
+        // ── Кнопки ───────────────────────────────────────────────────────
+        'Connect':          'Підключити',
+        'Close':            'Закрити',
+        'Back':             'Назад',
+        'Next':             'Далі',
+        'Install':          'Встановити',
+        'Skip':             'Пропустити',
+        'Continue':         'Продовжити',
+        'Try Again':        'Спробувати ще раз',
+        'Cancel':           'Скасувати',
+        'Reset Device':     'Скинути пристрій',
+        'Download Logs':    'Завантажити логи',
+        'Erase User Data':  'Видалити дані користувача',
+        'Fund Development': 'Підтримати розробку',
+        // ── Меню ─────────────────────────────────────────────────────────
+        'Visit Device':          'Відвідати пристрій',
+        'Change Wi-Fi':          'Змінити Wi-Fi',
+        'Connect to Wi-Fi':      'Підключитися до Wi-Fi',
+        'Logs & Console':        'Логи та консоль',
+        'Add to Home Assistant': 'Додати до Home Assistant',
+        // ── Заголовки діалогів ───────────────────────────────────────────
+        'Error':                 'Помилка',
+        'Confirm Installation':  'Підтвердіть встановлення',
+        'Erase device':          'Видалити дані пристрою',
+        'Installing':            'Встановлення',
+        'Installation failed':   'Встановлення не вдалося',
+        'Configure Wi-Fi':       'Налаштування Wi-Fi',
+        'Logs':                  'Логи',
+        'No port selected':      'Порт не вибрано',
+        // ── Прогрес / статуси ────────────────────────────────────────────
+        'Connecting':            'З’єднання з пристроєм...',
+        'Connecting...':         'З’єднання з пристроєм...',
+        'Scanning for networks': 'Пошук мереж...',
+        'Trying to connect':     'Спроба з’єднання...',
+        'Preparing installation':'Підготовка встановлення...',
+        'Erasing':               'Видалення даних...',
+        'Erasing device...':     'Видалення даних пристрою...',
+        'Device erased':         'Дані пристрою видалено',
+        'Wrapping up':           'Завершення...',
+        'Writing':               'Запис...',
+        'Writing complete':      'Запис завершено',
+        'Writing progress:':     'Прогрес запису:',
+        'Initializing...':       'Ініціалізація...',
+        'Installation prepared': 'Встановлення підготовлено',
+        'Preparing':             'Підготовка...',
+        'Installation complete!':'Встановлення завершено!',
+        'All done!':             'Усе готово!',
+        'Done!':                 'Готово!',
+        // ── Помилки ──────────────────────────────────────────────────────
+        'Unable to connect':     'Не вдалося з’єднатися',
+        'Timeout':               'Час очікування вичерпано',
+        'Failed to initialize. Try resetting your device or holding the BOOT button while clicking INSTALL.':
+          'Не вдалося ініціалізувати. Спробуйте скинути пристрій або утримуйте кнопку BOOT під час натискання ВСТАНОВИТИ.',
+        'The device has been lost.':   'Пристрій втрачено.',
+        'Lost connection to the device.': 'Втрачено з’єднання з пристроєм.',
+        'board is not supported.': 'плата не підтримується.',
+        'failed:':               'помилка:',
+        // ── Wi-Fi ────────────────────────────────────────────────────────
+        'Network':               'Мережа',
+        'Network Name':          'Назва мережі',
+        'Password':              'Пароль',
+        'Join other…':      'Приєднатися до іншої…',
+        // ── Інформаційні тексти ──────────────────────────────────────────
+        'All data on the device will be erased.': 'Усі дані на пристрої буде видалено.',
+        'All data on the device will be lost.':   'Усі дані на пристрої буде втрачено.',
+        '? All data on the device will be lost.': '? Усі дані на пристрої буде втрачено.',
+        'Device connected to the network!':       'Пристрій підключено до мережі!',
+        'Connect your device to the network to start using it.':
+          'Підключіть пристрій до мережі, щоб почати ним користуватися.',
+        'This will take a minute.':  'Це займе приблизно хвилину.',
+        'This will take a minute':   'Це займе приблизно хвилину.',
+        'This will take 2 minutes.': 'Це займе приблизно 2 хвилини.',
+        'This will take 2 minutes':  'Це займе приблизно 2 хвилини.',
+        'Keep this page visible to prevent slow down':  'Тримайте цю сторінку видимою, щоб уникнути уповільнення',
+        'Keep this page visible to prevent slow down.': 'Тримайте цю сторінку видимою, щоб уникнути уповільнення.',
+        'Keep this page visible to prevent slowdown':   'Тримайте цю сторінку видимою, щоб уникнути уповільнення',
+        // ── Вікно «немає порту» ──────────────────────────────────────────
+        'If you didn\'t select a port because you didn\'t see your device listed, try the following steps:':
+          'Якщо ви не вибрали порт, бо не бачили свій пристрій у списку, спробуйте такі кроки:',
+        'Make sure that the device is connected to this computer (the one that runs the browser that shows this website)':
+          'Переконайтеся, що пристрій підключено до цього комп’ютера (того, на якому запущено браузер із цим сайтом)',
+        'Most devices have a tiny light when it is powered on. If yours has one, make sure it is on.':
+          'Більшість пристроїв мають маленький індикатор, коли увімкнені. Якщо ваш його має, переконайтеся, що він світиться.',
+        'Make sure that the USB cable you use can be used for data and is not a power-only cable.':
+          'Переконайтеся, що USB-кабель підтримує передачу даних, а не лише живлення.',
+        'Make sure you have the right drivers installed. Below are the drivers for common chips used in ESP devices:':
+          'Переконайтеся, що встановлено правильні драйвери. Нижче наведено драйвери для поширених чіпів у пристроях ESP:',
+        'CP2102 drivers:'              : 'Драйвери CP2102:',
+        'CH342, CH343, CH9102 drivers:': 'Драйвери CH342, CH343, CH9102:',
+        'CH340, CH341 drivers:'        : 'Драйвери CH340, CH341:',
+        '(download via blue button with': '(завантажте через синю кнопку з',
+        'icon)'                        : 'іконкою)',
+        'If you are using a Linux flavor, make sure that your user is part of the dialout group so it has permission to access the device.':
+          'Якщо ви використовуєте Linux, переконайтеся, що ваш користувач входить до групи dialout, щоб мати доступ до пристрою.',
+        'You may need to log out & back in or reboot to activate the new group access.':
+          'Можливо, потрібно вийти і знову увійти в систему або перезавантажити комп’ютер, щоб новий доступ до групи набув чинності.',
+        'Windows & Mac': 'Windows і Mac',
+      }
+    };
+
     window._espPL = {
 
       EXACT: {
@@ -539,7 +654,12 @@
         const lang = window.currentLang;
         if (lang === 'en') return;
         const isFR = lang === 'fr';
-        const E = isFR ? (window._espFR || {}).EXACT || {} : window._espPL.EXACT;
+        const isUK = lang === 'uk';
+        const E = isFR ? (window._espFR || {}).EXACT || {}
+          : isUK ? (window._espUK || {}).EXACT || {}
+          : window._espPL.EXACT;
+        // wybór jednej z 3 wersji tekstu wg aktualnego języka
+        const pick = (fr, uk, pl) => isFR ? fr : isUK ? uk : pl;
         nodes.forEach(function (nd, i) {
           const t = nd.textContent.trim();
           if (!t) return;
@@ -549,70 +669,77 @@
 
           // ── Zdania z dynamicznym ${action} rozbite na kilka węzłów ─────
           } else if (t === 'Do you want to') {
-            nd.textContent = nd.textContent.replace('Do you want to', isFR ? 'Souhaitez-vous' : 'Czy chcesz');
+            nd.textContent = nd.textContent.replace('Do you want to', pick('Souhaitez-vous', 'Чи хочете ви', 'Czy chcesz'));
             for (let j = i + 1; j < Math.min(i + 6, nodes.length); j++) {
               const nt = nodes[j].textContent.trim();
               if (!nt) continue;
-              if (nt === 'install')   nodes[j].textContent = nodes[j].textContent.replace('install',   isFR ? 'installer' : 'zainstalować');
-              if (nt === 'update to') nodes[j].textContent = nodes[j].textContent.replace('update to', isFR ? 'mettre à jour vers' : 'zaktualizować do');
-              if (nt === 'erase')     nodes[j].textContent = nodes[j].textContent.replace('erase',     isFR ? 'effacer' : 'wymazać');
+              if (nt === 'install')   nodes[j].textContent = nodes[j].textContent.replace('install',   pick('installer', 'встановити', 'zainstalować'));
+              if (nt === 'update to') nodes[j].textContent = nodes[j].textContent.replace('update to', pick('mettre à jour vers', 'оновити до', 'zaktualizować do'));
+              if (nt === 'erase')     nodes[j].textContent = nodes[j].textContent.replace('erase',     pick('effacer', 'видалити дані', 'wymazać'));
               break;
             }
 
           // ── "This will take ${duration}." — duration to osobny węzeł ───
           } else if (t === 'This will take') {
-            nd.textContent = nd.textContent.replace('This will take', isFR ? 'Cela prendra' : 'To zajmie');
+            nd.textContent = nd.textContent.replace('This will take', pick('Cela prendra', 'Це займе', 'To zajmie'));
             for (let j = i + 1; j < Math.min(i + 4, nodes.length); j++) {
               const nt = nodes[j].textContent.trim();
               if (!nt) continue;
-              if (nt === '2 minutes') nodes[j].textContent = nodes[j].textContent.replace('2 minutes', isFR ? '2 minutes' : '2 minuty');
-              if (nt === 'a minute')  nodes[j].textContent = nodes[j].textContent.replace('a minute',  isFR ? 'une minute' : 'minutę');
+              if (nt === '2 minutes') nodes[j].textContent = nodes[j].textContent.replace('2 minutes', pick('2 minutes', '2 хвилини', '2 minuty'));
+              if (nt === 'a minute')  nodes[j].textContent = nodes[j].textContent.replace('a minute',  pick('une minute', 'хвилину', 'minutę'));
               break;
             }
 
           // ── Zdania częściowo statyczne z ${name} na końcu ──────────────
           } else if (t.startsWith('If you didn\'t select a port')) {
-            nd.textContent = isFR
-              ? 'Si vous ne voyez pas votre appareil dans la liste des ports, essayez les étapes suivantes :'
-              : 'Jeśli nie widziałeś urządzenia na liście portów, spróbuj poniższych kroków:';
+            nd.textContent = pick(
+              'Si vous ne voyez pas votre appareil dans la liste des ports, essayez les étapes suivantes :',
+              'Якщо ви не бачите свій пристрій у списку портів, спробуйте такі кроки:',
+              'Jeśli nie widziałeś urządzenia na liście portów, spróbuj poniższych kroków:');
           } else if (t.startsWith('Make sure that the device is connected')) {
-            nd.textContent = isFR
-              ? 'Assurez-vous que l\'appareil est connecté à cet ordinateur (celui qui exécute le navigateur).'
-              : 'Upewnij się, że urządzenie jest podłączone do tego komputera (na którym działa przeglądarka).';
+            nd.textContent = pick(
+              'Assurez-vous que l\'appareil est connecté à cet ordinateur (celui qui exécute le navigateur).',
+              'Переконайтеся, що пристрій підключено до цього комп’ютера (того, на якому запущено браузер).',
+              'Upewnij się, że urządzenie jest podłączone do tego komputera (na którym działa przeglądarka).');
           } else if (t.startsWith('Most devices have a tiny light')) {
-            nd.textContent = isFR
-              ? 'La plupart des appareils ont une LED lorsqu\'ils sont alimentés. Assurez-vous qu\'elle est allumée.'
-              : 'Większość urządzeń ma diodę LED gdy jest zasilana. Upewnij się, że świeci.';
+            nd.textContent = pick(
+              'La plupart des appareils ont une LED lorsqu\'ils sont alimentés. Assurez-vous qu\'elle est allumée.',
+              'Більшість пристроїв мають маленький індикатор під час живлення. Переконайтеся, що він світиться.',
+              'Większość urządzeń ma diodę LED gdy jest zasilana. Upewnij się, że świeci.');
           } else if (t.startsWith('Make sure that the USB cable')) {
-            nd.textContent = isFR
-              ? 'Assurez-vous que le câble USB permet le transfert de données (pas seulement la charge).'
-              : 'Upewnij się, że kabel USB służy do przesyłu danych (nie tylko do ładowania).';
+            nd.textContent = pick(
+              'Assurez-vous que le câble USB permet le transfert de données (pas seulement la charge).',
+              'Переконайтеся, що USB-кабель підтримує передачу даних (а не лише живлення).',
+              'Upewnij się, że kabel USB służy do przesyłu danych (nie tylko do ładowania).');
           } else if (t.startsWith('Make sure you have the right drivers')) {
-            nd.textContent = isFR
-              ? 'Assurez-vous d\'avoir les bons pilotes installés. Ci-dessous les pilotes pour les puces ESP courantes :'
-              : 'Upewnij się, że masz zainstalowane właściwe sterowniki. Poniżej znajdziesz sterowniki dla popularnych układów ESP:';
+            nd.textContent = pick(
+              'Assurez-vous d\'avoir les bons pilotes installés. Ci-dessous les pilotes pour les puces ESP courantes :',
+              'Переконайтеся, що встановлено правильні драйвери. Нижче — драйвери для поширених чіпів ESP:',
+              'Upewnij się, że masz zainstalowane właściwe sterowniki. Poniżej znajdziesz sterowniki dla popularnych układów ESP:');
           } else if (t.startsWith('If you are using a Linux')) {
-            nd.textContent = isFR
-              ? 'Si vous utilisez Linux, assurez-vous que votre utilisateur fait partie du groupe dialout.'
-              : 'Jeśli używasz Linuksa, upewnij się, że Twój użytkownik należy do grupy dialout.';
+            nd.textContent = pick(
+              'Si vous utilisez Linux, assurez-vous que votre utilisateur fait partie du groupe dialout.',
+              'Якщо ви використовуєте Linux, переконайтеся, що ваш користувач входить до групи dialout.',
+              'Jeśli używasz Linuksa, upewnij się, że Twój użytkownik należy do grupy dialout.');
           } else if (t.startsWith('You may need to log out')) {
-            nd.textContent = isFR
-              ? 'Vous devrez peut-être vous déconnecter et vous reconnecter, ou redémarrer.'
-              : 'Może być konieczne wylogowanie i ponowne zalogowanie lub restart.';
+            nd.textContent = pick(
+              'Vous devrez peut-être vous déconnecter et vous reconnecter, ou redémarrer.',
+              'Можливо, потрібно вийти і знову увійти в систему або перезавантажити.',
+              'Może być konieczne wylogowanie i ponowne zalogowanie lub restart.');
           } else if (t.startsWith('Do you want to erase the device before installing')) {
             nd.textContent = nd.textContent.replace(
               'Do you want to erase the device before installing',
-              isFR ? 'Souhaitez-vous effacer l\'appareil avant d\'installer' : 'Czy chcesz wymazać urządzenie przed instalacją');
+              pick('Souhaitez-vous effacer l\'appareil avant d\'installer', 'Чи хочете ви видалити дані пристрою перед встановленням', 'Czy chcesz wymazać urządzenie przed instalacją'));
           } else if (t.startsWith('Connected to')) {
-            nd.textContent = nd.textContent.replace('Connected to', isFR ? 'Connecté à' : 'Połączono z');
+            nd.textContent = nd.textContent.replace('Connected to', pick('Connecté à', 'Підключено до', 'Połączono z'));
           } else if (t.startsWith('Your device is running')) {
-            nd.textContent = nd.textContent.replace('Your device is running', isFR ? 'Votre appareil fonctionne sur' : 'Twoje urządzenie działa na');
+            nd.textContent = nd.textContent.replace('Your device is running', pick('Votre appareil fonctionne sur', 'Ваш пристрій працює на', 'Twoje urządzenie działa na'));
           } else if (t.startsWith('Initialized. Found')) {
-            nd.textContent = nd.textContent.replace('Initialized. Found', isFR ? 'Initialisé. Trouvé' : 'Zainicjalizowano. Wykryto');
+            nd.textContent = nd.textContent.replace('Initialized. Found', pick('Initialisé. Trouvé', 'Ініціалізовано. Знайдено', 'Zainicjalizowano. Wykryto'));
           } else if (t.endsWith('board is not supported.') && t !== 'board is not supported.') {
-            nd.textContent = nd.textContent.replace('board is not supported.', isFR ? 'la carte n\'est pas prise en charge.' : 'płytka nie jest obsługiwana.');
+            nd.textContent = nd.textContent.replace('board is not supported.', pick('la carte n\'est pas prise en charge.', 'плата не підтримується.', 'płytka nie jest obsługiwana.'));
           } else if (t.startsWith('Downloading firmware')) {
-            nd.textContent = nd.textContent.replace('Downloading firmware', isFR ? 'Téléchargement du firmware' : 'Pobieranie firmware');
+            nd.textContent = nd.textContent.replace('Downloading firmware', pick('Téléchargement du firmware', 'Завантаження прошивки', 'Pobieranie firmware'));
           }
         });
       },
@@ -631,7 +758,10 @@
         const lang = window.currentLang;
         if (lang === 'en') return;
         const isFR = lang === 'fr';
-        const E = isFR ? (window._espFR || {}).EXACT || {} : window._espPL.EXACT;
+        const isUK = lang === 'uk';
+        const E = isFR ? (window._espFR || {}).EXACT || {}
+          : isUK ? (window._espUK || {}).EXACT || {}
+          : window._espPL.EXACT;
         root.querySelectorAll('*').forEach(function (el) {
           const attr = el.getAttribute('label');
           if (attr && E[attr]) el.setAttribute('label', E[attr]);
@@ -665,6 +795,7 @@
       <button class="lang-btn active" data-lang="pl">🇵🇱 PL</button>
       <button class="lang-btn" data-lang="en">🇬🇧 EN</button>
       <button class="lang-btn" data-lang="fr">🇫🇷 FR</button>
+      <button class="lang-btn" data-lang="uk">🇺🇦 UK</button>
     </div>
 
     <h1>📻 ESP32 Radio (Sebastian Piwowarski)</h1>
@@ -731,6 +862,28 @@
       <div data-i18n-html="changelog-body">
 
         <div style="margin-top:14px">
+          <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px">
+            <span style="background:rgba(255,90,190,0.18);border:1px solid rgba(255,90,190,0.55);border-radius:20px;padding:2px 12px;font-size:0.82rem;font-weight:700;color:#ff8fd1">v1.0.3_B</span>
+            <span style="font-size:0.82rem;opacity:0.6">12.07.2026</span>
+          </div>
+          <div style="padding-left:8px;border-left:2px solid rgba(255,90,190,0.5);font-size:0.88rem;line-height:1.7">
+            <div>🌐 <b>Ukraiński w panelu WWW i instalatorze</b> — czwarty język interfejsu (PL/EN/FR/UK), włącznie z komunikatami z firmware</div>
+            <div>🖥️ <b>Cyrylica na wyświetlaczach TFT i OLED</b> — nazwy stacji i tytuły utworów po ukraińsku renderowane poprawnie (TFT: własna czcionka VLW; OLED: automatyczny wybór fontu łacińskiego/cyrylicy dla każdego tekstu)</div>
+            <div>📻 <b>Limit stacji zwiększony z 99 do 150</b> — wpisywanie numeru stacji z pilota IR obsługuje teraz 3 cyfry</div>
+          </div>
+        </div>
+
+        <div style="margin-top:18px">
+          <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px">
+            <span style="background:rgba(0,200,170,0.18);border:1px solid rgba(0,200,170,0.55);border-radius:20px;padding:2px 12px;font-size:0.82rem;font-weight:700;color:#5eead4">v1.0.3_A</span>
+            <span style="font-size:0.82rem;opacity:0.6">08.07.2026</span>
+          </div>
+          <div style="padding-left:8px;border-left:2px solid rgba(0,200,170,0.5);font-size:0.88rem;line-height:1.7">
+            <div>🖥️ <b>Obsługa wyświetlacza SSD1322 OLED SPI 3.12" (256×64, skala szarości)</b> — sterownik wybierany z panelu WWW, wyłącznie tryb 4-wire SPI</div>
+          </div>
+        </div>
+
+        <div style="margin-top:18px">
           <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px">
             <span style="background:rgba(180,120,255,0.2);border:1px solid rgba(180,120,255,0.6);border-radius:20px;padding:2px 12px;font-size:0.82rem;font-weight:700;color:#c9a6ff">v1.0.3</span>
             <span style="font-size:0.82rem;opacity:0.6">05.07.2026</span>
@@ -1021,7 +1174,7 @@
       'steps':            '<li>Podłącz ESP32-S3 N16R8 kablem USB do komputera.</li><li>Kliknij <b>Zainstaluj</b> i wybierz port szeregowy (COM).</li><li>Potwierdź i poczekaj na zakończenie wgrywania.</li><li>Gotowe — urządzenie samo się zrestartuje. 🎉</li>',
       'erase-tip':        '🔘 <b style="color:#9fd2ff">Jeśli wgrywanie nie startuje lub przerywa się</b><br>Wprowadź płytkę w tryb wgrywania ręcznie: <b>przytrzymaj <kbd>BOOT</kbd></b>, krótko naciśnij <kbd>RST</kbd> (lub <kbd>EN</kbd>), <b>puść <kbd>BOOT</kbd></b> — i dopiero wtedy kliknij „Zainstaluj”. Zwykle nie jest to potrzebne (płytka sama wchodzi w tryb wgrywania), ale ratuje, gdy pojawiają się błędy.',
       'changelog-title':  '📋 Historia zmian (Changelog)',
-      'changelog-body':   '<div style="margin-top:14px"><div style="display:flex;align-items:center;gap:10px;margin-bottom:10px"><span style="background:rgba(180,120,255,0.2);border:1px solid rgba(180,120,255,0.6);border-radius:20px;padding:2px 12px;font-size:0.82rem;font-weight:700;color:#c9a6ff">v1.0.3</span><span style="font-size:0.82rem;opacity:0.6">05.07.2026</span></div><div style="padding-left:8px;border-left:2px solid rgba(180,120,255,0.4);font-size:0.88rem;line-height:1.7"><div>🌐 <b>Panel WWW i instalator po francusku</b> — trzeci język interfejsu (PL/EN/FR), włącznie z komunikatami z firmware</div><div>🕐 <b>Format godziny 12h (AM/PM)</b> — do wyboru obok 24-godzinnego</div><div>📅 <b>Format daty niezależny od godziny</b> — Dzień/Miesiąc/Rok (Europa) lub Miesiąc/Dzień/Rok (USA) osobno w zakładce Strefa czasowa</div><div>🖥️ Poprawiony wybór sterownika wyświetlacza (ST7789 / ILI9341)</div></div></div><div style="margin-top:18px"><div style="display:flex;align-items:center;gap:10px;margin-bottom:10px"><span style="background:rgba(255,215,0,0.2);border:1px solid rgba(255,215,0,0.6);border-radius:20px;padding:2px 12px;font-size:0.82rem;font-weight:700;color:#ffd700">v1.0.2</span><span style="font-size:0.82rem;opacity:0.6">26.06.2026</span></div><div style="padding-left:8px;border-left:2px solid rgba(255,215,0,0.4);font-size:0.88rem;line-height:1.7"><div>🌐 <b>Strefa czasowa</b> — wybór z panelu WWW (35+ stref), zapis w Flash, zastosowanie bez restartu</div><div>🕐 Godzina i data na TFT korygowana automatycznie do wybranej strefy</div></div></div><div style="margin-top:18px"><div style="display:flex;align-items:center;gap:10px;margin-bottom:10px"><span style="background:rgba(100,220,120,0.25);border:1px solid rgba(100,220,120,0.6);border-radius:20px;padding:2px 12px;font-size:0.82rem;font-weight:700;color:#7dffaa">v1.0.1</span><span style="font-size:0.82rem;opacity:0.6">19.06.2026</span></div><div style="padding-left:8px;border-left:2px solid rgba(100,220,120,0.4);font-size:0.88rem;line-height:1.7"><div>🖥️ <b>Obsługa wyświetlacza ILI9341 3.2" (320×240)</b> — sterownik wybierany z panelu WWW bez rekompilacji</div><div>🔁 <b>IR NEXT/PREV</b> — opóźnienie 600 ms przed powtarzaniem przy przytrzymaniu przycisku</div></div></div><div style="margin-top:18px"><div style="display:flex;align-items:center;gap:10px;margin-bottom:10px"><span style="background:rgba(90,180,255,0.2);border:1px solid rgba(90,180,255,0.5);border-radius:20px;padding:2px 12px;font-size:0.82rem;font-weight:700;color:#7dd3fc">v1.0.0</span><span style="font-size:0.82rem;opacity:0.6">2026-05</span></div><div style="padding-left:8px;border-left:2px solid rgba(90,180,255,0.35);font-size:0.88rem;line-height:1.7"><div>🎵 Streaming audio przez WiFi (stacje internetowe, lista stacji)</div><div>🖥️ Wyświetlacze: SSD1306 / SSD1309 / SH1106 OLED, ST7789 TFT SPI</div><div>🕹️ Enkoder obrotowy, pilot IR (protokół NEC)</div><div>🌐 Panel WWW — zarządzanie stacjami, konfiguracja, analizator widma</div><div>💡 Dioda RGB (efekty, tryby kolorów)</div><div>⚡ Instalator webowy (ESP Web Tools) — wgrywanie z przeglądarki</div></div></div>',
+      'changelog-body':   '<div style="margin-top:14px"><div style="display:flex;align-items:center;gap:10px;margin-bottom:10px"><span style="background:rgba(255,90,190,0.18);border:1px solid rgba(255,90,190,0.55);border-radius:20px;padding:2px 12px;font-size:0.82rem;font-weight:700;color:#ff8fd1">v1.0.3_B</span><span style="font-size:0.82rem;opacity:0.6">12.07.2026</span></div><div style="padding-left:8px;border-left:2px solid rgba(255,90,190,0.5);font-size:0.88rem;line-height:1.7"><div>🌐 <b>Ukraiński w panelu WWW i instalatorze</b> — czwarty język interfejsu (PL/EN/FR/UK), włącznie z komunikatami z firmware</div><div>🖥️ <b>Cyrylica na wyświetlaczach TFT i OLED</b> — nazwy stacji i tytuły utworów po ukraińsku renderowane poprawnie (TFT: własna czcionka VLW; OLED: automatyczny wybór fontu łacińskiego/cyrylicy dla każdego tekstu)</div><div>📻 <b>Limit stacji zwiększony z 99 do 150</b> — wpisywanie numeru stacji z pilota IR obsługuje teraz 3 cyfry</div></div></div><div style="margin-top:18px"><div style="display:flex;align-items:center;gap:10px;margin-bottom:10px"><span style="background:rgba(0,200,170,0.18);border:1px solid rgba(0,200,170,0.55);border-radius:20px;padding:2px 12px;font-size:0.82rem;font-weight:700;color:#5eead4">v1.0.3_A</span><span style="font-size:0.82rem;opacity:0.6">08.07.2026</span></div><div style="padding-left:8px;border-left:2px solid rgba(0,200,170,0.5);font-size:0.88rem;line-height:1.7"><div>🖥️ <b>Obsługa wyświetlacza SSD1322 OLED SPI 3.12" (256×64, skala szarości)</b> — sterownik wybierany z panelu WWW, wyłącznie tryb 4-wire SPI</div></div></div><div style="margin-top:18px"><div style="display:flex;align-items:center;gap:10px;margin-bottom:10px"><span style="background:rgba(180,120,255,0.2);border:1px solid rgba(180,120,255,0.6);border-radius:20px;padding:2px 12px;font-size:0.82rem;font-weight:700;color:#c9a6ff">v1.0.3</span><span style="font-size:0.82rem;opacity:0.6">05.07.2026</span></div><div style="padding-left:8px;border-left:2px solid rgba(180,120,255,0.4);font-size:0.88rem;line-height:1.7"><div>🌐 <b>Panel WWW i instalator po francusku</b> — trzeci język interfejsu (PL/EN/FR), włącznie z komunikatami z firmware</div><div>🕐 <b>Format godziny 12h (AM/PM)</b> — do wyboru obok 24-godzinnego</div><div>📅 <b>Format daty niezależny od godziny</b> — Dzień/Miesiąc/Rok (Europa) lub Miesiąc/Dzień/Rok (USA) osobno w zakładce Strefa czasowa</div><div>🖥️ Poprawiony wybór sterownika wyświetlacza (ST7789 / ILI9341)</div></div></div><div style="margin-top:18px"><div style="display:flex;align-items:center;gap:10px;margin-bottom:10px"><span style="background:rgba(255,215,0,0.2);border:1px solid rgba(255,215,0,0.6);border-radius:20px;padding:2px 12px;font-size:0.82rem;font-weight:700;color:#ffd700">v1.0.2</span><span style="font-size:0.82rem;opacity:0.6">26.06.2026</span></div><div style="padding-left:8px;border-left:2px solid rgba(255,215,0,0.4);font-size:0.88rem;line-height:1.7"><div>🌐 <b>Strefa czasowa</b> — wybór z panelu WWW (35+ stref), zapis w Flash, zastosowanie bez restartu</div><div>🕐 Godzina i data na TFT korygowana automatycznie do wybranej strefy</div></div></div><div style="margin-top:18px"><div style="display:flex;align-items:center;gap:10px;margin-bottom:10px"><span style="background:rgba(100,220,120,0.25);border:1px solid rgba(100,220,120,0.6);border-radius:20px;padding:2px 12px;font-size:0.82rem;font-weight:700;color:#7dffaa">v1.0.1</span><span style="font-size:0.82rem;opacity:0.6">19.06.2026</span></div><div style="padding-left:8px;border-left:2px solid rgba(100,220,120,0.4);font-size:0.88rem;line-height:1.7"><div>🖥️ <b>Obsługa wyświetlacza ILI9341 3.2" (320×240)</b> — sterownik wybierany z panelu WWW bez rekompilacji</div><div>🔁 <b>IR NEXT/PREV</b> — opóźnienie 600 ms przed powtarzaniem przy przytrzymaniu przycisku</div></div></div><div style="margin-top:18px"><div style="display:flex;align-items:center;gap:10px;margin-bottom:10px"><span style="background:rgba(90,180,255,0.2);border:1px solid rgba(90,180,255,0.5);border-radius:20px;padding:2px 12px;font-size:0.82rem;font-weight:700;color:#7dd3fc">v1.0.0</span><span style="font-size:0.82rem;opacity:0.6">2026-05</span></div><div style="padding-left:8px;border-left:2px solid rgba(90,180,255,0.35);font-size:0.88rem;line-height:1.7"><div>🎵 Streaming audio przez WiFi (stacje internetowe, lista stacji)</div><div>🖥️ Wyświetlacze: SSD1306 / SSD1309 / SH1106 OLED, ST7789 TFT SPI</div><div>🕹️ Enkoder obrotowy, pilot IR (protokół NEC)</div><div>🌐 Panel WWW — zarządzanie stacjami, konfiguracja, analizator widma</div><div>💡 Dioda RGB (efekty, tryby kolorów)</div><div>⚡ Instalator webowy (ESP Web Tools) — wgrywanie z przeglądarki</div></div></div>',
       'faq-issues-title': 'Coś nie działa?',
       'faq-issues-body':  '<h4>❌ „Failed to open serial port”</h4><p>Port COM jest zajęty przez inny program. Zamknij <b>monitor szeregowy</b> (Arduino IDE, PlatformIO, PuTTY) i wszelkie inne karty z instalatorem, odepnij i wepnij kabel USB, odśwież stronę i spróbuj ponownie.</p><h4>🔌 Nie widać urządzenia / brak portu</h4><p>Użyj kabla USB <b>do przesyłu danych</b> (nie tylko do ładowania). Sprawdź też inne gniazdo USB. Na niektórych płytkach trzeba wpiąć kabel w port oznaczony <kbd>USB</kbd>, a nie <kbd>UART/COM</kbd>.</p><h4>🛠️ Płytka nie wchodzi w tryb wgrywania</h4><p>Ręcznie: przytrzymaj przycisk <kbd>BOOT</kbd>, krótko naciśnij <kbd>RESET</kbd> (lub <kbd>EN</kbd>), puść <kbd>BOOT</kbd>. Potem znów kliknij <b>Zainstaluj</b>.</p><h4>🌐 Przycisk „Zainstaluj” nie reaguje</h4><p>Użyj <b>Google Chrome</b> lub <b>Microsoft Edge</b> na komputerze. Firefox, Safari oraz telefony i tablety nie obsługują wgrywania (brak Web Serial API).</p>',
       'term-title':       '🖥️ Terminal / Konsola — logi i komendy',
@@ -1051,7 +1204,7 @@
       'steps':            '<li>Connect the ESP32-S3 N16R8 to your computer with a USB cable.</li><li>Click <b>Install</b> and select the serial port (COM).</li><li>Confirm and wait for flashing to complete.</li><li>Done — the device will restart automatically. 🎉</li>',
       'erase-tip':        '🔘 <b style="color:#9fd2ff">If flashing doesn\'t start or keeps failing</b><br>Put the board into flash mode manually: <b>hold <kbd>BOOT</kbd></b>, briefly press <kbd>RST</kbd> (or <kbd>EN</kbd>), <b>release <kbd>BOOT</kbd></b> — then click "Install". Usually not needed (the board enters flash mode automatically), but helps when errors appear.',
       'changelog-title':  '📋 Changelog',
-      'changelog-body':   '<div style="margin-top:14px"><div style="display:flex;align-items:center;gap:10px;margin-bottom:10px"><span style="background:rgba(180,120,255,0.2);border:1px solid rgba(180,120,255,0.6);border-radius:20px;padding:2px 12px;font-size:0.82rem;font-weight:700;color:#c9a6ff">v1.0.3</span><span style="font-size:0.82rem;opacity:0.6">05.07.2026</span></div><div style="padding-left:8px;border-left:2px solid rgba(180,120,255,0.4);font-size:0.88rem;line-height:1.7"><div>🌐 <b>Web panel and installer in French</b> — third interface language (PL/EN/FR), including firmware messages</div><div>🕐 <b>12-hour time format (AM/PM)</b> — selectable alongside 24-hour</div><div>📅 <b>Date format independent of time format</b> — choose Day/Month/Year (Europe) or Month/Day/Year (US) separately in the Time zone tab</div><div>🖥️ Fixed display driver selection (ST7789 / ILI9341)</div></div></div><div style="margin-top:18px"><div style="display:flex;align-items:center;gap:10px;margin-bottom:10px"><span style="background:rgba(255,215,0,0.2);border:1px solid rgba(255,215,0,0.6);border-radius:20px;padding:2px 12px;font-size:0.82rem;font-weight:700;color:#ffd700">v1.0.2</span><span style="font-size:0.82rem;opacity:0.6">26.06.2026</span></div><div style="padding-left:8px;border-left:2px solid rgba(255,215,0,0.4);font-size:0.88rem;line-height:1.7"><div>🌐 <b>Timezone</b> — selectable from the web panel (35+ zones), saved to Flash, applied instantly without restart</div><div>🕐 Clock and date on TFT displays automatically adjusted to the selected timezone</div></div></div><div style="margin-top:18px"><div style="display:flex;align-items:center;gap:10px;margin-bottom:10px"><span style="background:rgba(100,220,120,0.25);border:1px solid rgba(100,220,120,0.6);border-radius:20px;padding:2px 12px;font-size:0.82rem;font-weight:700;color:#7dffaa">v1.0.1</span><span style="font-size:0.82rem;opacity:0.6">19.06.2026</span></div><div style="padding-left:8px;border-left:2px solid rgba(100,220,120,0.4);font-size:0.88rem;line-height:1.7"><div>🖥️ <b>ILI9341 3.2" display support (320×240)</b> — driver selectable from the web panel without recompilation</div><div>🔁 <b>IR NEXT/PREV</b> — 600 ms delay before repeat when holding the button</div></div></div><div style="margin-top:18px"><div style="display:flex;align-items:center;gap:10px;margin-bottom:10px"><span style="background:rgba(90,180,255,0.2);border:1px solid rgba(90,180,255,0.5);border-radius:20px;padding:2px 12px;font-size:0.82rem;font-weight:700;color:#7dd3fc">v1.0.0</span><span style="font-size:0.82rem;opacity:0.6">2026-05</span></div><div style="padding-left:8px;border-left:2px solid rgba(90,180,255,0.35);font-size:0.88rem;line-height:1.7"><div>🎵 Audio streaming over WiFi (internet radio stations)</div><div>🖥️ Display support: SSD1306 / SSD1309 / SH1106 OLED, ST7789 TFT SPI</div><div>🕹️ Rotary encoder, IR remote control (NEC protocol)</div><div>🌐 Web panel — station management, configuration, spectrum analyzer</div><div>💡 RGB LED (effects, color modes)</div><div>⚡ Web installer (ESP Web Tools) — flash from browser</div></div></div>',
+      'changelog-body':   '<div style="margin-top:14px"><div style="display:flex;align-items:center;gap:10px;margin-bottom:10px"><span style="background:rgba(255,90,190,0.18);border:1px solid rgba(255,90,190,0.55);border-radius:20px;padding:2px 12px;font-size:0.82rem;font-weight:700;color:#ff8fd1">v1.0.3_B</span><span style="font-size:0.82rem;opacity:0.6">12.07.2026</span></div><div style="padding-left:8px;border-left:2px solid rgba(255,90,190,0.5);font-size:0.88rem;line-height:1.7"><div>🌐 <b>Ukrainian in the web panel and installer</b> — fourth interface language (PL/EN/FR/UK), including firmware messages</div><div>🖥️ <b>Cyrillic on TFT and OLED displays</b> — Ukrainian station names and track titles now render correctly (TFT: custom VLW font; OLED: automatic Latin/Cyrillic font selection per string)</div><div>📻 <b>Station limit raised from 99 to 150</b> — IR remote station number entry now supports 3 digits</div></div></div><div style="margin-top:18px"><div style="display:flex;align-items:center;gap:10px;margin-bottom:10px"><span style="background:rgba(0,200,170,0.18);border:1px solid rgba(0,200,170,0.55);border-radius:20px;padding:2px 12px;font-size:0.82rem;font-weight:700;color:#5eead4">v1.0.3_A</span><span style="font-size:0.82rem;opacity:0.6">08.07.2026</span></div><div style="padding-left:8px;border-left:2px solid rgba(0,200,170,0.5);font-size:0.88rem;line-height:1.7"><div>🖥️ <b>SSD1322 OLED SPI 3.12" display support (256×64, grayscale)</b> — driver selectable from the web panel, 4-wire SPI mode only</div></div></div><div style="margin-top:18px"><div style="display:flex;align-items:center;gap:10px;margin-bottom:10px"><span style="background:rgba(180,120,255,0.2);border:1px solid rgba(180,120,255,0.6);border-radius:20px;padding:2px 12px;font-size:0.82rem;font-weight:700;color:#c9a6ff">v1.0.3</span><span style="font-size:0.82rem;opacity:0.6">05.07.2026</span></div><div style="padding-left:8px;border-left:2px solid rgba(180,120,255,0.4);font-size:0.88rem;line-height:1.7"><div>🌐 <b>Web panel and installer in French</b> — third interface language (PL/EN/FR), including firmware messages</div><div>🕐 <b>12-hour time format (AM/PM)</b> — selectable alongside 24-hour</div><div>📅 <b>Date format independent of time format</b> — choose Day/Month/Year (Europe) or Month/Day/Year (US) separately in the Time zone tab</div><div>🖥️ Fixed display driver selection (ST7789 / ILI9341)</div></div></div><div style="margin-top:18px"><div style="display:flex;align-items:center;gap:10px;margin-bottom:10px"><span style="background:rgba(255,215,0,0.2);border:1px solid rgba(255,215,0,0.6);border-radius:20px;padding:2px 12px;font-size:0.82rem;font-weight:700;color:#ffd700">v1.0.2</span><span style="font-size:0.82rem;opacity:0.6">26.06.2026</span></div><div style="padding-left:8px;border-left:2px solid rgba(255,215,0,0.4);font-size:0.88rem;line-height:1.7"><div>🌐 <b>Timezone</b> — selectable from the web panel (35+ zones), saved to Flash, applied instantly without restart</div><div>🕐 Clock and date on TFT displays automatically adjusted to the selected timezone</div></div></div><div style="margin-top:18px"><div style="display:flex;align-items:center;gap:10px;margin-bottom:10px"><span style="background:rgba(100,220,120,0.25);border:1px solid rgba(100,220,120,0.6);border-radius:20px;padding:2px 12px;font-size:0.82rem;font-weight:700;color:#7dffaa">v1.0.1</span><span style="font-size:0.82rem;opacity:0.6">19.06.2026</span></div><div style="padding-left:8px;border-left:2px solid rgba(100,220,120,0.4);font-size:0.88rem;line-height:1.7"><div>🖥️ <b>ILI9341 3.2" display support (320×240)</b> — driver selectable from the web panel without recompilation</div><div>🔁 <b>IR NEXT/PREV</b> — 600 ms delay before repeat when holding the button</div></div></div><div style="margin-top:18px"><div style="display:flex;align-items:center;gap:10px;margin-bottom:10px"><span style="background:rgba(90,180,255,0.2);border:1px solid rgba(90,180,255,0.5);border-radius:20px;padding:2px 12px;font-size:0.82rem;font-weight:700;color:#7dd3fc">v1.0.0</span><span style="font-size:0.82rem;opacity:0.6">2026-05</span></div><div style="padding-left:8px;border-left:2px solid rgba(90,180,255,0.35);font-size:0.88rem;line-height:1.7"><div>🎵 Audio streaming over WiFi (internet radio stations)</div><div>🖥️ Display support: SSD1306 / SSD1309 / SH1106 OLED, ST7789 TFT SPI</div><div>🕹️ Rotary encoder, IR remote control (NEC protocol)</div><div>🌐 Web panel — station management, configuration, spectrum analyzer</div><div>💡 RGB LED (effects, color modes)</div><div>⚡ Web installer (ESP Web Tools) — flash from browser</div></div></div>',
       'faq-issues-title': 'Something not working?',
       'faq-issues-body':  '<h4>❌ "Failed to open serial port"</h4><p>The COM port is busy. Close any <b>serial monitor</b> (Arduino IDE, PlatformIO, PuTTY) and any other installer tabs, unplug and replug the USB cable, refresh the page, and try again.</p><h4>🔌 Device not visible / no port shown</h4><p>Use a <b>data USB cable</b> (not a charge-only one). Try a different USB port. On some boards the cable must go into the port labeled <kbd>USB</kbd>, not <kbd>UART/COM</kbd>.</p><h4>🛠️ Board won\'t enter flash mode</h4><p>Manually: hold <kbd>BOOT</kbd>, briefly press <kbd>RESET</kbd> (or <kbd>EN</kbd>), release <kbd>BOOT</kbd>. Then click <b>Install</b> again.</p><h4>🌐 "Install" button doesn\'t respond</h4><p>Use <b>Google Chrome</b> or <b>Microsoft Edge</b> on a desktop. Firefox, Safari, and mobile devices are not supported (no Web Serial API).</p>',
       'term-title':       '🖥️ Terminal / Console — logs and commands',
@@ -1081,7 +1234,7 @@
       'steps':            '<li>Connectez l\'ESP32-S3 N16R8 à l\'ordinateur avec un câble USB.</li><li>Cliquez sur <b>Installer</b> et choisissez le port série (COM).</li><li>Confirmez et attendez la fin du flashage.</li><li>Terminé — l\'appareil redémarre automatiquement. 🎉</li>',
       'erase-tip':        '🔘 <b style="color:#9fd2ff">Si le flashage ne démarre pas ou s\'interrompt</b><br>Mettez la carte en mode flashage manuellement : <b>maintenez <kbd>BOOT</kbd></b>, appuyez brièvement sur <kbd>RST</kbd> (ou <kbd>EN</kbd>), <b>relâchez <kbd>BOOT</kbd></b> — puis cliquez sur « Installer ». Généralement pas nécessaire (la carte entre automatiquement en mode flashage), mais utile en cas d\'erreurs.',
       'changelog-title':  '📋 Historique des modifications',
-      'changelog-body':   '<div style="margin-top:14px"><div style="display:flex;align-items:center;gap:10px;margin-bottom:10px"><span style="background:rgba(180,120,255,0.2);border:1px solid rgba(180,120,255,0.6);border-radius:20px;padding:2px 12px;font-size:0.82rem;font-weight:700;color:#c9a6ff">v1.0.3</span><span style="font-size:0.82rem;opacity:0.6">05.07.2026</span></div><div style="padding-left:8px;border-left:2px solid rgba(180,120,255,0.4);font-size:0.88rem;line-height:1.7"><div>🌐 <b>Panneau web et installateur en français</b> — troisième langue de l\'interface (PL/EN/FR), y compris les messages du firmware</div><div>🕐 <b>Format 12 h (AM/PM)</b> — sélectionnable en plus du format 24 h</div><div>📅 <b>Format de date indépendant du format de l\'heure</b> — choix séparé entre Jour/Mois/Année (Europe) et Mois/Jour/Année (USA) dans l\'onglet Fuseau horaire</div><div>🖥️ Correction de la sélection du pilote d\'affichage (ST7789 / ILI9341)</div></div></div><div style="margin-top:18px"><div style="display:flex;align-items:center;gap:10px;margin-bottom:10px"><span style="background:rgba(255,215,0,0.2);border:1px solid rgba(255,215,0,0.6);border-radius:20px;padding:2px 12px;font-size:0.82rem;font-weight:700;color:#ffd700">v1.0.2</span><span style="font-size:0.82rem;opacity:0.6">26.06.2026</span></div><div style="padding-left:8px;border-left:2px solid rgba(255,215,0,0.4);font-size:0.88rem;line-height:1.7"><div>🌐 <b>Fuseau horaire</b> — sélectionnable depuis le panneau web (35+ zones), enregistré en Flash, appliqué instantanément sans redémarrage</div><div>🕐 Heure et date sur les écrans TFT ajustées automatiquement selon le fuseau sélectionné</div></div></div><div style="margin-top:18px"><div style="display:flex;align-items:center;gap:10px;margin-bottom:10px"><span style="background:rgba(100,220,120,0.25);border:1px solid rgba(100,220,120,0.6);border-radius:20px;padding:2px 12px;font-size:0.82rem;font-weight:700;color:#7dffaa">v1.0.1</span><span style="font-size:0.82rem;opacity:0.6">19.06.2026</span></div><div style="padding-left:8px;border-left:2px solid rgba(100,220,120,0.4);font-size:0.88rem;line-height:1.7"><div>🖥️ <b>Prise en charge de l\'écran ILI9341 3.2" (320×240)</b> — pilote sélectionnable depuis le panneau web sans recompilation</div><div>🔁 <b>IR NEXT/PREV</b> — délai de 600 ms avant répétition en maintenant le bouton</div></div></div><div style="margin-top:18px"><div style="display:flex;align-items:center;gap:10px;margin-bottom:10px"><span style="background:rgba(90,180,255,0.2);border:1px solid rgba(90,180,255,0.5);border-radius:20px;padding:2px 12px;font-size:0.82rem;font-weight:700;color:#7dd3fc">v1.0.0</span><span style="font-size:0.82rem;opacity:0.6">2026-05</span></div><div style="padding-left:8px;border-left:2px solid rgba(90,180,255,0.35);font-size:0.88rem;line-height:1.7"><div>🎵 Streaming audio via WiFi (stations radio internet)</div><div>🖥️ Écrans pris en charge : SSD1306 / SSD1309 / SH1106 OLED, ST7789 TFT SPI</div><div>🕹️ Encodeur rotatif, télécommande IR (protocole NEC)</div><div>🌐 Panneau web — gestion des stations, configuration, analyseur de spectre</div><div>💡 LED RGB (effets, modes de couleur)</div><div>⚡ Installateur web (ESP Web Tools) — flasher depuis le navigateur</div></div></div>',
+      'changelog-body':   '<div style="margin-top:14px"><div style="display:flex;align-items:center;gap:10px;margin-bottom:10px"><span style="background:rgba(255,90,190,0.18);border:1px solid rgba(255,90,190,0.55);border-radius:20px;padding:2px 12px;font-size:0.82rem;font-weight:700;color:#ff8fd1">v1.0.3_B</span><span style="font-size:0.82rem;opacity:0.6">12.07.2026</span></div><div style="padding-left:8px;border-left:2px solid rgba(255,90,190,0.5);font-size:0.88rem;line-height:1.7"><div>🌐 <b>Ukrainien dans le panneau web et l\'installateur</b> — quatrième langue de l\'interface (PL/EN/FR/UK), y compris les messages du firmware</div><div>🖥️ <b>Cyrillique sur les écrans TFT et OLED</b> — les noms de station et titres en ukrainien s\'affichent désormais correctement (TFT : police VLW personnalisée ; OLED : sélection automatique de la police latine/cyrillique par texte)</div><div>📻 <b>Limite de stations portée de 99 à 150</b> — la saisie du numéro de station depuis la télécommande IR prend désormais en charge 3 chiffres</div></div></div><div style="margin-top:18px"><div style="display:flex;align-items:center;gap:10px;margin-bottom:10px"><span style="background:rgba(0,200,170,0.18);border:1px solid rgba(0,200,170,0.55);border-radius:20px;padding:2px 12px;font-size:0.82rem;font-weight:700;color:#5eead4">v1.0.3_A</span><span style="font-size:0.82rem;opacity:0.6">08.07.2026</span></div><div style="padding-left:8px;border-left:2px solid rgba(0,200,170,0.5);font-size:0.88rem;line-height:1.7"><div>🖥️ <b>Prise en charge de l\'écran OLED SSD1322 SPI 3.12" (256×64, niveaux de gris)</b> — pilote sélectionnable depuis le panneau web, uniquement en mode SPI 4 fils</div></div></div><div style="margin-top:18px"><div style="display:flex;align-items:center;gap:10px;margin-bottom:10px"><span style="background:rgba(180,120,255,0.2);border:1px solid rgba(180,120,255,0.6);border-radius:20px;padding:2px 12px;font-size:0.82rem;font-weight:700;color:#c9a6ff">v1.0.3</span><span style="font-size:0.82rem;opacity:0.6">05.07.2026</span></div><div style="padding-left:8px;border-left:2px solid rgba(180,120,255,0.4);font-size:0.88rem;line-height:1.7"><div>🌐 <b>Panneau web et installateur en français</b> — troisième langue de l\'interface (PL/EN/FR), y compris les messages du firmware</div><div>🕐 <b>Format 12 h (AM/PM)</b> — sélectionnable en plus du format 24 h</div><div>📅 <b>Format de date indépendant du format de l\'heure</b> — choix séparé entre Jour/Mois/Année (Europe) et Mois/Jour/Année (USA) dans l\'onglet Fuseau horaire</div><div>🖥️ Correction de la sélection du pilote d\'affichage (ST7789 / ILI9341)</div></div></div><div style="margin-top:18px"><div style="display:flex;align-items:center;gap:10px;margin-bottom:10px"><span style="background:rgba(255,215,0,0.2);border:1px solid rgba(255,215,0,0.6);border-radius:20px;padding:2px 12px;font-size:0.82rem;font-weight:700;color:#ffd700">v1.0.2</span><span style="font-size:0.82rem;opacity:0.6">26.06.2026</span></div><div style="padding-left:8px;border-left:2px solid rgba(255,215,0,0.4);font-size:0.88rem;line-height:1.7"><div>🌐 <b>Fuseau horaire</b> — sélectionnable depuis le panneau web (35+ zones), enregistré en Flash, appliqué instantanément sans redémarrage</div><div>🕐 Heure et date sur les écrans TFT ajustées automatiquement selon le fuseau sélectionné</div></div></div><div style="margin-top:18px"><div style="display:flex;align-items:center;gap:10px;margin-bottom:10px"><span style="background:rgba(100,220,120,0.25);border:1px solid rgba(100,220,120,0.6);border-radius:20px;padding:2px 12px;font-size:0.82rem;font-weight:700;color:#7dffaa">v1.0.1</span><span style="font-size:0.82rem;opacity:0.6">19.06.2026</span></div><div style="padding-left:8px;border-left:2px solid rgba(100,220,120,0.4);font-size:0.88rem;line-height:1.7"><div>🖥️ <b>Prise en charge de l\'écran ILI9341 3.2" (320×240)</b> — pilote sélectionnable depuis le panneau web sans recompilation</div><div>🔁 <b>IR NEXT/PREV</b> — délai de 600 ms avant répétition en maintenant le bouton</div></div></div><div style="margin-top:18px"><div style="display:flex;align-items:center;gap:10px;margin-bottom:10px"><span style="background:rgba(90,180,255,0.2);border:1px solid rgba(90,180,255,0.5);border-radius:20px;padding:2px 12px;font-size:0.82rem;font-weight:700;color:#7dd3fc">v1.0.0</span><span style="font-size:0.82rem;opacity:0.6">2026-05</span></div><div style="padding-left:8px;border-left:2px solid rgba(90,180,255,0.35);font-size:0.88rem;line-height:1.7"><div>🎵 Streaming audio via WiFi (stations radio internet)</div><div>🖥️ Écrans pris en charge : SSD1306 / SSD1309 / SH1106 OLED, ST7789 TFT SPI</div><div>🕹️ Encodeur rotatif, télécommande IR (protocole NEC)</div><div>🌐 Panneau web — gestion des stations, configuration, analyseur de spectre</div><div>💡 LED RGB (effets, modes de couleur)</div><div>⚡ Installateur web (ESP Web Tools) — flasher depuis le navigateur</div></div></div>',
       'faq-issues-title': 'Quelque chose ne fonctionne pas ?',
       'faq-issues-body':  '<h4>❌ « Failed to open serial port »</h4><p>Le port COM est occupé par un autre programme. Fermez le <b>moniteur série</b> (Arduino IDE, PlatformIO, PuTTY) et tout autre onglet avec l\'installateur, débranchez et rebranchez le câble USB, actualisez la page et réessayez.</p><h4>🔌 Appareil non visible / aucun port affiché</h4><p>Utilisez un câble USB <b>de transfert de données</b> (pas seulement de charge). Essayez aussi un autre port USB. Sur certaines cartes, le câble doit être branché sur le port <kbd>USB</kbd>, et non <kbd>UART/COM</kbd>.</p><h4>🛠️ La carte n\'entre pas en mode flashage</h4><p>Manuellement : maintenez le bouton <kbd>BOOT</kbd>, appuyez brièvement sur <kbd>RESET</kbd> (ou <kbd>EN</kbd>), relâchez <kbd>BOOT</kbd>. Puis cliquez à nouveau sur <b>Installer</b>.</p><h4>🌐 Le bouton « Installer » ne répond pas</h4><p>Utilisez <b>Google Chrome</b> ou <b>Microsoft Edge</b> sur ordinateur. Firefox, Safari ainsi que les téléphones et tablettes ne prennent pas en charge le flashage (pas de Web Serial API).</p>',
       'term-title':       '🖥️ Terminal / Console — journaux et commandes',
@@ -1096,6 +1249,36 @@
       'term-note':        'Fonctionne uniquement dans <b>Chrome/Edge</b> sur ordinateur. Le terminal et l\'installateur ne peuvent pas être connectés en même temps — si vous venez de flasher le firmware, actualisez la page.',
       'note':             'Navigateur <b>Chrome</b> ou <b>Edge</b> requis sur ordinateur (Web Serial API).<br>Firefox, Safari et les appareils mobiles ne sont pas pris en charge.',
       'flash-warn':       '⚠️ <b>Le flashage dure depuis plus de 90 secondes — quelque chose semble ne pas aller.</b><br>Vérifiez les points suivants et actualisez la page :<ul><li>Utilisez le port <b>UART</b> (pas l\'USB natif) — seul celui-ci fonctionne de manière fiable</li><li>Vérifiez que le câble USB transfère des données (pas seulement la charge)</li><li>Connectez directement à l\'ordinateur — évitez les hubs USB</li><li>Entrez manuellement en mode flashage : maintenez <kbd>BOOT</kbd>, appuyez sur <kbd>RST</kbd>, relâchez <kbd>BOOT</kbd> — puis actualisez et réessayez</li></ul>',
+    },
+    uk: {
+      'page-title':       'ESP32 Radio — Інсталятор',
+      'fw-prefix':        'версія',
+      'subtitle':         'Прошийте firmware прямо з браузера — без встановлення жодного програмного забезпечення.',
+      'ports-title':      '📌 Увага: плата має ДВА порти USB — важливо, який ви використовуєте!',
+      'port-uart':        '<span class="tag">Порт «UART»</span><small>гніздо з мостом USB-UART</small>✅ Прошивка firmware (повільніше)<br>✅ Логи та команди (термінал)<br><b>👉 Підключайте сюди — працює для всього</b>',
+      'port-usb':         '<span class="tag">Порт «USB»</span><small>нативний USB ESP32-S3</small>✅ Прошивка firmware (швидше)<br>❌ <b>НЕ</b> показує логи і не приймає команди',
+      'ports-hint':       'Порти позначені дрібним шрифтом на платі (UART / USB), прямо поруч один з одним. Якщо вам потрібно лише прошити firmware — підійде будь-який. Для <b>термінала/логів обов’язково використовуйте порт «UART»</b>.',
+      'btn-install':      '⚡ Встановити',
+      'unsupported':      'Ваш браузер не підтримує Web Serial.<br>Використайте <b>Google Chrome</b> або <b>Microsoft Edge</b> на комп’ютері (не на телефоні).',
+      'not-allowed':      'Прошивка працює лише через HTTPS-з’єднання.',
+      'steps':            '<li>Підключіть ESP32-S3 N16R8 USB-кабелем до комп’ютера.</li><li>Натисніть <b>Встановити</b> і виберіть послідовний порт (COM).</li><li>Підтвердіть і дочекайтеся завершення прошивки.</li><li>Готово — пристрій сам перезавантажиться. 🎉</li>',
+      'erase-tip':        '🔘 <b style="color:#9fd2ff">Якщо прошивка не починається або переривається</b><br>Переведіть плату в режим прошивки вручну: <b>утримуйте <kbd>BOOT</kbd></b>, коротко натисніть <kbd>RST</kbd> (або <kbd>EN</kbd>), <b>відпустіть <kbd>BOOT</kbd></b> — і лише тоді натисніть «Встановити». Зазвичай це не потрібно (плата сама входить у режим прошивки), але допомагає, коли з’являються помилки.',
+      'changelog-title':  '📋 Історія змін (Changelog)',
+      'changelog-body':   '<div style="margin-top:14px"><div style="display:flex;align-items:center;gap:10px;margin-bottom:10px"><span style="background:rgba(255,90,190,0.18);border:1px solid rgba(255,90,190,0.55);border-radius:20px;padding:2px 12px;font-size:0.82rem;font-weight:700;color:#ff8fd1">v1.0.3_B</span><span style="font-size:0.82rem;opacity:0.6">12.07.2026</span></div><div style="padding-left:8px;border-left:2px solid rgba(255,90,190,0.5);font-size:0.88rem;line-height:1.7"><div>🌐 <b>Українська у веб-панелі та інсталяторі</b> — четверта мова інтерфейсу (PL/EN/FR/UK), включно з повідомленнями прошивки</div><div>🖥️ <b>Кирилиця на екранах TFT та OLED</b> — назви станцій та назви треків українською тепер відображаються коректно (TFT: власний шрифт VLW; OLED: автоматичний вибір латиниці/кирилиці для кожного рядка)</div><div>📻 <b>Ліміт станцій збільшено з 99 до 150</b> — введення номера станції з ІЧ-пульта тепер підтримує 3 цифри</div></div></div><div style="margin-top:18px"><div style="display:flex;align-items:center;gap:10px;margin-bottom:10px"><span style="background:rgba(0,200,170,0.18);border:1px solid rgba(0,200,170,0.55);border-radius:20px;padding:2px 12px;font-size:0.82rem;font-weight:700;color:#5eead4">v1.0.3_A</span><span style="font-size:0.82rem;opacity:0.6">08.07.2026</span></div><div style="padding-left:8px;border-left:2px solid rgba(0,200,170,0.5);font-size:0.88rem;line-height:1.7"><div>🖥️ <b>Підтримка екрана OLED SSD1322 SPI 3.12" (256×64, відтінки сірого)</b> — драйвер вибирається з веб-панелі, лише режим SPI 4-wire</div></div></div><div style="margin-top:18px"><div style="display:flex;align-items:center;gap:10px;margin-bottom:10px"><span style="background:rgba(180,120,255,0.2);border:1px solid rgba(180,120,255,0.6);border-radius:20px;padding:2px 12px;font-size:0.82rem;font-weight:700;color:#c9a6ff">v1.0.3</span><span style="font-size:0.82rem;opacity:0.6">05.07.2026</span></div><div style="padding-left:8px;border-left:2px solid rgba(180,120,255,0.4);font-size:0.88rem;line-height:1.7"><div>🌐 <b>Веб-панель та інсталятор французькою</b> — третя мова інтерфейсу (PL/EN/FR), включно з повідомленнями прошивки</div><div>🕐 <b>12-годинний формат (AM/PM)</b> — можна вибрати на додачу до 24-годинного</div><div>📅 <b>Формат дати незалежний від формату часу</b> — окремий вибір Дня/Місяця/Року (Європа) або Місяця/Дня/Року (США) у вкладці Часовий пояс</div><div>🖥️ Виправлено вибір драйвера дисплея (ST7789 / ILI9341)</div></div></div><div style="margin-top:18px"><div style="display:flex;align-items:center;gap:10px;margin-bottom:10px"><span style="background:rgba(255,215,0,0.2);border:1px solid rgba(255,215,0,0.6);border-radius:20px;padding:2px 12px;font-size:0.82rem;font-weight:700;color:#ffd700">v1.0.2</span><span style="font-size:0.82rem;opacity:0.6">26.06.2026</span></div><div style="padding-left:8px;border-left:2px solid rgba(255,215,0,0.4);font-size:0.88rem;line-height:1.7"><div>🌐 <b>Часовий пояс</b> — можна вибрати у веб-панелі (35+ зон), зберігається у Flash, застосовується миттєво без перезавантаження</div><div>🕐 Час і дата на TFT-екранах автоматично коригуються відповідно до обраного поясу</div></div></div><div style="margin-top:18px"><div style="display:flex;align-items:center;gap:10px;margin-bottom:10px"><span style="background:rgba(100,220,120,0.25);border:1px solid rgba(100,220,120,0.6);border-radius:20px;padding:2px 12px;font-size:0.82rem;font-weight:700;color:#7dffaa">v1.0.1</span><span style="font-size:0.82rem;opacity:0.6">19.06.2026</span></div><div style="padding-left:8px;border-left:2px solid rgba(100,220,120,0.4);font-size:0.88rem;line-height:1.7"><div>🖥️ <b>Підтримка екрана ILI9341 3.2" (320×240)</b> — драйвер вибирається з веб-панелі без перекомпіляції</div><div>🔁 <b>IR NEXT/PREV</b> — затримка 600 мс перед повтором при утриманні кнопки</div></div></div><div style="margin-top:18px"><div style="display:flex;align-items:center;gap:10px;margin-bottom:10px"><span style="background:rgba(90,180,255,0.2);border:1px solid rgba(90,180,255,0.5);border-radius:20px;padding:2px 12px;font-size:0.82rem;font-weight:700;color:#7dd3fc">v1.0.0</span><span style="font-size:0.82rem;opacity:0.6">2026-05</span></div><div style="padding-left:8px;border-left:2px solid rgba(90,180,255,0.35);font-size:0.88rem;line-height:1.7"><div>🎵 Аудіостримінг через WiFi (інтернет-радіостанції)</div><div>🖥️ Підтримувані екрани: SSD1306 / SSD1309 / SH1106 OLED, ST7789 TFT SPI</div><div>🕹️ Роторний енкодер, ІЧ-пульт (протокол NEC)</div><div>🌐 Веб-панель — керування станціями, конфігурація, аналізатор спектра</div><div>💡 RGB світлодіод (ефекти, кольорові режими)</div><div>⚡ Веб-інсталятор (ESP Web Tools) — прошивка з браузера</div></div></div>',
+      'faq-issues-title': 'Щось не працює?',
+      'faq-issues-body':  '<h4>❌ «Failed to open serial port»</h4><p>Порт COM зайнятий іншою програмою. Закрийте <b>монітор порту</b> (Arduino IDE, PlatformIO, PuTTY) та всі інші вкладки з інсталятором, від’єднайте і під’єднайте USB-кабель, оновіть сторінку і спробуйте ще раз.</p><h4>🔌 Пристрій не видно / немає порту</h4><p>Використовуйте USB-кабель <b>для передачі даних</b> (не лише для заряджання). Спробуйте інший порт USB. На деяких платах кабель потрібно під’єднати до порту <kbd>USB</kbd>, а не <kbd>UART/COM</kbd>.</p><h4>🛠️ Плата не входить у режим прошивки</h4><p>Вручну: утримуйте кнопку <kbd>BOOT</kbd>, коротко натисніть <kbd>RESET</kbd> (або <kbd>EN</kbd>), відпустіть <kbd>BOOT</kbd>. Потім знову натисніть <b>Встановити</b>.</p><h4>🌐 Кнопка «Встановити» не реагує</h4><p>Використайте <b>Google Chrome</b> або <b>Microsoft Edge</b> на комп’ютері. Firefox, Safari, а також телефони і планшети не підтримують прошивку (немає Web Serial API).</p>',
+      'term-title':       '🖥️ Термінал / Консоль — логи та команди',
+      'term-intro':       'Перегляд логів пристрою та надсилання команд. Корисно, коли щось не працює — можна <b>скопіювати логи і надіслати їх автору</b>.',
+      'term-uart-tip':    '🔌 <b style="color:#9fd2ff">Підключіть кабель до порту «UART»!</b><br>Логи та команди працюють <b>лише</b> через гніздо «UART» (з мостом USB-UART). Нативний порт «USB» служить для прошивки, але тут нічого не покаже.',
+      'btn-connect':      '🔌 Підключити',
+      'btn-disconnect':   'Відключити',
+      'btn-copy':         '📋 Скопіювати логи',
+      'btn-clear':        '🧹 Очистити',
+      'term-placeholder': 'введіть команду і натисніть Enter…',
+      'btn-send':         'Надіслати',
+      'term-note':        'Працює лише в <b>Chrome/Edge</b> на комп’ютері. Термінал та інсталятор не можуть бути підключені одночасно — якщо ви щойно прошивали firmware, оновіть сторінку.',
+      'note':             'Потрібен браузер <b>Chrome</b> або <b>Edge</b> на комп’ютері (Web Serial API).<br>Firefox, Safari та мобільні пристрої не підтримуються.',
+      'flash-warn':       '⚠️ <b>Прошивка триває вже понад 90 секунд — можливо, щось не так.</b><br>Перевірте наступне і оновіть сторінку:<ul><li>Використовуйте порт <b>UART</b> (не нативний USB) — лише він працює стабільно</li><li>Перевірте, чи USB-кабель передає дані (а не лише заряджає)</li><li>Підключіть напряму до комп’ютера — без USB-хабів</li><li>Увійдіть у режим прошивки вручну: утримуйте <kbd>BOOT</kbd>, натисніть <kbd>RST</kbd>, відпустіть <kbd>BOOT</kbd> — потім оновіть сторінку і спробуйте ще раз</li></ul>',
     }
   };
 
@@ -1230,7 +1413,9 @@
         ? '🔄 Close and try again'
         : (window.currentLang === 'fr')
           ? '🔄 Fermer et réessayer'
-          : '🔄 Zamknij i spróbuj ponownie';
+          : (window.currentLang === 'uk')
+            ? '🔄 Закрити і спробувати ще раз'
+            : '🔄 Zamknij i spróbuj ponownie';
       failDlg.addEventListener('cancel', function (e) { e.preventDefault(); });
       failDlg.appendChild(btn);
       document.body.appendChild(failDlg);
