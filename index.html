@@ -1693,15 +1693,27 @@
       .then(function (d) { show(d ? d.count : 0); })
       .catch(function (e) { console.log('[counter] odczyt nieudany:', e); show(0); });
 
-    // Log w konsoli (F12) - tymczasowo, do zdiagnozowania czy fetch faktycznie
-    // dolatuje do API (siec/CORS) czy problem jest wczesniej (detekcja nigdy
-    // nie wola tej funkcji - patrz window._ewtDebug / Logika 3 wyzej).
+    // Inkrementacja przez znacznik <img>, NIE fetch() - potwierdzone w konsoli
+    // (F12), ze fetch() na /up byl blokowany przez rozszerzenie przegladarki
+    // (ad-block/anti-tracking, ERR_BLOCKED_BY_CLIENT - domena counterapi.dev
+    // wyglada jak typowy "hit counter" wiec ladowala sie na listach blokowania).
+    // Wiele list blokuje po TYPIE zadania (xmlhttprequest/fetch), a nie po samym
+    // obrazku - Image().src wysyla ten sam GET, ale jako zasob typu "image",
+    // co czesciej przechodzi. Odpowiedz to JSON (nie prawdziwy obrazek), wiec
+    // onerror zawsze odpali - to oczekiwane i nieistotne, liczy sie tylko to,
+    // ze zadanie faktycznie wyjdzie do sieci.
     window._ctrBump = function () {
-      console.log('[counter] _ctrBump wywolane, wysylam /up...');
-      fetch('https://api.counterapi.dev/v1/' + NS + '/' + CTR + '/up')
-        .then(function (r) { console.log('[counter] odpowiedz /up, status=', r.status); return r.ok ? r.json() : null; })
-        .then(function (d) { console.log('[counter] nowa wartosc:', d && d.count); if (d) show(d.count); })
-        .catch(function (e) { console.log('[counter] /up nieudany:', e); });
+      console.log('[counter] _ctrBump wywolane, wysylam /up jako obrazek...');
+      var img = new Image();
+      img.onload  = function () { console.log('[counter] /up zaladowany (typ=image)'); };
+      img.onerror = function () { console.log('[counter] /up zadanie wyslane (odpowiedz nie jest obrazkiem - OK)'); };
+      img.src = 'https://api.counterapi.dev/v1/' + NS + '/' + CTR + '/up?_=' + Date.now();
+      // Optymistyczna aktualizacja UI - Image() nie daje odczytac odpowiedzi JSON,
+      // wiec po prostu podbijamy aktualnie wyswietlana liczbe o 1.
+      if (el && el.textContent.indexOf('#') === 0) {
+        var cur = parseInt(el.textContent.slice(1), 10);
+        if (!isNaN(cur)) show(cur + 1);
+      }
     };
   })();
   </script>
