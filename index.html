@@ -1557,6 +1557,18 @@
     var FLASH_STATES = ['Kasowanie danych', 'Instalowanie', 'Wgrywanie',
                         'Erasing', 'Installing', 'Writing',
                         'Effacement', 'Installation en cours', 'Écriture'];
+
+    // ── Logika 3: wykryj zakonczona instalacje (licznik w rogu) ──────────────
+    // Napisy koncowe esp-web-tools we wszystkich 4 jezykach strony (zrodlowy
+    // angielski + tlumaczenia PL/FR/UK z dodatek 1 skryptu wyzej) - dublujemy
+    // bo tlumaczenie DOM-u i nasz interval dzialaja niezaleznie od siebie.
+    var installCounted = false;
+    var SUCCESS_STATES = [
+      'Installation complete!', 'All done!', 'Done!',
+      'Instalacja zakończona!', 'Wszystko gotowe!', 'Gotowe!',
+      'Installation terminée !', 'Tout est prêt !', 'Terminé !',
+      'Встановлення завершено!', 'Усе готово!', 'Готово!'
+    ];
     var startTime = null;
     var warned    = false;
 
@@ -1606,6 +1618,12 @@
                          t.indexOf('Łączenie z urządzeniem')      !== -1 ||
                          t.indexOf('Connexion à l\'appareil')     !== -1;
 
+      // Zlicz udana instalacje - raz na wejscie strony (patrz Logika 3 wyzej)
+      if (!installCounted && SUCCESS_STATES.some(function (s) { return t.indexOf(s) !== -1; })) {
+        installCounted = true;
+        if (window._ctrBump) window._ctrBump();
+      }
+
       // Pokaż/ukryj <dialog> z przyciskiem (showModal → top layer, zawsze nad dialogiem esp-web-tools)
       if (isFailed) {
         failed = true;
@@ -1632,5 +1650,35 @@
   <!-- Numer builda — widoczny przy błędzie żeby potwierdzić wersję kodu -->
   <div id="_build" style="position:fixed;bottom:4px;right:8px;font-size:10px;
        opacity:.4;color:#fff;pointer-events:none;z-index:1">build #9</div>
+  <div id="_ic" style="position:fixed;bottom:16px;right:8px;font-size:10px;
+       opacity:.4;color:#fff;pointer-events:none;z-index:1"></div>
+
+  <script>
+  // ===== Licznik ukonczonych instalacji (dyskretna liczba w rogu, bez etykiety) =====
+  // Zewnetrzny darmowy licznik (counterapi.dev) - bez tego nie da sie liczyc trafien
+  // na statycznej stronie GitHub Pages (brak wlasnego backendu). Nazwa namespace/
+  // countera celowo nieoczywista - to jedyna "ochrona" na stronie ktora nie ma zadnej
+  // etykiety wyjasniajacej co znaczy liczba w rogu.
+  (function () {
+    var NS  = 'esp32radio-seba';
+    var CTR = 'flashed';
+    var el  = document.getElementById('_ic');
+
+    function show(n) { if (el && typeof n === 'number') el.textContent = '#' + n; }
+
+    // Wyswietl aktualna wartosc przy wejsciu na strone (odczyt, NIE inkrementuje).
+    fetch('https://api.counterapi.dev/v1/' + NS + '/' + CTR + '/')
+      .then(function (r) { return r.ok ? r.json() : null; })
+      .then(function (d) { if (d) show(d.count); })
+      .catch(function () {});
+
+    window._ctrBump = function () {
+      fetch('https://api.counterapi.dev/v1/' + NS + '/' + CTR + '/up')
+        .then(function (r) { return r.ok ? r.json() : null; })
+        .then(function (d) { if (d) show(d.count); })
+        .catch(function () {});
+    };
+  })();
+  </script>
 </body>
 </html>
