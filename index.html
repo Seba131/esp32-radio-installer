@@ -1624,21 +1624,9 @@
                          t.indexOf('Łączenie z urządzeniem')      !== -1 ||
                          t.indexOf('Connexion à l\'appareil')     !== -1;
 
-      // Debug: podglad na zywo w konsoli (F12) - window._ewtDebug po kazdym ticku.
-      // Tymczasowe, do zdiagnozowania czemu licznik sie nie zlicza - patrz komentarz
-      // przy SUCCESS_STATES. Bezpieczne zeby zostawic na stale (tanie, bez spamu).
-      window._ewtDebug = {
-        textLen: t.length,
-        matched: SUCCESS_STATES.filter(function (s) { return t.indexOf(s) !== -1; }),
-        installCounted: installCounted,
-        shadowRootCount: (window._espShadowRoots || []).length,
-        tailSample: t.slice(-400)
-      };
-
       // Zlicz udana instalacje - raz na wejscie strony (patrz Logika 3 wyzej)
       if (!installCounted && SUCCESS_STATES.some(function (s) { return t.indexOf(s) !== -1; })) {
         installCounted = true;
-        console.log('[counter] sukces wykryty, wysylam bump. Dopasowanie:', window._ewtDebug.matched);
         if (window._ctrBump) window._ctrBump();
       }
 
@@ -1698,11 +1686,10 @@
       .catch(function (e) { console.log('[counter] odczyt nieudany:', e); show(0); });
 
     window._ctrBump = function () {
-      console.log('[counter] _ctrBump wywolane...');
       fetch('https://abacus.jasoncameron.dev/hit/' + NS + '/' + CTR)
-        .then(function (r) { console.log('[counter] odpowiedz, status=', r.status); return r.ok ? r.json() : null; })
-        .then(function (d) { console.log('[counter] nowa wartosc:', d && d.value); if (d) show(d.value); })
-        .catch(function (e) { console.log('[counter] zadanie nieudane:', e); });
+        .then(function (r) { return r.ok ? r.json() : null; })
+        .then(function (d) { if (d) show(d.value); })
+        .catch(function () {});
     };
   })();
   </script>
