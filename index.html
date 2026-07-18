@@ -1674,10 +1674,12 @@
     function show(n) { if (el && typeof n === 'number') el.textContent = '#' + n; }
 
     // Wyswietl aktualna wartosc przy wejsciu na strone (odczyt, NIE inkrementuje).
+    // Dopoki nikt nie ukonczyl pierwszej instalacji, licznik nie istnieje po
+    // stronie API (blad 404/400) - pokazujemy wtedy 0 zamiast pustego pola.
     fetch('https://api.counterapi.dev/v1/' + NS + '/' + CTR + '/')
       .then(function (r) { return r.ok ? r.json() : null; })
-      .then(function (d) { if (d) show(d.count); })
-      .catch(function () {});
+      .then(function (d) { show(d ? d.count : 0); })
+      .catch(function () { show(0); });
 
     window._ctrBump = function () {
       fetch('https://api.counterapi.dev/v1/' + NS + '/' + CTR + '/up')
