@@ -1559,11 +1559,17 @@
                         'Effacement', 'Installation en cours', 'Écriture'];
 
     // ── Logika 3: wykryj zakonczona instalacje (licznik w rogu) ──────────────
-    // Napisy koncowe esp-web-tools we wszystkich 4 jezykach strony (zrodlowy
-    // angielski + tlumaczenia PL/FR/UK z dodatek 1 skryptu wyzej) - dublujemy
-    // bo tlumaczenie DOM-u i nasz interval dzialaja niezaleznie od siebie.
+    // "Installation complete!" (ekran koncowy z konfetti) pojawia sie DOPIERO
+    // po dodatkowej probie wykrycia obslugi Wi-Fi-przez-USB (Improv), ktorej
+    // nasz firmware nie implementuje - wiec ten ekran renderuje sie z kilku-
+    // sekundowym opoznieniem po faktycznym zakonczeniu zapisu (uzytkownik moze
+    // zamknac karte wczesniej, zanim sie pojawi). "Wrapping up"/"Kończenie..."
+    // to etykieta paska postepu pokazywana NATYCHMIAST po udanym zapisie
+    // (przed ta proba Improv) - dużo pewniejszy i wczesniejszy sygnal sukcesu.
+    // Oba zestawy trzymane jako redundancja (dowolny wystarczy).
     var installCounted = false;
     var SUCCESS_STATES = [
+      'Wrapping up', 'Kończenie...', 'Finalisation...', 'Завершення...',
       'Installation complete!', 'All done!', 'Done!',
       'Instalacja zakończona!', 'Wszystko gotowe!', 'Gotowe!',
       'Installation terminée !', 'Tout est prêt !', 'Terminé !',
@@ -1650,8 +1656,9 @@
   <!-- Numer builda — widoczny przy błędzie żeby potwierdzić wersję kodu -->
   <div id="_build" style="position:fixed;bottom:4px;right:8px;font-size:10px;
        opacity:.4;color:#fff;pointer-events:none;z-index:1">build #9</div>
-  <div id="_ic" style="position:fixed;bottom:16px;right:8px;font-size:10px;
-       opacity:.4;color:#fff;pointer-events:none;z-index:1"></div>
+  <div id="_ic" style="position:fixed;bottom:26px;right:8px;font-size:15px;
+       font-weight:700;color:#fff;background:rgba(0,0,0,.45);border-radius:8px;
+       padding:2px 8px;pointer-events:none;z-index:1"></div>
 
   <script>
   // ===== Licznik ukonczonych instalacji (dyskretna liczba w rogu, bez etykiety) =====
