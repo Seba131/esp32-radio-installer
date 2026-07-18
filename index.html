@@ -1674,46 +1674,35 @@
 
   <script>
   // ===== Licznik ukonczonych instalacji (dyskretna liczba w rogu, bez etykiety) =====
-  // Zewnetrzny darmowy licznik (counterapi.dev) - bez tego nie da sie liczyc trafien
-  // na statycznej stronie GitHub Pages (brak wlasnego backendu). Nazwa namespace/
-  // countera celowo nieoczywista - to jedyna "ochrona" na stronie ktora nie ma zadnej
-  // etykiety wyjasniajacej co znaczy liczba w rogu.
+  // Zewnetrzny darmowy licznik (abacus.jasoncameron.dev) - bez tego nie da sie liczyc
+  // trafien na statycznej stronie GitHub Pages (brak wlasnego backendu). Nazwa
+  // namespace/countera celowo nieoczywista - to jedyna "ochrona" na stronie ktora
+  // nie ma zadnej etykiety wyjasniajacej co znaczy liczba w rogu.
   (function () {
+    // counterapi.dev bylo blokowane CALKOWICIE (cala domena, nie tylko fetch)
+    // przez rozszerzenia ad-block/anti-tracking - potwierdzone w konsoli userow
+    // (ERR_BLOCKED_BY_CLIENT nawet po zmianie na Image()). Zamieniono na
+    // abacus.jasoncameron.dev - inna marka/domena, nie kojarzy sie wprost z
+    // "hit counter", wiec mniejsza szansa na listach blokujacych (choc zadna
+    // publiczna usluga tego typu nie jest w 100% odporna).
     var NS  = 'esp32radio-seba';
-    var CTR = 'flashed';
+    var CTR = 'flash-count';
     var el  = document.getElementById('_ic');
 
     function show(n) { if (el && typeof n === 'number') el.textContent = '#' + n; }
 
     // Wyswietl aktualna wartosc przy wejsciu na strone (odczyt, NIE inkrementuje).
-    // Dopoki nikt nie ukonczyl pierwszej instalacji, licznik nie istnieje po
-    // stronie API (blad 404/400) - pokazujemy wtedy 0 zamiast pustego pola.
-    fetch('https://api.counterapi.dev/v1/' + NS + '/' + CTR + '/')
+    fetch('https://abacus.jasoncameron.dev/get/' + NS + '/' + CTR)
       .then(function (r) { return r.ok ? r.json() : null; })
-      .then(function (d) { show(d ? d.count : 0); })
+      .then(function (d) { show(d ? d.value : 0); })
       .catch(function (e) { console.log('[counter] odczyt nieudany:', e); show(0); });
 
-    // Inkrementacja przez znacznik <img>, NIE fetch() - potwierdzone w konsoli
-    // (F12), ze fetch() na /up byl blokowany przez rozszerzenie przegladarki
-    // (ad-block/anti-tracking, ERR_BLOCKED_BY_CLIENT - domena counterapi.dev
-    // wyglada jak typowy "hit counter" wiec ladowala sie na listach blokowania).
-    // Wiele list blokuje po TYPIE zadania (xmlhttprequest/fetch), a nie po samym
-    // obrazku - Image().src wysyla ten sam GET, ale jako zasob typu "image",
-    // co czesciej przechodzi. Odpowiedz to JSON (nie prawdziwy obrazek), wiec
-    // onerror zawsze odpali - to oczekiwane i nieistotne, liczy sie tylko to,
-    // ze zadanie faktycznie wyjdzie do sieci.
     window._ctrBump = function () {
-      console.log('[counter] _ctrBump wywolane, wysylam /up jako obrazek...');
-      var img = new Image();
-      img.onload  = function () { console.log('[counter] /up zaladowany (typ=image)'); };
-      img.onerror = function () { console.log('[counter] /up zadanie wyslane (odpowiedz nie jest obrazkiem - OK)'); };
-      img.src = 'https://api.counterapi.dev/v1/' + NS + '/' + CTR + '/up?_=' + Date.now();
-      // Optymistyczna aktualizacja UI - Image() nie daje odczytac odpowiedzi JSON,
-      // wiec po prostu podbijamy aktualnie wyswietlana liczbe o 1.
-      if (el && el.textContent.indexOf('#') === 0) {
-        var cur = parseInt(el.textContent.slice(1), 10);
-        if (!isNaN(cur)) show(cur + 1);
-      }
+      console.log('[counter] _ctrBump wywolane...');
+      fetch('https://abacus.jasoncameron.dev/hit/' + NS + '/' + CTR)
+        .then(function (r) { console.log('[counter] odpowiedz, status=', r.status); return r.ok ? r.json() : null; })
+        .then(function (d) { console.log('[counter] nowa wartosc:', d && d.value); if (d) show(d.value); })
+        .catch(function (e) { console.log('[counter] zadanie nieudane:', e); });
     };
   })();
   </script>
