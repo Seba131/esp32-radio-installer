@@ -1716,6 +1716,10 @@
       if (!installCounted && SUCCESS_STATES.some(function (s) { return t.indexOf(s) !== -1; })) {
         installCounted = true;
         if (window._ctrBump) window._ctrBump();
+        // Osobny licznik TYLKO dla instalacji przez ta strone (odroznia od
+        // aktualizacji przez WiFi w panelu WWW radia - patrz _ctrBumpWifi
+        // w data/index.html) - patrz sekcja "Liczniki" nizej.
+        if (window._ctrBumpWeb) window._ctrBumpWeb();
       }
 
       // Pokaż/ukryj <dialog> z przyciskiem (showModal → top layer, zawsze nad dialogiem esp-web-tools)
@@ -1748,6 +1752,18 @@
        font-weight:700;color:#fff;background:rgba(0,0,0,.45);border-radius:8px;
        padding:2px 8px;pointer-events:none;z-index:1"></div>
 
+  <!-- Dwa OPISANE liczniki — rozbicie licznika lacznego (_ic) powyzej na
+       zrodlo: instalacja przez ta strone (Web Serial/ESP Web Tools) vs
+       aktualizacja przez WiFi z panelu WWW samego radia (zakladka
+       "Aktualizacja firmware przez WiFi"). Drugi z nich jest inkrementowany
+       ZDALNIE (z data/index.html na urzadzeniu), tutaj tylko odczytywany. -->
+  <div id="_stats" style="position:fixed;bottom:52px;right:8px;font-size:11px;
+       line-height:1.7;text-align:right;color:#fff;background:rgba(0,0,0,.45);
+       border-radius:8px;padding:5px 10px;pointer-events:none;z-index:1">
+    <div>Instalacje (ta strona): <b id="_ic_web">…</b></div>
+    <div>Aktualizacje (WiFi w panelu): <b id="_ic_wifi">…</b></div>
+  </div>
+
   <script>
   // ===== Licznik ukonczonych instalacji (dyskretna liczba w rogu, bez etykiety) =====
   // Zewnetrzny darmowy licznik (abacus.jasoncameron.dev) - bez tego nie da sie liczyc
@@ -1777,6 +1793,44 @@
       fetch('https://abacus.jasoncameron.dev/hit/' + NS + '/' + CTR)
         .then(function (r) { return r.ok ? r.json() : null; })
         .then(function (d) { if (d) show(d.value); })
+        .catch(function () {});
+    };
+  })();
+  </script>
+
+  <script>
+  // ===== Dwa liczniki OPISANE - rozbicie zrodla instalacji/aktualizacji =====
+  // Ten sam serwis (abacus.jasoncameron.dev), ten sam namespace co licznik
+  // laczny wyzej, ale osobne klucze - zeby wiedziec PRZEZ CO radio dostalo
+  // nowy wsad: przez ta strone (Web Serial, flash-web) czy przez WiFi w
+  // panelu WWW samego urzadzenia (zakladka "Aktualizacja firmware przez
+  // WiFi", flash-wifi - inkrementowany w data/index.html na radiu, nie tutaj).
+  // Oba liczniki zostaly zainicjalizowane od wartosci 10 (nie od 0).
+  (function () {
+    var NS       = 'esp32radio-seba';
+    var CTR_WEB  = 'flash-web';
+    var CTR_WIFI = 'flash-wifi';
+    var elWeb    = document.getElementById('_ic_web');
+    var elWifi   = document.getElementById('_ic_wifi');
+
+    function showWeb(n)  { if (elWeb  && typeof n === 'number') elWeb.textContent  = n; }
+    function showWifi(n) { if (elWifi && typeof n === 'number') elWifi.textContent = n; }
+
+    fetch('https://abacus.jasoncameron.dev/get/' + NS + '/' + CTR_WEB)
+      .then(function (r) { return r.ok ? r.json() : null; })
+      .then(function (d) { if (d) showWeb(d.value); })
+      .catch(function () {});
+
+    // Tylko odczyt - inkrementacja dzieje sie zdalnie z panelu WWW radia.
+    fetch('https://abacus.jasoncameron.dev/get/' + NS + '/' + CTR_WIFI)
+      .then(function (r) { return r.ok ? r.json() : null; })
+      .then(function (d) { if (d) showWifi(d.value); })
+      .catch(function () {});
+
+    window._ctrBumpWeb = function () {
+      fetch('https://abacus.jasoncameron.dev/hit/' + NS + '/' + CTR_WEB)
+        .then(function (r) { return r.ok ? r.json() : null; })
+        .then(function (d) { if (d) showWeb(d.value); })
         .catch(function () {});
     };
   })();
