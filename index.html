@@ -246,6 +246,20 @@
     }
     .lang-btn:hover:not(.active) { background: rgba(255,255,255,0.22); }
 
+    /* ===== Linki do filmu / forum na samej górze ===== */
+    .video-links {
+      font-size: 1.02rem;
+      font-weight: 600;
+      line-height: 1.9;
+      text-align: center;
+      margin: -14px 0 16px;
+    }
+    .video-links a {
+      color: #7dd3fc;
+      text-decoration: none;
+    }
+    .video-links a:hover { text-decoration: underline; }
+
     /* ===== Notatka przeglądarki na górze ===== */
     .note-top {
       font-size: 0.78rem;
@@ -801,6 +815,7 @@
     <h1>📻 ESP32 Radio (Sebastian Piwowarski)</h1>
     <p style="margin:-10px 0 12px; font-size:0.88rem; font-weight:700; color:#7dd3fc; letter-spacing:0.04em;">ESP32-S3 N16R8 · 16 MB flash · 8 MB PSRAM</p>
     <p><span class="fw-ver" id="fw-version">wersja …</span></p>
+    <p class="video-links" data-i18n-html="video-links">🎬 <a href="https://youtu.be/5PVop159DK0" target="_blank" rel="noopener">Film instruktażowy na YouTube</a><br>💬 <a href="https://www.elektroda.pl/rtvforum/topic4176357.html" target="_blank" rel="noopener">Wątek na Elektroda.pl</a></p>
     <p class="note-top" data-i18n-html="note">
       Wymagana przeglądarka <b>Chrome</b> lub <b>Edge</b> na komputerze (Web Serial API).<br>
       Firefox i Safari oraz telefony nie są obsługiwane.
@@ -1423,6 +1438,7 @@
       'term-note':        'Działa tylko w <b>Chrome/Edge</b> na komputerze. Terminal i instalator nie mogą być połączone naraz — jeśli przed chwilą wgrywałeś firmware, odśwież stronę.',
       'note':             'Wymagana przeglądarka <b>Chrome</b> lub <b>Edge</b> na komputerze (Web Serial API).<br>Firefox i Safari oraz telefony nie są obsługiwane.',
       'flash-warn':       '⚠️ <b>Wgrywanie trwa już ponad 90 sekund — coś może być nie tak.</b><br>Sprawdź poniższe i odśwież stronę:<ul><li>Użyj portu <b>UART</b> (nie natywnego USB) — tylko ten działa stabilnie</li><li>Sprawdź czy kabel USB przesyła dane (nie tylko ładuje)</li><li>Podłącz bezpośrednio do komputera — bez hubów USB</li><li>Wejdź ręcznie w tryb wgrywania: przytrzymaj <kbd>BOOT</kbd>, naciśnij <kbd>RST</kbd>, puść <kbd>BOOT</kbd> — potem odśwież stronę i spróbuj ponownie</li></ul>',
+      'video-links':      '🎬 <a href="https://youtu.be/5PVop159DK0" target="_blank" rel="noopener">Film instruktażowy na YouTube</a><br>💬 <a href="https://www.elektroda.pl/rtvforum/topic4176357.html" target="_blank" rel="noopener">Wątek na Elektroda.pl</a>',
     },
     en: {
       'page-title':       'ESP32 Radio — Installer',
@@ -1453,6 +1469,7 @@
       'term-note':        'Works only in <b>Chrome/Edge</b> on desktop. The terminal and installer cannot be connected at the same time — if you just flashed firmware, refresh the page.',
       'note':             '<b>Chrome</b> or <b>Edge</b> browser required on desktop (Web Serial API).<br>Firefox, Safari, and mobile devices are not supported.',
       'flash-warn':       '⚠️ <b>Flashing has been running for over 90 seconds — something may be wrong.</b><br>Check the following and refresh the page:<ul><li>Use the <b>UART</b> port (not native USB) — only UART works reliably</li><li>Make sure your USB cable supports data transfer (not charge-only)</li><li>Connect directly to your computer — avoid USB hubs</li><li>Enter flash mode manually: hold <kbd>BOOT</kbd>, press <kbd>RST</kbd>, release <kbd>BOOT</kbd> — then refresh and try again</li></ul>',
+      'video-links':      '🎬 <a href="https://youtu.be/5PVop159DK0" target="_blank" rel="noopener">Video tutorial on YouTube</a><br>💬 <a href="https://www.elektroda.pl/rtvforum/topic4176357.html" target="_blank" rel="noopener">Forum thread on Elektroda.pl</a>',
     },
     fr: {
       'page-title':       'ESP32 Radio — Installateur',
@@ -1483,6 +1500,7 @@
       'term-note':        'Fonctionne uniquement dans <b>Chrome/Edge</b> sur ordinateur. Le terminal et l\'installateur ne peuvent pas être connectés en même temps — si vous venez de flasher le firmware, actualisez la page.',
       'note':             'Navigateur <b>Chrome</b> ou <b>Edge</b> requis sur ordinateur (Web Serial API).<br>Firefox, Safari et les appareils mobiles ne sont pas pris en charge.',
       'flash-warn':       '⚠️ <b>Le flashage dure depuis plus de 90 secondes — quelque chose semble ne pas aller.</b><br>Vérifiez les points suivants et actualisez la page :<ul><li>Utilisez le port <b>UART</b> (pas l\'USB natif) — seul celui-ci fonctionne de manière fiable</li><li>Vérifiez que le câble USB transfère des données (pas seulement la charge)</li><li>Connectez directement à l\'ordinateur — évitez les hubs USB</li><li>Entrez manuellement en mode flashage : maintenez <kbd>BOOT</kbd>, appuyez sur <kbd>RST</kbd>, relâchez <kbd>BOOT</kbd> — puis actualisez et réessayez</li></ul>',
+      'video-links':      '🎬 <a href="https://youtu.be/5PVop159DK0" target="_blank" rel="noopener">Tutoriel vidéo sur YouTube</a><br>💬 <a href="https://www.elektroda.pl/rtvforum/topic4176357.html" target="_blank" rel="noopener">Sujet sur Elektroda.pl</a>',
     },
     uk: {
       'page-title':       'ESP32 Radio — Інсталятор',
@@ -1513,6 +1531,7 @@
       'term-note':        'Працює лише в <b>Chrome/Edge</b> на комп’ютері. Термінал та інсталятор не можуть бути підключені одночасно — якщо ви щойно прошивали firmware, оновіть сторінку.',
       'note':             'Потрібен браузер <b>Chrome</b> або <b>Edge</b> на комп’ютері (Web Serial API).<br>Firefox, Safari та мобільні пристрої не підтримуються.',
       'flash-warn':       '⚠️ <b>Прошивка триває вже понад 90 секунд — можливо, щось не так.</b><br>Перевірте наступне і оновіть сторінку:<ul><li>Використовуйте порт <b>UART</b> (не нативний USB) — лише він працює стабільно</li><li>Перевірте, чи USB-кабель передає дані (а не лише заряджає)</li><li>Підключіть напряму до комп’ютера — без USB-хабів</li><li>Увійдіть у режим прошивки вручну: утримуйте <kbd>BOOT</kbd>, натисніть <kbd>RST</kbd>, відпустіть <kbd>BOOT</kbd> — потім оновіть сторінку і спробуйте ще раз</li></ul>',
+      'video-links':      '🎬 <a href="https://youtu.be/5PVop159DK0" target="_blank" rel="noopener">Відеоінструкція на YouTube</a><br>💬 <a href="https://www.elektroda.pl/rtvforum/topic4176357.html" target="_blank" rel="noopener">Тема на Elektroda.pl</a>',
     }
   };
 
