@@ -36,8 +36,10 @@ jobs:
             partitions.bin
             boot_app0.bin
             firmware.bin
+            firmware-ili9488.bin
             littlefs.bin
             manifest.json
+            manifest-ili9488.json
             index.html
           )
           MISSING=0
@@ -63,14 +65,16 @@ jobs:
           fi
 
           FIRMWARE_MIN=100000
-          FIRMWARE_SIZE=$(stat -c%s firmware.bin)
-          if [ "$FIRMWARE_SIZE" -lt "$FIRMWARE_MIN" ]; then
-            echo "::error::firmware.bin podejrzanie maly (${FIRMWARE_SIZE} B)"
-            exit 1
-          fi
+          for fw in firmware.bin firmware-ili9488.bin; do
+            FIRMWARE_SIZE=$(stat -c%s "$fw")
+            if [ "$FIRMWARE_SIZE" -lt "$FIRMWARE_MIN" ]; then
+              echo "::error::$fw podejrzanie maly (${FIRMWARE_SIZE} B)"
+              exit 1
+            fi
+          done
 
           echo "Pliki firmware OK:"
-          ls -lh *.bin manifest.json
+          ls -lh *.bin manifest*.json
 
       - name: Konfiguracja Pages
         uses: actions/configure-pages@v5
