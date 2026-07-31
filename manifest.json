@@ -1,7 +1,7 @@
 {
   "name": "ESP32 Radio",
   "version": "1.0.4_C",
-  "build_date": "30.07.2026",
+  "build_date": "31.07.2026",
   "new_install_improv_wait_time": 0,
   "builds": [
     {
