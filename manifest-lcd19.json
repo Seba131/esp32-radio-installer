@@ -1,0 +1,33 @@
+{
+  "name": "ESP32 Radio (Waveshare LCD 1.9)",
+  "version": "1.0.4_F",
+  "build_date": "08.08.2026",
+  "new_install_improv_wait_time": 0,
+  "builds": [
+    {
+      "chipFamily": "ESP32-S3",
+      "parts": [
+        {
+          "path": "bootloader.bin",
+          "offset": 0
+        },
+        {
+          "path": "partitions.bin",
+          "offset": 32768
+        },
+        {
+          "path": "boot_app0.bin",
+          "offset": 57344
+        },
+        {
+          "path": "firmware-lcd19.bin",
+          "offset": 65536
+        },
+        {
+          "path": "littlefs.bin",
+          "offset": 13172736
+        }
+      ]
+    }
+  ]
+}
