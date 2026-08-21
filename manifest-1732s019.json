@@ -1,5 +1,5 @@
 {
-  "name": "ESP32 Radio (ILI9488)",
+  "name": "ESP32 Radio (ESP32-1732S019)",
   "version": "1.0.4_I",
   "build_date": "21.08.2026",
   "new_install_improv_wait_time": 0,
@@ -20,7 +20,7 @@
           "offset": 57344
         },
         {
-          "path": "firmware-ili9488.bin",
+          "path": "firmware-1732s019.bin",
           "offset": 65536
         },
         {
