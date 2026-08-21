@@ -25,7 +25,7 @@
         },
         {
           "path": "littlefs.bin",
-          "offset": 13172736
+          "offset": 13238272
         }
       ]
     }
