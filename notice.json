@@ -1,0 +1,7 @@
+{
+  "enabled": false,
+  "severity": "warning",
+  "title": "Tytuł ogłoszenia (opcjonalnie)",
+  "text": "Treść ogłoszenia. Możesz użyć **pogrubienia** tak jak tutaj oraz znaków nowej linii.",
+  "color": ""
+}

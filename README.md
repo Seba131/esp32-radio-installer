@@ -51,6 +51,36 @@ Zgodne z `partitions.csv` i `build-full-bin.ps1` w repo głównym.
 | **Strona instalatora** (ta) | 5× `.bin` z wybranego manifestu | Przełącznik wariantu + przycisk „Zainstaluj” na Pages |
 | **esptool-js** | `esp32-radio-FULL.bin` / `esp32-radio-FULL-ili9488.bin` | Jeden plik, offset **0x0** |
 
+## Zywe ogloszenie w panelu WWW radia (notice.json)
+
+`notice.json` w tym repo jest pobierany przez KAZDE juz dzialajace radio przy
+wejsciu w zakladke "Firmware" panelu WWW (patrz `checkForNotice()` w
+`data/index.html` w repo glownym). Pozwala ostrzec/poinformowac wszystkich
+uzytkownikow (np. "nie aktualizuj przez WiFi z wersji starszej niz X", "znany
+problem ze stacja Y") **bez wydawania nowego firmware** - wystarczy edytowac
+ten plik i zrobic push na `main`, Pages opublikuje zmiane automatycznie.
+
+**Dziala tylko na urzadzeniach, ktore maja JUZ wgrane firmware z tą funkcją**
+(od wersji, w ktorej zostala dodana) - nie da sie tym ostrzec urzadzen na
+STARSZYM firmware, ktore jeszcze nie znaja tego mechanizmu.
+
+Format:
+```json
+{
+  "enabled": true,
+  "severity": "warning",
+  "title": "Tytul (opcjonalnie)",
+  "text": "Tresc z **pogrubieniem** gdzie trzeba.",
+  "color": ""
+}
+```
+- `enabled` — `false` lub usuniecie pliku = ogloszenie ukryte (domyslny stan). Uwaga: musi to byc **wartosc logiczna bez cudzyslowu** (`false`/`true`), nie tekst `"false"`/`"true"` — inaczej panel po cichu potraktuje to jako wylaczone.
+- `severity` — `"info"` (niebieski) / `"warning"` (pomaranczowy) / `"critical"` (czerwony) — ustawia kolor ramki, tytulu i tresci ORAZ delikatny odcien tla. Brak pola lub literowka (np. `"Warning"` z wielkiej litery) = domyslnie **warning** (pomaranczowy), zeby bledny wpis w tym pliku sam rzucal sie w oczy zamiast cicho wygladac jak zwykla informacja.
+- `color` — opcjonalny wlasny kolor hex (np. `"#ff5252"`, dlugosc 3/4/6/8 cyfr), nadpisuje kolor ramki/tytulu/tresci z `severity`. **Tlo** (delikatny odcien) nadal pochodzi z `severity`, wiec wlasny `color` warto dobrac tak, zeby byl czytelny na tym tle (np. przy `severity:"critical"` i wlasnym niebieskim `color` tlo pozostanie czerwonawe).
+- `title`/`text` — zwykly string (jeden jezyk) **albo** obiekt per-jezyk, np. `{"pl":"...", "en":"...", "fr":"...", "uk":"..."}` — panel dobierze wersje zgodna z aktualnie wybranym jezykiem strony, z fallbackiem na PL/EN.
+- W tekscie dziala TYLKO `**pogrubienie**` i nowa linia (`\n`) — reszta (np. `<script>`) jest zawsze bezpiecznie escapowana, nie da sie wstrzyknac HTML/JS nawet przez zepsuty/zlosliwy plik.
+- Panel odpytuje ten plik na nowo przy **kazdym** wejsciu w zakladke "Firmware" (nie tylko raz na cala sesje strony) — zmiana/wylaczenie ogloszenia jest widoczne juz przy nastepnym przelaczeniu zakladki, bez potrzeby odswiezania (F5) calej strony.
+
 ## Rozwiązywanie problemów
 
 - **„Pobieranie firmware” / 404** — brak `.bin` na Pages → uruchom `build-full-bin.ps1` i push do tego repo.
