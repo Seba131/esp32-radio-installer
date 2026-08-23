@@ -40,7 +40,7 @@ Wykonuj w **repo z kodem źródłowym** (`esp32-radio`), nie w tym repo:
 | partitions.bin | 32768 | 0x8000 |
 | boot_app0.bin | 57344 | 0xE000 |
 | firmware.bin / firmware-ili9488.bin | 65536 | 0x10000 |
-| littlefs.bin | 13172736 | 0xC90000 |
+| littlefs.bin | 13238272 | 0xCA0000 |
 
 Zgodne z `partitions.csv` i `build-full-bin.ps1` w repo głównym.
 

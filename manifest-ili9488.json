@@ -1,7 +1,7 @@
 {
   "name": "ESP32 Radio (ILI9488)",
-  "version": "1.0.4_I",
-  "build_date": "21.08.2026",
+  "version": "1.0.5",
+  "build_date": "23.08.2026",
   "new_install_improv_wait_time": 0,
   "builds": [
     {

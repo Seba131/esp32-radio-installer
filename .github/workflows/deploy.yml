@@ -56,8 +56,10 @@ jobs:
             exit 1
           fi
 
-          # littlefs.bin musi pasowac do partycji (0x370000 B) z partitions.csv
-          LITTLEFS_MAX=3604480
+          # littlefs.bin musi pasowac do partycji (0x360000 B) z partitions.csv
+          # (AUDYT 2026-08-22: skrocone z 0x370000 - patrz build-full-bin.ps1
+          # w repo glownym, partycja spiffs zmniejszona o 64KB pod coredump)
+          LITTLEFS_MAX=3538944
           LITTLEFS_SIZE=$(stat -c%s littlefs.bin)
           if [ "$LITTLEFS_SIZE" -gt "$LITTLEFS_MAX" ]; then
             echo "::error::littlefs.bin ma ${LITTLEFS_SIZE} B, max ${LITTLEFS_MAX} B (partycja spiffs)"
