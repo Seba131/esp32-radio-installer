@@ -1,7 +1,7 @@
 {
   "name": "ESP32 Radio (ESP32-1732S019)",
-  "version": "1.0.5_A",
-  "build_date": "23.08.2026",
+  "version": "1.0.5_B",
+  "build_date": "25.08.2026",
   "new_install_improv_wait_time": 0,
   "builds": [
     {
