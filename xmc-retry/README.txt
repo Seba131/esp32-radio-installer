@@ -45,7 +45,9 @@ CO JEST ZMIENIONE
 Podmieniony jest DOKLADNIE JEDEN plik - bootloader. Ma nalozona latke, ktora:
   - ponawia sekwencje budzenia kosci do 4 razy z coraz dluzszymi
     opoznieniami (zamiast jednej proby),
-  - wypisuje odczytany RDID przy wejsciu w procedure oraz po kazdej probie,
+  - wypisuje odczytany RDID przy wejsciu we wlasciwa sekwencje budzenia oraz
+    po kazdej probie (na zdrowej kosci nie zobaczysz tych linii w ogole -
+    bootloader konczy sprawdzanie wczesniej),
   - gdy kosc nadal nie pasuje do listy - pozwala systemowi wystartowac
     zamiast resetowac uklad.
 
@@ -72,9 +74,13 @@ Wgranie pliku od innego wyswietlacza nie uszkodzi plytki, ale ekran zostanie
 pusty albo obraz bedzie posuniety.
 
 UWAGA do wariantu ESP32-1732S019: tak jak w zwyklym instalatorze, ta wersja
-jest niezweryfikowana na fizycznym sprzecie - zakłada ten sam panel 170x320 i
-te same piny dotyku co Waveshare LCD 1.9. Jesli cos sie nie zgadza, napisz na
-forum.
+jest NIEZWERYFIKOWANA na fizycznym sprzecie. Zaklada ten sam panel 170x320 co
+Waveshare LCD 1.9, ale INNY rozklad pinow SPI (CS i SCLK zamienione miejscami,
+inny pin RESET) - wlasnie ta roznica jest tu najbardziej ryzykowna: jesli
+Twoj egzemplarz ma jeszcze inne wyprowadzenia, ekran zostanie ciemny.
+Ta plytka nie ma tez kontrolera dotyku ani zyroskopu, wiec dotyk i
+auto-obracanie obrazu na niej nie dzialaja - to normalne, nie usterka.
+Jesli cos sie nie zgadza, napisz na forum.
 
 Osobno dolaczony jest sam bootloader:
 
@@ -147,4 +153,4 @@ AKTUALIZACJE W PRZYSZLOSCI
 "Aktualizacja firmware przez WiFi" w panelu WWW pobiera zwykla wersje
 firmware - to jest w porzadku, bo nie rusza bootloadera, wiec poprawka XMC
 zostaje na miejscu. Przy wiekszych aktualizacjach (zmiana tablicy partycji
-albo panelu WWW) poproś na forum o odswiezony plik z tego katalogu.
+albo panelu WWW) popros na forum o odswiezony plik z tego katalogu.
