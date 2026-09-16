@@ -20,7 +20,9 @@ DLACZEGO TAK SIE DZIEJE
 Bootloader ESP-IDF ma wbudowana procedure startowa dla kosci flash marki XMC.
 Wykonuje sekwencje budzenia kosci, po czym czyta jej numer identyfikacyjny
 (RDID) i porownuje z lista modeli znanych Espressif. Akceptowane sa tylko
-kosci o RDID zaczynajacym sie od 20 40, 20 41 lub 20 50.
+kosci o RDID zaczynajacym sie od 20 40, 20 41 lub 20 50 - i dodatkowo trzeci
+bajt musi trafic w zakres (dla 20 40: 13-20, dla 20 41: 17-20, dla 20 50:
+15-16). Lista jest wiec jeszcze wezsza, niz sugeruja same dwa pierwsze bajty.
 
 Zgloszona plytka ma RDID = 00207018, czyli producent 0x20 (XMC) zgadza sie,
 ale model 0x70 nie ma prawa przejsc przez te liste. Bootloader traktuje to
@@ -43,7 +45,7 @@ CO JEST ZMIENIONE
 Podmieniony jest DOKLADNIE JEDEN plik - bootloader. Ma nalozona latke, ktora:
   - ponawia sekwencje budzenia kosci do 4 razy z coraz dluzszymi
     opoznieniami (zamiast jednej proby),
-  - wypisuje odczytany RDID przed i po kazdej probie,
+  - wypisuje odczytany RDID przy wejsciu w procedure oraz po kazdej probie,
   - gdy kosc nadal nie pasuje do listy - pozwala systemowi wystartowac
     zamiast resetowac uklad.
 
@@ -68,6 +70,11 @@ Pelne obrazy (16 MB), wgrywane w calosci pod adres 0x0:
 Wybierz ten sam wariant wyswietlacza, ktorego uzywasz w zwyklym instalatorze.
 Wgranie pliku od innego wyswietlacza nie uszkodzi plytki, ale ekran zostanie
 pusty albo obraz bedzie posuniety.
+
+UWAGA do wariantu ESP32-1732S019: tak jak w zwyklym instalatorze, ta wersja
+jest niezweryfikowana na fizycznym sprzecie - zakłada ten sam panel 170x320 i
+te same piny dotyku co Waveshare LCD 1.9. Jesli cos sie nie zgadza, napisz na
+forum.
 
 Osobno dolaczony jest sam bootloader:
 
@@ -117,6 +124,15 @@ W logu na porcie szeregowym (115200) zobaczysz linie takie jak:
 
 To jest OCZEKIWANE zachowanie tej wersji, nie blad - zaraz po tych liniach
 system startuje normalnie.
+
+Mozesz tez zobaczyc wariant pomyslny:
+
+    W (49) bootloader_flash: XMC: startup flow OK w probie 2/4
+
+Oznacza on, ze kosc jednak obudzila sie poprawnie, tylko potrzebowala
+dluzszego opoznienia niz daje oryginalny bootloader. To najlepszy mozliwy
+wynik - w takim wypadku napisz o tym na forum, bo to inna przyczyna niz
+"model spoza listy".
 
 
 JESLI NADAL NIE DZIALA
