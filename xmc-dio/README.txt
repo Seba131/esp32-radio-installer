@@ -56,8 +56,13 @@ Alternatywnie z linii polecen:
 
     esptool --chip esp32s3 write-flash 0x0 esp32-radio-FULL-xmc-dio.bin
 
-Po wgraniu plytka wystawi siec Wi-Fi "ESP32-Radio-AP" - polacz sie z nia
-i otworz http://192.168.4.1 , zeby podac dane swojej sieci domowej.
+Starsze esptool (4.x) uzywa innej skladni - podkreslenie zamiast myslnika:
+
+    esptool.py --chip esp32s3 write_flash 0x0 esp32-radio-FULL-xmc-dio.bin
+
+Po wgraniu plytka wystawi siec Wi-Fi o nazwie "ESP32-Radio", haslo: 12345678
+Polacz sie z nia i otworz w przegladarce http://192.168.4.1 , zeby podac dane
+swojej sieci domowej.
 
 
 JESLI NADAL NIE STARTUJE
