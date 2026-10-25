@@ -1,6 +1,6 @@
 ===========================================================================
  ESP32 Radio - wersja dla plytek z koscia flash XMC (bootloader z latka)
- Firmware: v1.0.5_E  -  identyczne jak w zwyklym instalatorze
+ Firmware: v1.0.5_F  -  identyczne jak w zwyklym instalatorze
 ===========================================================================
 
 DLA KOGO JEST TA WERSJA
@@ -56,7 +56,7 @@ odczycie tablicy partycji albo obrazu aplikacji - wiec nie jest gorzej niz
 teraz, a w praktyce plytka po prostu rusza.
 
 Firmware, tablica partycji i panel WWW sa BIT W BIT takie same jak w zwyklym
-instalatorze v1.0.5_E. Kosc, ktora przechodzi standardowe sprawdzenie, idzie
+instalatorze v1.0.5_F. Kosc, ktora przechodzi standardowe sprawdzenie, idzie
 dokladnie ta sama sciezka co zawsze.
 
 
@@ -73,11 +73,10 @@ Wybierz ten sam wariant wyswietlacza, ktorego uzywasz w zwyklym instalatorze.
 Wgranie pliku od innego wyswietlacza nie uszkodzi plytki, ale ekran zostanie
 pusty albo obraz bedzie posuniety.
 
-UWAGA do wariantu ESP32-1732S019: tak jak w zwyklym instalatorze, ta wersja
-jest NIEZWERYFIKOWANA na fizycznym sprzecie. Zaklada ten sam panel 170x320 co
-Waveshare LCD 1.9, ale INNY rozklad pinow SPI (CS i SCLK zamienione miejscami,
-inny pin RESET) - wlasnie ta roznica jest tu najbardziej ryzykowna: jesli
-Twoj egzemplarz ma jeszcze inne wyprowadzenia, ekran zostanie ciemny.
+UWAGA do wariantu ESP32-1732S019: ten sam panel 170x320 co Waveshare LCD 1.9,
+ale INNY rozklad pinow SPI (CS i SCLK zamienione miejscami, inny pin RESET).
+Wariant sprawdzony na fizycznym sprzecie; jesli Twoj egzemplarz ma jeszcze
+inne wyprowadzenia, ekran zostanie ciemny.
 Ta plytka nie ma tez kontrolera dotyku ani zyroskopu, wiec dotyk i
 auto-obracanie obrazu na niej nie dzialaja - to normalne, nie usterka.
 Jesli cos sie nie zgadza, napisz na forum.
