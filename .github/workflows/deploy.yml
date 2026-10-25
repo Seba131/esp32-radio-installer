@@ -37,9 +37,18 @@ jobs:
             boot_app0.bin
             firmware.bin
             firmware-ili9488.bin
+            firmware-lcd19.bin
+            firmware-1732s019.bin
             littlefs.bin
             manifest.json
             manifest-ili9488.json
+            manifest-lcd19.json
+            manifest-1732s019.json
+            manifest-xmc.json
+            manifest-ili9488-xmc.json
+            manifest-lcd19-xmc.json
+            manifest-1732s019-xmc.json
+            xmc-retry/bootloader-xmc-retry.bin
             index.html
           )
           MISSING=0
@@ -67,13 +76,31 @@ jobs:
           fi
 
           FIRMWARE_MIN=100000
-          for fw in firmware.bin firmware-ili9488.bin; do
+          for fw in firmware.bin firmware-ili9488.bin firmware-lcd19.bin firmware-1732s019.bin; do
             FIRMWARE_SIZE=$(stat -c%s "$fw")
             if [ "$FIRMWARE_SIZE" -lt "$FIRMWARE_MIN" ]; then
               echo "::error::$fw podejrzanie maly (${FIRMWARE_SIZE} B)"
               exit 1
             fi
           done
+
+          # Kazdy plik wskazany w KAZDYM manifest*.json musi istniec - inaczej
+          # przycisk danego wariantu (lub przelacznik XMC) dalby 404 dopiero
+          # u uzytkownika. Lapie tez przyszle warianty spoza listy REQUIRED.
+          python3 - <<'PY'
+          import glob, json, os, sys
+          bad = 0
+          for m in sorted(glob.glob("manifest*.json")):
+              try:
+                  data = json.load(open(m, encoding="utf-8"))
+                  parts = [p for b in data["builds"] for p in b["parts"]]
+              except Exception as e:
+                  print(f"::error::{m}: niepoprawny manifest ({e})"); bad = 1; continue
+              for p in parts:
+                  if not os.path.isfile(p["path"]):
+                      print(f"::error::{m}: brak pliku {p['path']}"); bad = 1
+          sys.exit(bad)
+          PY
 
           echo "Pliki firmware OK:"
           ls -lh *.bin manifest*.json
