@@ -150,9 +150,9 @@ sie przed, czy juz po linii "Loaded app from partition".
 AKTUALIZACJE W PRZYSZLOSCI
 --------------------------
 "Aktualizacja firmware przez WiFi" w panelu WWW pobiera zwykla wersje
-firmware - to jest w porzadku, bo nie rusza bootloadera, wiec poprawka XMC
-zostaje na miejscu. Przy wiekszych aktualizacjach (zmiana tablicy partycji
-albo panelu WWW) uzyj instalatora WWW i ZAZNACZ pole "Plytka po wgraniu wpada
+firmware i panelu WWW - to jest w porzadku, bo nie rusza bootloadera, wiec
+poprawka XMC zostaje na miejscu. Tylko gdy wydanie zmienia tablice partycji
+(bedzie to wyraznie napisane w historii zmian), uzyj instalatora WWW i ZAZNACZ pole "Plytka po wgraniu wpada
 w petle restartow (XMC flash startup fail)" pod przyciskami wyswietlaczy -
 wgra sie wtedy nowa wersja razem z tym samym bootloaderem z latka. Pole nie
 jest zapamietywane: zaznaczaj je przy KAZDEJ instalacji na tej plytce, inaczej

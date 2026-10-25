@@ -1,0 +1,3 @@
+# katalog roboczy build-xmc-retry.ps1 - po przerwanym przebiegu moga w nim
+# zostac obrazy 16 MB, ktore nie moga trafic do publicznego repo
+xmc-retry/.build-tmp/
