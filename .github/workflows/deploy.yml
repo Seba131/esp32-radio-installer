@@ -39,15 +39,18 @@ jobs:
             firmware-ili9488.bin
             firmware-lcd19.bin
             firmware-1732s019.bin
+            firmware-nv3007.bin
             littlefs.bin
             manifest.json
             manifest-ili9488.json
             manifest-lcd19.json
             manifest-1732s019.json
+            manifest-nv3007.json
             manifest-xmc.json
             manifest-ili9488-xmc.json
             manifest-lcd19-xmc.json
             manifest-1732s019-xmc.json
+            manifest-nv3007-xmc.json
             xmc-retry/bootloader-xmc-retry.bin
             index.html
           )
@@ -76,7 +79,7 @@ jobs:
           fi
 
           FIRMWARE_MIN=100000
-          for fw in firmware.bin firmware-ili9488.bin firmware-lcd19.bin firmware-1732s019.bin; do
+          for fw in firmware.bin firmware-ili9488.bin firmware-lcd19.bin firmware-1732s019.bin firmware-nv3007.bin; do
             FIRMWARE_SIZE=$(stat -c%s "$fw")
             if [ "$FIRMWARE_SIZE" -lt "$FIRMWARE_MIN" ]; then
               echo "::error::$fw podejrzanie maly (${FIRMWARE_SIZE} B)"
