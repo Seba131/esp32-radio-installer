@@ -3,12 +3,27 @@
 Strona wgrywa firmware przez **ESP Web Tools** (Chrome/Edge, Web Serial).  
 Flash jest **kasowany automatycznie** przy instalacji — nie zmieniaj tego w manifestach.
 
-Obsługuje **dwa warianty wyświetlacza** (przełącznik na stronie, nad przyciskiem
-„Zainstaluj"): ST7789/ILI9341 (`manifest.json`, domyślny — zachowuje stare nazwy
-plików dla zgodności z istniejącymi urządzeniami/OTA) i ILI9488 (`manifest-ili9488.json`).
-Oba warianty współdzielą `bootloader.bin`/`partitions.bin`/`boot_app0.bin`/`littlefs.bin`
+Obsługuje **pięć wariantów wyświetlacza** (przyciski na stronie, nad przyciskiem
+„Zainstaluj”):
+
+| Wariant | Manifest | Firmware | Pełny obraz (esptool-js) |
+|---------|----------|----------|--------------------------|
+| ST7789/ILI9341 (domyślny, też OLED) | `manifest.json` | `firmware.bin` | `esp32-radio-FULL.bin` |
+| ILI9488 320×480 | `manifest-ili9488.json` | `firmware-ili9488.bin` | `esp32-radio-FULL-ili9488.bin` |
+| Waveshare ESP32-S3-LCD-1.9 | `manifest-lcd19.json` | `firmware-lcd19.bin` | `esp32-radio-FULL-lcd19.bin` |
+| ESP32-1732S019 | `manifest-1732s019.json` | `firmware-1732s019.bin` | `esp32-radio-FULL-1732s019.bin` |
+| NV3007 2.79" pasek 428×142 | `manifest-nv3007.json` | `firmware-nv3007.bin` | `esp32-radio-FULL-nv3007.bin` |
+
+`manifest.json` / `firmware.bin` bez sufiksu zachowują stare nazwy dla zgodności
+z istniejącymi urządzeniami (aktualizacja przez WiFi). Wszystkie warianty
+współdzielą `bootloader.bin`/`partitions.bin`/`boot_app0.bin`/`littlefs.bin`
 (ten sam `partitions.csv` i ta sama strona WWW) — różni się tylko `firmware*.bin`
 (inny skompilowany sterownik TFT_eSPI, patrz `platformio.ini` w repo głównym).
+
+Każdy wariant ma też wersję dla płytek z kością flash **XMC** (pole wyboru na
+stronie): `manifest*-xmc.json` wskazuje na `xmc-retry/bootloader-xmc-retry.bin`,
+reszta plików jest wspólna. Pełne obrazy XMC: `xmc-retry/esp32-radio-FULL*-xmc-retry.bin`
+(opis w `xmc-retry/README.txt`).
 
 ## Wymagania sprzętowe użytkownika
 
@@ -20,26 +35,27 @@ Oba warianty współdzielą `bootloader.bin`/`partitions.bin`/`boot_app0.bin`/`l
 Wykonuj w **repo z kodem źródłowym** (`esp32-radio`), nie w tym repo:
 
 1. Podnieś wersję w `include/config.h` → `FIRMWARE_VERSION`
-2. Zbuduj i skopiuj pliki (buduje OBA warianty):
+2. Zbuduj i skopiuj pliki (buduje WSZYSTKIE warianty), potem obrazy XMC:
    ```powershell
    .\build-full-bin.ps1
+   .\build-xmc-retry.ps1 -Bootloader installer\xmc-retry\bootloader-xmc-retry.bin
    ```
-   Skrypt sam ustawia `"version"`/`"build_date"` w obu manifestach z `config.h`.
-3. W **tym repo** (`installer`) commit i push na `main`:
+   Skrypty same ustawiają `"version"`/`"build_date"` we wszystkich manifestach z `config.h`.
+3. W **tym repo** (`installer`) **jeden** commit i push na `main`:
    - `bootloader.bin`, `partitions.bin`, `boot_app0.bin`, `littlefs.bin` (wspólne)
-   - `firmware.bin`, `firmware-ili9488.bin` (osobne per wariant)
-   - opcjonalnie `esp32-radio-FULL.bin`, `esp32-radio-FULL-ili9488.bin` (esptool-js, offset `0x0`)
-   - `manifest.json`, `manifest-ili9488.json`, `index.html`
-4. GitHub Actions opublikuje Pages — deploy **nie buduje** firmware, tylko weryfikuje obecność plików (obu wariantów).
+   - `firmware*.bin` (osobny per wariant)
+   - `esp32-radio-FULL*.bin` (esptool-js, offset `0x0`)
+   - wszystkie `manifest*.json`, katalog `xmc-retry/`, `index.html`
+4. GitHub Actions opublikuje Pages — deploy **nie buduje** firmware, tylko weryfikuje obecność plików wszystkich wariantów i rozmiar `littlefs.bin`.
 
 ## Pliki i offsety (manifesty)
 
 | Plik | Offset (dec) | Offset (hex) |
 |------|--------------|--------------|
-| bootloader.bin | 0 | 0x0 |
+| bootloader.bin (XMC: xmc-retry/bootloader-xmc-retry.bin) | 0 | 0x0 |
 | partitions.bin | 32768 | 0x8000 |
 | boot_app0.bin | 57344 | 0xE000 |
-| firmware.bin / firmware-ili9488.bin | 65536 | 0x10000 |
+| firmware*.bin (wg wariantu) | 65536 | 0x10000 |
 | littlefs.bin | 13238272 | 0xCA0000 |
 
 Zgodne z `partitions.csv` i `build-full-bin.ps1` w repo głównym.
@@ -49,7 +65,7 @@ Zgodne z `partitions.csv` i `build-full-bin.ps1` w repo głównym.
 | Metoda | Plik | Uwagi |
 |--------|------|--------|
 | **Strona instalatora** (ta) | 5× `.bin` z wybranego manifestu | Przełącznik wariantu + przycisk „Zainstaluj” na Pages |
-| **esptool-js** | `esp32-radio-FULL.bin` / `esp32-radio-FULL-ili9488.bin` | Jeden plik, offset **0x0** |
+| **esptool-js** | `esp32-radio-FULL*.bin` (wg wariantu, XMC: `xmc-retry/…-xmc-retry.bin`) | Jeden plik 16 MB, offset **0x0**, kasuje ustawienia |
 
 ## Zywe ogloszenie w panelu WWW radia (notice.json)
 

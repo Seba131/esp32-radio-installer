@@ -1,6 +1,6 @@
 ===========================================================================
  ESP32 Radio - wersja dla plytek z koscia flash XMC (bootloader z latka)
- Firmware: v1.0.5_F  -  identyczne jak w zwyklym instalatorze
+ Firmware: ta sama wersja co w zwyklym instalatorze (bit w bit)
 ===========================================================================
 
 DLA KOGO JEST TA WERSJA
@@ -56,7 +56,7 @@ odczycie tablicy partycji albo obrazu aplikacji - wiec nie jest gorzej niz
 teraz, a w praktyce plytka po prostu rusza.
 
 Firmware, tablica partycji i panel WWW sa BIT W BIT takie same jak w zwyklym
-instalatorze v1.0.5_F. Kosc, ktora przechodzi standardowe sprawdzenie, idzie
+instalatorze (ta sama wersja). Kosc, ktora przechodzi standardowe sprawdzenie, idzie
 dokladnie ta sama sciezka co zawsze.
 
 
@@ -68,6 +68,7 @@ Pelne obrazy (16 MB), wgrywane w calosci pod adres 0x0:
   esp32-radio-FULL-ili9488-xmc-retry.bin    ILI9488 320x480
   esp32-radio-FULL-lcd19-xmc-retry.bin      Waveshare ESP32-S3-LCD-1.9
   esp32-radio-FULL-1732s019-xmc-retry.bin   ESP32-1732S019
+  esp32-radio-FULL-nv3007-xmc-retry.bin     NV3007 2.79" pasek 428x142
 
 Wybierz ten sam wariant wyswietlacza, ktorego uzywasz w zwyklym instalatorze.
 Wgranie pliku od innego wyswietlacza nie uszkodzi plytki, ale ekran zostanie
