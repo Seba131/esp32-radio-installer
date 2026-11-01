@@ -52,8 +52,8 @@ Wykonuj w **repo z kodem źródłowym** (`esp32-radio`), nie w tym repo:
    (`.github/workflows/deploy.yml`): obecność wspólnych plików, `firmware*.bin`,
    wszystkich `manifest*.json`, bootloadera XMC i `index.html`; `littlefs.bin` nie większy niż
    partycja; każdy `firmware*.bin` ≥ 100 000 B; każda ścieżka z każdego manifestu
-   istnieje. **Nie** sprawdza obrazów `esp32-radio-FULL*.bin` ani
-   `xmc-retry/*-xmc-retry.bin` — ich brak nie zablokuje publikacji.
+   istnieje. **Nie** sprawdza pełnych obrazów `esp32-radio-FULL*.bin` ani
+   `xmc-retry/esp32-radio-FULL*-xmc-retry.bin` — ich brak nie zablokuje publikacji.
 
 ## Pliki i offsety (manifesty)
 
