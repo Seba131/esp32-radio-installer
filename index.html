@@ -1068,7 +1068,7 @@
             <span style="font-size:0.82rem;opacity:0.6">23.08.2026</span>
           </div>
           <div style="padding-left:8px;border-left:2px solid rgba(0,229,255,0.5);font-size:0.88rem;line-height:1.7">
-            <div>🔧 <b>Naprawiono rzadką pętlę restartów zaraz po uruchomieniu</b> — na niektórych sieciach WiFi (dużo widocznych sieci dookoła) radio potrafiło fałszywie „zawiesić się” i restartować w kółko już przy pierwszym uruchomieniu, mimo że wszystko było w porządku</div>
+            <div>🔧 <b>Naprawiono rzadką pętlę restartów zaraz po uruchomieniu</b> — na niektórych sieciach WiFi (dużo widocznych sieci dookoła) radio potrafiło fałszywie „zawiesić się" i restartować w kółko już przy pierwszym uruchomieniu, mimo że wszystko było w porządku</div>
             <div>⭐ <b>Import i eksport klawiszy pilota IR</b> — w zakładce Pilot IR można teraz zapisać całą listę zaprogramowanych klawiszy do pliku (kopia zapasowa albo przeniesienie na inne radio) i wczytać ją z powrotem</div>
             <div>⭐ <b>Tablica ogłoszeń w zakładce Firmware</b> — panel WWW pokazuje teraz aktualne komunikaty/ostrzeżenia, które mogą się pojawić bez potrzeby wgrywania nowego firmware</div>
             <div>🔧 <b>Dodatkowe zabezpieczenie pamięci</b> — naprawiono bardzo rzadki, teoretyczny przypadek, w którym przy skrajnie niskiej ilości wolnej pamięci odczyt niektórych metadanych utworu (np. tytułu) mógł doprowadzić do zawieszenia</div>
@@ -1093,7 +1093,7 @@
             <span style="font-size:0.82rem;opacity:0.6">12.08.2026</span>
           </div>
           <div style="padding-left:8px;border-left:2px solid rgba(255,140,255,0.5);font-size:0.88rem;line-height:1.7">
-            <div>⭐ <b>Duża poprawa płynności ekranu w wariancie ILI9488</b> — lista stacji, przewijanie tytułu/nazwy stacji i wskaźniki głośności nie „szarpią" już przy odświeżaniu (był to najbardziej zauważalny problem tego wariantu)</div>
+            <div>⭐ <b>Duża poprawa płynności ekranu w wariancie ILI9488</b> — lista stacji, przewijanie tytułu/nazwy stacji i wskaźniki głośności nie „szarpią” już przy odświeżaniu (był to najbardziej zauważalny problem tego wariantu)</div>
             <div>🔧 <b>Płynniejsze wskaźniki głośności na ILI9488</b> (wskazówki i segmentowy pasek LED) — zmniejszono ich rozmiar, animacja przestała być zauważalnie wolniejsza niż na mniejszym ekranie</div>
             <div>🔧 <b>Większe czcionki na ILI9488</b> (nazwa stacji, tytuł, kodek, WiFi) — lepiej wykorzystują szerszy ekran</div>
             <div>🛠️ <b>Wycofano probę podbicia szybkości transmisji do ekranu ILI9488</b> — zamiast ograniczyć rozmywanie przewijanego tekstu, powodowała powyginane igły wskaźników głośności na fizycznym sprzęcie</div>
@@ -1178,9 +1178,9 @@
             <span style="font-size:0.82rem;opacity:0.6">24.07.2026</span>
           </div>
           <div style="padding-left:8px;border-left:2px solid rgba(190,140,255,0.5);font-size:0.88rem;line-height:1.7">
-            <div>⭐ <b>Rozszerzona diagnostyka</b> — w zakładce Info: częstotliwość procesora, wolna pamięć, wolne miejsce na aktualizacje</div>
-            <div>🛠️ <b>Dokładniejszy log restartów</b> — łatwiej znaleźć przyczynę rzadkich, samoistnych restartów</div>
-            <div>💅 <b>Uporządkowana zakładka Info</b></div>
+            <div>⭐ <b>Nowa funkcja: rozszerzona diagnostyka systemu</b> — w zakładce Info panelu WWW dodano częstotliwość CPU, wolną/minimalną pamięć RAM od bootu oraz wolne miejsce na aktualizacje OTA</div>
+            <div>🛠️ <b>Log restartów (zakładka Diagnostyka) zapamiętuje teraz najniższy poziom pamięci z całej sesji</b> przed restartem, nie tylko ostatnią próbkę sprzed ok. 3 sekund — łatwiej wychwycić powolny wyciek pamięci prowadzący do awarii</div>
+            <div>💅 <b>Zakładka Info uporządkowana</b> — nowe parametry diagnostyczne wydzielono do osobnej sekcji, oddzielonej od podstawowych informacji o urządzeniu</div>
           </div>
         </div>
 
@@ -1190,8 +1190,8 @@
             <span style="font-size:0.82rem;opacity:0.6">24.07.2026</span>
           </div>
           <div style="padding-left:8px;border-left:2px solid rgba(255,120,190,0.5);font-size:0.88rem;line-height:1.7">
-            <div>⭐ <b>Temperatura procesora</b> — nowy wskaźnik w zakładce Info</div>
-            <div>📋 <b>Zakładka „Historia zmian” w panelu WWW pokazuje teraz tylko 3 najnowsze wpisy</b> — pełna historia zawsze dostępna tutaj</div>
+            <div>⭐ <b>Nowa funkcja: temperatura procesora</b> — w zakładce Info panelu WWW pojawił się kafelek pokazujący na bieżąco temperaturę wewnętrznego czujnika ESP32-S3 (aktualizowana identycznie jak WiFi RSSI/Uptime, bez odświeżania strony)</div>
+            <div>📋 <b>Zakładka „Historia zmian” w panelu WWW pokazuje teraz tylko 3 najnowsze wpisy</b> — żeby nie powiększać niepotrzebnie rozmiaru strony wgrywanej na urządzenie; pełna historia zawsze dostępna tutaj, na stronie instalatora</div>
           </div>
         </div>
 
@@ -1201,7 +1201,7 @@
             <span style="font-size:0.82rem;opacity:0.6">23.07.2026</span>
           </div>
           <div style="padding-left:8px;border-left:2px solid rgba(120,190,255,0.5);font-size:0.88rem;line-height:1.7">
-            <div>⭐ <b>Korektor dźwięku (EQ)</b> — trzy suwaki: Bas / Średnie / Wysokie w zakładce Player</div>
+            <div>⭐ <b>Nowa funkcja: korektor dźwięku (EQ)</b> — trzy suwaki (Bas/Średnie/Wysokie) w zakładce Player, pod suwakiem głośności. Wykorzystuje wbudowaną w bibliotekę audio regulację tonu (zakres -40..+6 dB na pasmo — większe podbicie groziłoby przesterowaniem/trzaskami). Zmianę słychać na żywo, ustawienie jest zapisywane i wraca po restarcie</div>
           </div>
         </div>
 
@@ -1211,9 +1211,10 @@
             <span style="font-size:0.82rem;opacity:0.6">22.07.2026</span>
           </div>
           <div style="padding-left:8px;border-left:2px solid rgba(255,210,120,0.5);font-size:0.88rem;line-height:1.7">
-            <div>⭐ <b>Automatyczne wyrównywanie głośności między stacjami</b> — opcjonalna funkcja w zakładce Player</div>
-            <div style="color:#ff1744;font-weight:700">⚠️ To przybliżenie, nie idealny pomiar głośności — poprawia komfort, ale nie zawsze wyrówna ją dokładnie</div>
-            <div>🎚️ <b>Płynniejsze zmiany głośności</b> (ręczne i automatyczne)</div>
+            <div>⭐ <b>Nowa funkcja: automatyczne wyrównywanie głośności między stacjami</b> — opcjonalny checkbox w zakładce Player, pod suwakiem głośności. Gdy stacje grają z różną głośnością (inny mastering), radio ok. 3-4 sekundy po przełączeniu samo dostraja głośność nowej stacji, żeby brzmiała podobnie donośnie jak poprzednia — a potem nic więcej się nie zmienia, dopóki znów nie przełączysz stacji albo nie ruszysz suwakiem</div>
+            <div style="color:#ff1744;font-weight:700">⚠️ To NIE jest idealne, precyzyjne dopasowanie głośności (brak prawdziwego pomiaru głośności LUFS) — to przybliżenie, które łagodzi różnice między stacjami. Korekta pojawia się z opóźnieniem ok. 4 sekund po zmianie stacji, nie natychmiast</div>
+            <div>🎚️ <b>Płynne zmiany głośności</b> — zarówno ręczne (suwak/pilot), jak i automatyczna korekta, dochodzą teraz do docelowej wartości płynnie, zamiast skokiem</div>
+            <div>💅 <b>Czytelniejsze podpowiedzi w panelu WWW</b> — własny, kontrastowy dymek (czerwony tekst na jasnym tle) zamiast słabo widocznej domyślnej podpowiedzi przeglądarki</div>
           </div>
         </div>
 
@@ -1223,7 +1224,7 @@
             <span style="font-size:0.82rem;opacity:0.6">22.07.2026</span>
           </div>
           <div style="padding-left:8px;border-left:2px solid rgba(190,255,140,0.5);font-size:0.88rem;line-height:1.7">
-            <div>🔧 <b>Naprawiono biały ekran po nieudanym wybudzeniu z uśpienia</b></div>
+            <div>🔧 <b>Naprawiono biały ekran po nieudanym wybudzeniu z uśpienia</b> — pojedynczy kod z pilota (bez drugiego, potwierdzającego kliknięcia) albo krótkie kliknięcie enkodera przy uśpionym radiu potrafiły zostawić ekran zaświecony na biało aż do kolejnego prawdziwego wybudzenia, mimo że radio faktycznie wracało do snu. Przyczyna: linie sterujące wyświetlaczem były na chwilę odblokowywane jeszcze przed sprawdzeniem, czy to naprawdę sygnał do włączenia, i w tym oknie łapały zakłócenia jako przypadkowe komendy dla ekranu. Teraz zabezpieczenie zostaje aktywne przez cały czas oczekiwania na potwierdzenie. Dotyczy to zwłaszcza wyświetlaczy, w których podświetlenie LED jest podłączone na stałe do zasilania modułu, bez osobnego wyprowadzenia BL/LED sterowanego przez procesor — na takich ekranach to, co widać po uśpieniu, zależy od stanu kontrolera, a nie od podświetlenia</div>
           </div>
         </div>
 
@@ -1233,8 +1234,12 @@
             <span style="font-size:0.82rem;opacity:0.6">21.07.2026</span>
           </div>
           <div style="padding-left:8px;border-left:2px solid rgba(190,255,140,0.5);font-size:0.88rem;line-height:1.7">
-            <div>⭐ <b>Tryb „tylko ulubione”</b> — oznacz stacje gwiazdką i przełączaj się tylko między nimi</div>
-            <div>🎮 <b>Limit zaprogramowanych klawiszy pilota zwiększony (40 → 42)</b></div>
+            <div>⭐ <b>Nowa funkcja: tryb "tylko ulubione"</b> — oznacz dowolne stacje gwiazdką (zakładka Stacje lub Player) i włącz tryb przyciskiem „☆ Ulubione" w zakładce Player, klawiszem pilota (nowa akcja) albo — bez pilota — przytrzymaniem enkodera 2 (~3 s). W trybie ulubionych NEXT/PREV, cyfry pilota i podgląd listy na wyświetlaczu przełączają się tylko między oznaczonymi stacjami, renumerowanymi od 1. Wyraźny pomarańczowy znacznik „*” na wyświetlaczu pokazuje aktywny tryb, a ustawienie jest zapamiętywane i wraca po restarcie/zaniku zasilania</div>
+            <div>🎮 <b>Limit zaprogramowanych klawiszy pilota zwiększony 40 → 42</b></div>
+            <div>📝 <b>Uproszczono opis trybu Deep sleep</b> w zakładce Enkodery — usunięto niepewną wartość poboru prądu</div>
+            <div>🩺 <b>Nowa zakładka Diagnostyka — historia restartów</b> — po każdym uruchomieniu radio zapisuje przyczynę (normalne włączenie, restart z panelu, spadek napięcia, zawieszenie/awaria) oraz stan tuż przed zdarzeniem (pamięć, grana stacja, WiFi) — do 50 ostatnich wpisów. Nie trzeba już trzymać kabla USB podłączonego, żeby złapać rzadki, samoistny restart</div>
+            <div>🎯 <b>Filtr szumu pilota IR (opcjonalny)</b> — odbiornik może odrzucać sygnały nierozpoznane jako protokół NEC (eliminuje przypadkowe „naciśnięcia” wywołane zakłóceniami elektrycznymi/świetlówkami); domyślnie włączony, ale w zakładce Pilot IR można go wyłączyć, jeśli używasz pilota w innym protokole (np. od wieży), który przestałby wtedy działać</div>
+            <div>🔍 <b>Namierzono przyczynę rzadkich samoistnych restartów</b> — to błąd (Guru Meditation/Double exception) w bibliotece dekodującej audio, uruchamiany przy bardzo słabym sygnale WiFi; biblioteka zewnętrzna nie została jeszcze załatana, zalecana poprawa zasięgu WiFi w miejscu, gdzie stoi radio</div>
           </div>
         </div>
 
@@ -1244,7 +1249,7 @@
             <span style="font-size:0.82rem;opacity:0.6">21.07.2026</span>
           </div>
           <div style="padding-left:8px;border-left:2px solid rgba(190,255,140,0.5);font-size:0.88rem;line-height:1.7">
-            <div>🔧 <b>Naprawiono zacinanie dźwięku na początku odtwarzania po zmianie stacji</b></div>
+            <div>🔧 <b>Naprawiono zacinanie dźwięku na początku odtwarzania po zmianie stacji</b> — głośność zaczynała rosnąć, zanim sieć zdążyła dostarczyć wystarczający zapas danych w buforze (zwłaszcza przy stacjach HTTPS lub wolniejszym łączu), przez co pierwsze sekundy potrafiły się zacinać, aż strumień się ustabilizował. Teraz radio czeka na realne zapełnienie bufora wejściowego, zanim podniesie głośność</div>
           </div>
         </div>
 
@@ -1254,7 +1259,7 @@
             <span style="font-size:0.82rem;opacity:0.6">21.07.2026</span>
           </div>
           <div style="padding-left:8px;border-left:2px solid rgba(190,255,140,0.5);font-size:0.88rem;line-height:1.7">
-            <div>🎮 <b>Podwojony limit klawiszy pilota IR (20 → 40)</b> — można zaprogramować dwa piloty jednocześnie</div>
+            <div>🎮 <b>Podwojony limit klawiszy pilota IR (20 → 40)</b> — można teraz zaprogramować DWA piloty jednocześnie: każda akcja (np. Play/Pauza) może mieć dwa różne kody IR, po jednym z każdego pilota, bez nadpisywania. W zakładce Pilot IR nowy licznik pokazuje ile klawiszy zostało zaprogramowanych (X / 40) i ostrzeżenie po osiągnięciu limitu</div>
           </div>
         </div>
 
@@ -1264,10 +1269,10 @@
             <span style="font-size:0.82rem;opacity:0.6">20.07.2026</span>
           </div>
           <div style="padding-left:8px;border-left:2px solid rgba(190,255,140,0.5);font-size:0.88rem;line-height:1.7">
-            <div>🎚️ <b>Kolor i peak-hold dla VU-metrów</b> (tryb Wskazówkowe)</div>
-            <div>🌙 <b>Wygaszacz ekranu po bezczynności</b></div>
-            <div>🎵 <b>Nowy tryb diody RGB: Audio-reaktywna</b></div>
-            <div style="color:#ff1744;font-weight:700">👆👆 <b>Wybudzenie pilotem z uśpienia wymaga teraz DWÓCH kliknięć POWER</b></div>
+            <div>🎚️ <b>Kolor i peak-hold dla VU-metrów (tryb Wskazówkowe)</b> — w zakładce Wyświetlacz można wybrać kolor wskazówek/tarczy (pomarańczowy/zielony/niebieski/biały/ciepłe cykliczne/tęcza/sync z diodą RGB) oraz włączyć peak-hold + poświatę + wskaźnik CLIP przy przesterowaniu</div>
+            <div>🌙 <b>Wygaszacz ekranu po bezczynności</b> — nowa sekcja w zakładce Wyświetlacz: po skonfigurowanym czasie bez obsługi (enkoder/pilot/panel WWW) TFT i OLED pokazują dryfujący po ekranie zegar i nazwę stacji w zmieniających się kolorach — chroni przed wypaleniem</div>
+            <div>🎵 <b>Nowy tryb diody RGB: Audio-reaktywna</b> — jasność diody pulsuje w rytm muzyki (względem niedawnego szczytu głośności utworu, nie globalnej głośności radia), barwa powoli dryfuje przez spektrum</div>
+            <div style="color:#ff1744;font-weight:700;font-size:1.05rem">👆👆 <b>Wybudzenie pilotem z uśpienia wymaga teraz DWÓCH kliknięć POWER</b> (w ciągu ok. 2 s) — jedyny niezawodny sposób odróżnienia przycisku POWER od innych po wybudzeniu z Deep Sleep (pojedyncze naciśnięcie innego przycisku już nie budzi radia przypadkowo). Panel przypomina o tym w zakładce Pilot IR</div>
           </div>
         </div>
 
@@ -1277,8 +1282,8 @@
             <span style="font-size:0.82rem;opacity:0.6">20.07.2026</span>
           </div>
           <div style="padding-left:8px;border-left:2px solid rgba(180,220,90,0.5);font-size:0.88rem;line-height:1.7">
-            <div>📻 <b>Import gotowej listy stacji jednym kliknięciem</b> — w zakładce Stacje</div>
-            <div>⚠️ <b>Wyraźniejsza informacja o ograniczeniu funkcji Pogoda</b></div>
+            <div>📻 <b>Import gotowej listy stacji jednym kliknięciem</b> — w zakładce Stacje nowy przycisk „Pobierz listę Seba (GitHub)” pobiera i wypełnia edytor gotową listą stacji wprost z publicznego repozytorium instalatora, bez ręcznego ściągania i wgrywania pliku CSV. Wymaga jeszcze kliknięcia „Zapisz stacje”, żeby zapisać zmianę na urządzeniu</div>
+            <div>⚠️ <b>Wyraźniejsza informacja o ograniczeniu Pogody</b> — czerwona notatka pojawia się od razu przy wyborze wizualizacji „Pogoda” w zakładce Wyświetlacz, zamiast wymagać szukania jej w Historii zmian</div>
           </div>
         </div>
 
@@ -1288,9 +1293,9 @@
             <span style="font-size:0.82rem;opacity:0.6">19.07.2026</span>
           </div>
           <div style="padding-left:8px;border-left:2px solid rgba(90,220,200,0.5);font-size:0.88rem;line-height:1.7">
-            <div>🌤️ <b>Nowa wizualizacja TFT: Pogoda</b> — temperatura, wilgotność, jakość powietrza, UV</div>
-            <div style="color:#ff1744;font-weight:700">⚠️ Funkcja eksperymentalna — przy stacjach HTTPS zwykle nie uda się pobrać danych pogodowych</div>
-            <div>🛠️ <b>Naprawiono rzadki restart urządzenia</b> przy zapisie ustawień z włączonym pilotem IR</div>
+            <div>🌤️ <b>Nowa wizualizacja TFT: Pogoda</b> — obok słupków/wskazówek/braku, można teraz wyświetlać aktualną pogodę (Open-Meteo, bez klucza API) dla wpisanej miejscowości: temperatura, ikona pogody, wilgotność i odczuwalna temperatura, a w prawym górnym rogu naprzemiennie jakość powietrza (PM2.5/PM10) oraz indeks UV i ciśnienie</div>
+            <div style="color:#ff1744;font-weight:700;font-size:1.05rem">⚠️ Pogoda: funkcja eksperymentalna — podczas grania stacji przez HTTPS (większość stacji) pobranie danych pogodowych najczęściej się NIE UDA. To ograniczenie pamięci urządzenia (dwa równoczesne połączenia szyfrowane naraz — audio i pogoda — nie mieszczą się w dostępnej pamięci) w obecnej wersji oprogramowania i biblioteki audio — może się to zmienić przy przyszłej aktualizacji. Działa "best-effort": czasem zadziała (np. tuż po starcie, przy zmianie stacji), czasem nie.</div>
+            <div>🛠️ <b>Naprawiono restart urządzenia (Guru Meditation) przy zapisie ustawień z włączonym pilotem IR</b> — rekonfiguracja odbiornika niepotrzebnie niszczyła i tworzyła od nowa sprzętowy timer przy każdym zapisie configu (nawet niezwiązanym z pilotem), co czasem kończyło się awaryjnym restartem; teraz pełna rekonfiguracja uruchamia się tylko, gdy faktycznie zmieni się pin lub stan włącz/wyłącz</div>
           </div>
         </div>
 
@@ -1300,7 +1305,7 @@
             <span style="font-size:0.82rem;opacity:0.6">19.07.2026</span>
           </div>
           <div style="padding-left:8px;border-left:2px solid rgba(255,180,120,0.5);font-size:0.88rem;line-height:1.7">
-            <div>🎨 <b>Naprawiono przełącznik kolorów RGB/BGR na wyświetlaczu TFT (ILI9341)</b></div>
+            <div>🎨 <b>Naprawiono przełącznik kolejności kolorów RGB/BGR na wyświetlaczu TFT (ILI9341)</b> — ustawienie w zakładce Wyświetlacz nie miało żadnego efektu, bo kolor był korygowany jednocześnie sprzętowo i programowo, przez co obie korekty się wzajemnie znosiły; teraz przełącznik faktycznie odwraca kolory na ekranie</div>
           </div>
         </div>
 
@@ -1310,7 +1315,7 @@
             <span style="font-size:0.82rem;opacity:0.6">18.07.2026</span>
           </div>
           <div style="padding-left:8px;border-left:2px solid rgba(140,160,255,0.5);font-size:0.88rem;line-height:1.7">
-            <div>🔧 <b>Naprawiono zawieszanie się radia w ciszy przy zerwaniu streamu</b></div>
+            <div>🔧 <b>Naprawiono zawieszanie się radia w ciszy przy zerwaniu streamu</b> — dodano wykrywanie sytuacji, gdy bufor audio pozostaje pusty mimo że odtwarzanie formalnie „działa"; urządzenie samo ponawia połączenie zamiast wisieć bez dźwięku do ręcznego restartu</div>
           </div>
         </div>
 
@@ -1320,8 +1325,8 @@
             <span style="font-size:0.82rem;opacity:0.6">18.07.2026</span>
           </div>
           <div style="padding-left:8px;border-left:2px solid rgba(120,255,190,0.5);font-size:0.88rem;line-height:1.7">
-            <div>🖥️ <b>Nowa opcja wyświetlacza TFT: bez analizatora widma</b> — większe, czytelniejsze czcionki</div>
-            <div>🎛️ <b>Wybór wizualizacji audio na TFT: słupki / wskazówkowe (VU-metry) / brak</b></div>
+            <div>🖥️ <b>Nowa opcja wyświetlacza TFT: bez analizatora widma</b> — w zakładce Wyświetlacz można wyłączyć spektrum na rzecz większych, czytelniejszych czcionek (nazwa stacji, tytuł, kodek, WiFi) i zegara bez paska tła</div>
+            <div>🎛️ <b>Wybór wizualizacji audio na TFT: słupki / wskazówkowe (VU-metry) / brak</b> — analogowe mierniki wskazówkowe L/R w ciepłych, pomarańczowo-złotych barwach jak w starych sprzętach</div>
           </div>
         </div>
 
@@ -1331,7 +1336,7 @@
             <span style="font-size:0.82rem;opacity:0.6">17.07.2026</span>
           </div>
           <div style="padding-left:8px;border-left:2px solid rgba(140,230,160,0.5);font-size:0.88rem;line-height:1.7">
-            <div>⚙️ <b>Drobne poprawki stabilności WiFi i pamięci</b> (aktualizacja platformy)</div>
+            <div>⚙️ <b>Aktualizacja platformy pioarduino</b> (55.03.38-1 → 55.03.39) — nowsze wydanie niesie poprawki w NetworkClient/NetworkClientSecure, WiFi init/deinit i LittleFS, czyli obszarach używanych bezpośrednio przy streamingu radia i aktualizacjach OTA (bez zmian funkcjonalnych)</div>
           </div>
         </div>
 
@@ -1351,7 +1356,7 @@
             <span style="font-size:0.82rem;opacity:0.6">12.07.2026</span>
           </div>
           <div style="padding-left:8px;border-left:2px solid rgba(120,220,220,0.5);font-size:0.88rem;line-height:1.7">
-            <div>📊 <b>Poprawiony pasek postępu pobierania przy aktualizacji</b></div>
+            <div>📊 <b>Poprawiony pasek postępu pobierania przy aktualizacji OTA</b> — gdy przeglądarka nie udostępni rozmiaru pliku, pasek pokazuje animację „w toku" zamiast wyglądać na zawieszony, i znika po zakończeniu pobierania zamiast zostawać na ekranie w trakcie wgrywania</div>
           </div>
         </div>
 
@@ -1361,7 +1366,7 @@
             <span style="font-size:0.82rem;opacity:0.6">12.07.2026</span>
           </div>
           <div style="padding-left:8px;border-left:2px solid rgba(255,80,80,0.5);font-size:0.88rem;line-height:1.7">
-            <div>🛡️ <b>Naprawiono kasowanie ustawień przy aktualizacji panelu WWW</b> — WiFi i stacje są teraz zachowywane</div>
+            <div>🛡️ <b>Naprawiono kasowanie ustawień przy aktualizacji panelu WWW przez OTA</b> — sieci WiFi, lista stacji i cała konfiguracja są teraz zachowywane automatycznie (wcześniej aktualizacja panelu nadpisywała całą partycję razem z zapisanymi danymi)</div>
           </div>
         </div>
 
@@ -1381,7 +1386,7 @@
             <span style="font-size:0.82rem;opacity:0.6">12.07.2026</span>
           </div>
           <div style="padding-left:8px;border-left:2px solid rgba(150,120,255,0.5);font-size:0.88rem;line-height:1.7">
-            <div>🗄️ <b>Naprawiono cache przeglądarki blokujący widoczność aktualizacji panelu WWW</b></div>
+            <div>🗄️ <b>Naprawiono cache przeglądarki blokujący widoczność aktualizacji panelu WWW</b> — strona główna wysyłana jest teraz z nagłówkiem uniemożliwiającym bezterminowe cache'owanie starej wersji przez przeglądarkę</div>
           </div>
         </div>
 
@@ -1391,7 +1396,7 @@
             <span style="font-size:0.82rem;opacity:0.6">12.07.2026</span>
           </div>
           <div style="padding-left:8px;border-left:2px solid rgba(255,190,60,0.5);font-size:0.88rem;line-height:1.7">
-            <div>🔧 <b>Naprawiono restart urządzenia w trakcie aktualizacji przez WiFi</b></div>
+            <div>🔧 <b>Naprawiono restart urządzenia w trakcie aktualizacji OTA</b> — zapis do flasha wstrzymuje teraz odtwarzanie audio, eliminując ryzyko resetu (watchdog) przy jednoczesnym dekodowaniu i zapisie firmware/panelu WWW</div>
           </div>
         </div>
 
@@ -1401,8 +1406,8 @@
             <span style="font-size:0.82rem;opacity:0.6">12.07.2026</span>
           </div>
           <div style="padding-left:8px;border-left:2px solid rgba(80,220,140,0.5);font-size:0.88rem;line-height:1.7">
-            <div>📡 <b>Aktualizacja firmware przez WiFi</b> — nowa zakładka „Firmware” w panelu WWW</div>
-            <div>⬆ <b>Jednoklikowe „Aktualizuj teraz”</b></div>
+            <div>📡 <b>Aktualizacja firmware przez WiFi</b> — nowa zakładka „Firmware” w panelu WWW: wgraj plik .bin bez kabla USB, urządzenie samo się flashuje i restartuje</div>
+            <div>⬆ <b>Jednoklikowe „Aktualizuj teraz”</b> — panel sam sprawdza najnowszą wersję opublikowaną w instalatorze webowym i pobiera ją bez ręcznego szukania pliku</div>
           </div>
         </div>
 
@@ -1412,8 +1417,8 @@
             <span style="font-size:0.82rem;opacity:0.6">12.07.2026</span>
           </div>
           <div style="padding-left:8px;border-left:2px solid rgba(100,140,255,0.5);font-size:0.88rem;line-height:1.7">
-            <div>🔒 <b>Naprawiono rzadkie zawieszanie się przy edycji stacji z panelu WWW</b></div>
-            <div>🖥️ <b>Naprawiono niepotrzebne mignięcie ekranu</b> przy zapisie ustawień</div>
+            <div>🔒 <b>Naprawiono race condition przy edycji stacji z panelu WWW</b> — dodano blokadę (mutex) chroniącą listę stacji przed jednoczesnym odczytem/zapisem z różnych rdzeni, eliminuje ryzyko zawieszenia/restartu</div>
+            <div>🖥️ <b>Naprawiono niepotrzebne przeładowanie wyświetlacza</b> — zapis dowolnych ustawień (np. zasilania) nie powoduje już zbędnego mignięcia ekranu i błędu podświetlenia</div>
           </div>
         </div>
 
@@ -1423,7 +1428,7 @@
             <span style="font-size:0.82rem;opacity:0.6">12.07.2026</span>
           </div>
           <div style="padding-left:8px;border-left:2px solid rgba(255,120,80,0.5);font-size:0.88rem;line-height:1.7">
-            <div>🐛 <b>Naprawiono błąd braku pamięci przy stacjach HTTPS</b></div>
+            <div>🐛 <b>Naprawiono błąd braku pamięci przy HTTPS</b> — tablica 150 stacji przeniesiona z pamięci wewnętrznej do PSRAM, usuwa ryzyko błędu „SSL - Memory allocation failed” przy łączeniu z szyfrowanymi (HTTPS) strumieniami</div>
           </div>
         </div>
 
@@ -1433,9 +1438,9 @@
             <span style="font-size:0.82rem;opacity:0.6">12.07.2026</span>
           </div>
           <div style="padding-left:8px;border-left:2px solid rgba(255,90,190,0.5);font-size:0.88rem;line-height:1.7">
-            <div>🌐 <b>Ukraiński w panelu WWW i instalatorze</b> — czwarty język interfejsu</div>
-            <div>🖥️ <b>Cyrylica poprawnie wyświetlana</b> na TFT i OLED</div>
-            <div>📻 <b>Limit stacji zwiększony z 99 do 150</b></div>
+            <div>🌐 <b>Ukraiński w panelu WWW i instalatorze</b> — czwarty język interfejsu (PL/EN/FR/UK), włącznie z komunikatami z firmware</div>
+            <div>🖥️ <b>Cyrylica na wyświetlaczach TFT i OLED</b> — nazwy stacji i tytuły utworów po ukraińsku renderowane poprawnie (TFT: własna czcionka VLW; OLED: automatyczny wybór fontu łacińskiego/cyrylicy dla każdego tekstu)</div>
+            <div>📻 <b>Limit stacji zwiększony z 99 do 150</b> — wpisywanie numeru stacji z pilota IR obsługuje teraz 3 cyfry</div>
           </div>
         </div>
 
@@ -1445,7 +1450,7 @@
             <span style="font-size:0.82rem;opacity:0.6">08.07.2026</span>
           </div>
           <div style="padding-left:8px;border-left:2px solid rgba(0,200,170,0.5);font-size:0.88rem;line-height:1.7">
-            <div>🖥️ <b>Obsługa wyświetlacza SSD1322 OLED SPI 3.12"</b> (skala szarości)</div>
+            <div>🖥️ <b>Obsługa wyświetlacza SSD1322 OLED SPI 3.12" (256×64, skala szarości)</b> — sterownik wybierany z panelu WWW, wyłącznie tryb 4-wire SPI</div>
           </div>
         </div>
 
@@ -1455,9 +1460,9 @@
             <span style="font-size:0.82rem;opacity:0.6">05.07.2026</span>
           </div>
           <div style="padding-left:8px;border-left:2px solid rgba(180,120,255,0.4);font-size:0.88rem;line-height:1.7">
-            <div>🌐 <b>Panel WWW i instalator po francusku</b> — trzeci język interfejsu</div>
-            <div>🕐 <b>Format godziny 12h (AM/PM)</b> do wyboru</div>
-            <div>📅 <b>Format daty niezależny od godziny</b></div>
+            <div>🌐 <b>Panel WWW i instalator po francusku</b> — trzeci język interfejsu (PL/EN/FR), włącznie z komunikatami z firmware</div>
+            <div>🕐 <b>Format godziny 12h (AM/PM)</b> — do wyboru obok 24-godzinnego</div>
+            <div>📅 <b>Format daty niezależny od godziny</b> — Dzień/Miesiąc/Rok (Europa) lub Miesiąc/Dzień/Rok (USA) osobno w zakładce Strefa czasowa</div>
             <div>🖥️ Poprawiony wybór sterownika wyświetlacza (ST7789 / ILI9341)</div>
           </div>
         </div>
@@ -1468,7 +1473,8 @@
             <span style="font-size:0.82rem;opacity:0.6">26.06.2026</span>
           </div>
           <div style="padding-left:8px;border-left:2px solid rgba(255,215,0,0.4);font-size:0.88rem;line-height:1.7">
-            <div>🌐 <b>Strefa czasowa</b> — wybór z panelu WWW (35+ stref)</div>
+            <div>🌐 <b>Strefa czasowa</b> — wybór z panelu WWW (35+ stref), zapis w Flash, zastosowanie bez restartu</div>
+            <div>🕐 Godzina i data na TFT korygowana automatycznie do wybranej strefy</div>
           </div>
         </div>
 
@@ -1478,8 +1484,8 @@
             <span style="font-size:0.82rem;opacity:0.6">19.06.2026</span>
           </div>
           <div style="padding-left:8px;border-left:2px solid rgba(100,220,120,0.4);font-size:0.88rem;line-height:1.7">
-            <div>🖥️ <b>Obsługa wyświetlacza ILI9341 3.2" (320×240)</b></div>
-            <div>🔁 <b>Opóźnienie przed powtarzaniem NEXT/PREV</b> z pilota</div>
+            <div>🖥️ <b>Obsługa wyświetlacza ILI9341 3.2" (320×240)</b> — sterownik wybierany z panelu WWW bez rekompilacji</div>
+            <div>🔁 <b>IR NEXT/PREV</b> — opóźnienie 600 ms przed powtarzaniem przy przytrzymaniu przycisku</div>
           </div>
         </div>
 
