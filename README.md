@@ -18,11 +18,13 @@ Obsługuje **pięć wariantów wyświetlacza** (przyciski na stronie, nad przyci
 z istniejącymi urządzeniami (aktualizacja przez WiFi). Wszystkie warianty
 współdzielą `bootloader.bin`/`partitions.bin`/`boot_app0.bin`/`littlefs.bin`
 (ten sam `partitions.csv` i ta sama strona WWW) — różni się tylko `firmware*.bin`
-(inny skompilowany sterownik TFT_eSPI, patrz `platformio.ini` w repo głównym).
+(inny sterownik TFT_eSPI albo, przy tym samym sterowniku ST7789, inne piny i
+konfiguracja płytki — patrz `platformio.ini` w repo głównym).
 
 Każdy wariant ma też wersję dla płytek z kością flash **XMC** (pole wyboru na
 stronie): `manifest*-xmc.json` wskazuje na `xmc-retry/bootloader-xmc-retry.bin`,
-reszta plików jest wspólna. Pełne obrazy XMC: `xmc-retry/esp32-radio-FULL*-xmc-retry.bin`
+reszta plików jest wspólna (w manifeście różni się jeszcze tylko `name` z
+dopiskiem „+ XMC”). Pełne obrazy XMC: `xmc-retry/esp32-radio-FULL*-xmc-retry.bin`
 (opis w `xmc-retry/README.txt`).
 
 ## Wymagania sprzętowe użytkownika
@@ -46,7 +48,12 @@ Wykonuj w **repo z kodem źródłowym** (`esp32-radio`), nie w tym repo:
    - `firmware*.bin` (osobny per wariant)
    - `esp32-radio-FULL*.bin` (esptool-js, offset `0x0`)
    - wszystkie `manifest*.json`, katalog `xmc-retry/`, `index.html`
-4. GitHub Actions opublikuje Pages — deploy **nie buduje** firmware, tylko weryfikuje obecność plików wszystkich wariantów i rozmiar `littlefs.bin`.
+4. GitHub Actions opublikuje Pages — deploy **nie buduje** firmware, tylko sprawdza
+   (`.github/workflows/deploy.yml`): obecność wspólnych plików, `firmware*.bin`,
+   wszystkich `manifest*.json`, bootloadera XMC i `index.html`; `littlefs.bin` nie większy niż
+   partycja; każdy `firmware*.bin` ≥ 100 000 B; każda ścieżka z każdego manifestu
+   istnieje. **Nie** sprawdza obrazów `esp32-radio-FULL*.bin` ani
+   `xmc-retry/*-xmc-retry.bin` — ich brak nie zablokuje publikacji.
 
 ## Pliki i offsety (manifesty)
 
